@@ -1,0 +1,29 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "nuxi build",
+    "dev": "nuxi dev",
+    "generate": "nuxi generate",
+    "preview": "nuxi preview",
+    "serve": "serve ./dist",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.31.0",
+    "@headlessui/vue": "^1.7.4",
+    "@iconify-json/carbon": "^1.1.11",
+    "@iconify-json/twemoji": "^1.1.6",
+    "@nuxt/content": "^2.2.2",
+    "@nuxt/kit": "^3.0.0",
+    "@pinia/nuxt": "^0.4.5",
+    "@unocss/nuxt": "^0.46.5",
+    "@vueuse/nuxt": "^9.6.0",
+    "eslint": "^8.28.0",
+    "nuxt": "^3.0.0",
+    "pinia": "^2.0.26",
+    "serve": "^14.1.2",
+    "sitemap": "^7.1.1",
+    "typescript": "^4.9.3"
+  }
+}
