@@ -1,14 +1,18 @@
 <script lang="ts" setup>
-const { page, layout } = useContent()
+const { page } = useContent()
+
+// Page not found, set correct status code on SSR
+if (!page.value && process.server) {
+  const event = useRequestEvent()
+  event.res.statusCode = 404
+}
 </script>
 
 <template>
-  <NuxtLayout :name="layout || 'default'">
-    <ContentRenderer v-if="page" :key="page._id" :value="page">
-      <template #empty="{ value }">
-        <DocumentDrivenEmpty :value="value" />
-      </template>
-    </ContentRenderer>
-    <DocumentDrivenNotFound v-else />
-  </NuxtLayout>
+  <ContentRenderer v-if="page" :key="page._id" :value="page">
+    <template #empty="{ value }">
+      <DocumentDrivenEmpty :value="value" />
+    </template>
+  </ContentRenderer>
+  <DocumentDrivenNotFound v-else />
 </template>
