@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   content: {
     documentDriven: true,
   },
-  css: ['@unocss/reset/tailwind.css', '@/assets/css/themes.css',
+  css: ['@unocss/reset/tailwind.css', '@/assets/css/themes.css', '@/assets/css/globals.css',
   ],
   nitro: {
     prerender: {
