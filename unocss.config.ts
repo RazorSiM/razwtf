@@ -48,7 +48,7 @@ export default defineConfig({
         },
         'blockquote': {
           'color': 'rgb(var(--base0A))',
-          'border-left-color': 'rgb(var(--base0A))',
+          'border-left': 'rgb(var(--base0A))',
         },
         'ul>li::before': {
           'background-color': 'rgb(var(--base09))',

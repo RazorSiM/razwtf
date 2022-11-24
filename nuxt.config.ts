@@ -11,4 +11,6 @@ export default defineNuxtConfig({
       routes: ['/sitemap.xml'],
     },
   },
+  extends: '@nuxt-themes/typography',
+
 })
