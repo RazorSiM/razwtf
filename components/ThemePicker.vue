@@ -11,7 +11,7 @@ const listValue = ref(props.themeSelected)
 
 <template>
   <Listbox v-model="listValue" as="div" class="relative">
-    <ListboxButton class="bg-base2 rounded-full h-8 w-8 flex items-center justify-center ring-1 ring-transparent focus:outline-none active:( ring-1 ring-accent ) hover:( bg-base3 shadow-md ) transition shadow">
+    <ListboxButton class="bg-base1 rounded-full h-8 w-8 flex items-center justify-center ring-1 ring-transparent focus:outline-none active:( ring-1 ring-accent ) hover:( bg-base2 shadow-md ) transition shadow">
       <div class="i-carbon-color-palette" />
     </ListboxButton>
     <transition
@@ -25,7 +25,7 @@ const listValue = ref(props.themeSelected)
       <ListboxOptions
         as="div"
         class="
-          flex flex-col absolute rounded-md mt-1 right-0 shadow-lg bg-base3 max-h-300px overflow-y-auto z-1 shadow"
+          flex flex-col absolute rounded-md mt-1 right-0 shadow-lg bg-base2 max-h-300px overflow-y-auto z-1 shadow"
       >
         <ListboxOption
           v-for="theme in themes"
@@ -38,8 +38,8 @@ const listValue = ref(props.themeSelected)
           @click="emits('themeSelection', theme)"
         >
           <div
-            class=" px-3 py-2 transition flex justify-between items-center leading-none capitalize hover:(bg-base2)"
-            :class="{ 'bg-base1': active, 'bg-primary': selected }"
+            class=" px-3 py-2 transition flex justify-between items-center leading-none capitalize hover:(bg-base1)"
+            :class="{ 'bg-base0': active, 'bg-primary': selected }"
           >
             {{ theme.replace("-", " ") }}
             <div v-show="selected" class="i-carbon-checkmark-outline" />

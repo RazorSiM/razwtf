@@ -88,10 +88,10 @@ export default defineConfig({
     },
     colors: {
       base: {
-        1: 'rgb(var(--base00))',
-        2: 'rgb(var(--base01))',
-        3: 'rgb(var(--base02))',
-        4: 'rgb(var(--base03))',
+        0: 'rgb(var(--base00))',
+        1: 'rgb(var(--base01))',
+        2: 'rgb(var(--base02))',
+        3: 'rgb(var(--base03))',
       },
 
       primary: 'rgb(var(--base08))',

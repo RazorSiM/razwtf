@@ -3,7 +3,7 @@ const navOpened = ref(false)
 </script>
 
 <template>
-  <header class="w-full p-3 header">
+  <header class="w-full header">
     <nav
       class="shadow-2xl bg-base-2 "
       :class="{ 'rounded-lg': navOpened, 'rounded-full': !navOpened }"
