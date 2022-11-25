@@ -84,6 +84,9 @@ export default defineConfig({
     //   },
     // }),
   ],
+  rules: [
+    ['text-xxs', { 'font-size': '0.6rem' }],
+  ],
   theme: {
     fontFamily: {
       sans: 'Victor',
