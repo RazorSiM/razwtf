@@ -1,6 +1,7 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-  modules: ['@nuxt/content', '@unocss/nuxt', '@pinia/nuxt', '@vueuse/nuxt'],
+  modules: ['@nuxt/content', '@unocss/nuxt', '@pinia/nuxt', '@vueuse/nuxt', '@nuxt/image-edge',
+  ],
   content: {
     documentDriven: true,
   },
@@ -11,6 +12,5 @@ export default defineNuxtConfig({
       routes: ['/sitemap.xml'],
     },
   },
-  extends: '@nuxt-themes/typography',
 
 })

@@ -23,7 +23,7 @@ const { data: navigation } = await useAsyncData('navigation', () => fetchContent
         <TopNavHamburgerContent :pages="navigation" />
       </template>
     </TopHeader>
-    <main class="mt-10 container mx-auto text-base md:text-xl">
+    <main class="prose mx-auto mt-10 mx-auto text-base md:text-xl">
       <slot />
     </main>
 

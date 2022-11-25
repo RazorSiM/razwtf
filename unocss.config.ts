@@ -25,16 +25,15 @@ export default defineConfig({
           color: 'rgb(var(--base06))',
         },
         'a': {
-          'color': 'rgb(var(--base0A))',
+          'color': 'rgb(var(--base0C))',
           'transition': 'color 0.2s ease-in-out',
           'font-family': 'VictorItalic',
         },
         'a:hover': {
           color: 'rgb(var(--base09))',
-
         },
         'a:visited': {
-          color: 'rgb(var(--base0C))',
+          color: 'rgb(var(--base08))',
         },
         'a:active': {
           color: 'rgb(var(--base08))',
@@ -48,7 +47,11 @@ export default defineConfig({
         },
         'blockquote': {
           'color': 'rgb(var(--base0A))',
-          'border-left': 'rgb(var(--base0A))',
+          'border-left': 'rgb(var(--base0A)) 0.25em solid',
+        },
+        'blockquote>p': {
+          'color': 'rgb(var(--base0A))',
+          'font-family': 'VictorItalic',
         },
         'ul>li::before': {
           'background-color': 'rgb(var(--base09))',
