@@ -11,6 +11,7 @@ specifiers:
   '@pinia/nuxt': ^0.4.5
   '@unocss/nuxt': ^0.46.5
   '@vueuse/nuxt': ^9.6.0
+  dayjs: ^1.11.6
   eslint: ^8.28.0
   nuxt: ^3.0.0
   pinia: ^2.0.26
@@ -29,6 +30,7 @@ devDependencies:
   '@pinia/nuxt': 0.4.5_typescript@4.9.3
   '@unocss/nuxt': 0.46.5
   '@vueuse/nuxt': 9.6.0_nuxt@3.0.0
+  dayjs: 1.11.6
   eslint: 8.28.0
   nuxt: 3.0.0_hsf322ms6xhhd4b5ne6lb74y4a
   pinia: 2.0.26_typescript@4.9.3
@@ -2527,6 +2529,10 @@ packages:
   /data-uri-to-buffer/4.0.0:
     resolution: {integrity: sha512-Vr3mLBA8qWmcuschSLAOogKgQ/Jwxulv3RNE4FXnYWRGujzrRWQI4m12fQqRkwX06C0KanhLr4hK+GydchZsaA==}
     engines: {node: '>= 12'}
+    dev: true
+
+  /dayjs/1.11.6:
+    resolution: {integrity: sha512-zZbY5giJAinCG+7AGaw0wIhNZ6J8AhWuSXKvuc1KAyMiRsvGQWqh4L+MomvhdAYjN+lqvVCMq1I41e3YHvXkyQ==}
     dev: true
 
   /debug/2.6.9:

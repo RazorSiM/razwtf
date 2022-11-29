@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-interface Excerpt {
+import dayjs from 'dayjs'
 
-}
 interface Props {
   title: string
   image: string
@@ -10,7 +9,10 @@ interface Props {
   date: string
   timetoread: number
 }
-defineProps<Props>()
+const props = defineProps<Props>()
+const formattedDate = computed(() => {
+  return dayjs(props.date).format('MMMM D, YYYY')
+})
 </script>
 
 <template>
@@ -20,8 +22,8 @@ defineProps<Props>()
     <h3 class="px-3 pt-3 text-xl font-bold text-primary">
       {{ title }}
     </h3>
-    <div class="px-3 pb-3 text-sm">
-      <span class="text-secondary">{{ date }} </span>
+    <div class="px-3 pb-3 text-sm flex gap-3">
+      <span class="text-secondary">{{ formattedDate }} </span>
       <span class="text-tertiary">{{ timetoread }} {{ timetoread > 1 ? "minutes" : "minute" }} read</span>
     </div>
     <NuxtLink :to="url" class="relative">
@@ -48,7 +50,6 @@ defineProps<Props>()
     </NuxtLink>
     <div class="flex flex-col justify-between flex-1 p-3">
       <p>{{ excerpt }}</p>
-
       <NuxtLink
         class="block p-2 mt-2 font-bold text-center rounded shadow-lg bg-base1 hover:bg-base2 transition"
         :to="url"
