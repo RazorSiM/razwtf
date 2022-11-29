@@ -5,7 +5,7 @@ const navOpened = ref(false)
 <template>
   <header class="w-full header">
     <nav
-      class="shadow-2xl bg-base-2 "
+      class="shadow-2xl bg-base-1"
       :class="{ 'rounded-lg': navOpened, 'rounded-full': !navOpened }"
     >
       <div class="px-2 mx-auto">

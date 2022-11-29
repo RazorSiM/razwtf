@@ -15,7 +15,7 @@ const distroTitle = 'Arch Linux'
     title="Intro"
     distro-title="Arch Linux"
     :distro-icon="distroIcon"
-    class="container mx-auto lg:max-w-4xl shadow-2xl"
+    class="container mx-auto lg:max-w-6xl shadow-2xl"
   >
     <TerminalCommand
       command="./intro.sh"

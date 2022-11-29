@@ -23,7 +23,7 @@ const { data: navigation } = await useAsyncData('navigation', () => fetchContent
         <TopNavHamburgerContent :pages="navigation" />
       </template>
     </TopHeader>
-    <main class="mt-10">
+    <main class="mt-40">
       <slot />
     </main>
 

@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+definePageMeta({
+  layout: 'no-prose',
+})
 const elementsPerPage = 4
 const currentPage = 1
 const projects = await queryContent('projects').limit(elementsPerPage).skip(elementsPerPage * (currentPage - 1)).sort({ date: -1 }).find()
@@ -9,10 +12,10 @@ const nextPage = nextProjects.length === 1 ? `/projects/_${currentPage + 1}` : n
 </script>
 
 <template>
-  <ul>
-    <li v-for="project in projects" :key="project._path" class="text-xs">
-      {{ project._path }}
-    </li>
-  </ul>
+  <div>
+    <div v-for="project in projects" :key="project._path" class="text-xs">
+      <ProjectCard :title="project.title ?? ''" image="sdfg" :excerpt="project.excerpt ?? ''" :url="project._path ?? ''" date="" :timetoread="1" />
+    </div>
+  </div>
   <Pagination :previous-page="previousPage" :next-page="nextPage" />
 </template>

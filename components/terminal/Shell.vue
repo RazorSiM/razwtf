@@ -5,7 +5,7 @@ defineProps(['title'])
 <template>
   <div class="rounded-xl">
     <div
-      class="flex items-center justify-between h-8 bg-base2 rounded-t-xl"
+      class="flex items-center justify-between h-8 bg-base1 rounded-t-xl"
     >
       <div class="mx-3 font-bold">
         {{ title }}

@@ -1,6 +1,7 @@
-import { defineConfig, presetIcons, presetTypography, presetUno } from 'unocss'
+import { defineConfig, presetIcons, presetTypography, presetUno, transformerDirectives } from 'unocss'
 
 export default defineConfig({
+  transformers: [transformerDirectives()],
   presets: [
     presetUno(),
     presetTypography({
@@ -33,7 +34,7 @@ export default defineConfig({
           color: 'rgb(var(--base09))',
         },
         'a:visited': {
-          color: 'rgb(var(--base08))',
+          color: 'rgb(var(--base0C))',
         },
         'a:active': {
           color: 'rgb(var(--base08))',
