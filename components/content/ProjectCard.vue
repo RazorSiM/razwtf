@@ -27,8 +27,7 @@ const formattedDate = computed(() => {
       <span class="text-tertiary">{{ timetoread }} {{ timetoread > 1 ? "minutes" : "minute" }} read</span>
     </div>
     <NuxtLink :to="url" class="relative">
-      <!-- <NuxtImg :alt="title" :src="image" class="project-card__img" /> -->
-      <div class="h-40 w-full" />
+      <NuxtImg :alt="title" :src="image" />
       <div
         class="absolute top-0 flex-col items-center justify-center hidden w-full h-full bg-gray-900 bg-opacity-0 project-card__img-container"
       >
