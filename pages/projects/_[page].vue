@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+definePageMeta({
+  layout: 'no-prose',
+})
 const route = useRoute()
 const elementsPerPage = 4
 const currentPage = parseInt(route.params.page as string) || 1
@@ -9,10 +12,10 @@ const nextPage = nextProjects.length === 1 ? `/projects/_${currentPage + 1}` : n
 </script>
 
 <template>
-  <ul>
-    <li v-for="project in projects" :key="project._path" class="text-xs">
-      {{ project._path }}
-    </li>
-  </ul>
-  <Pagination :previous-page="previousPage" :next-page="nextPage" />
+  <div class="max-w-4xl mx-auto">
+    <div>
+      <ProjectCard v-for="project in projects" :key="project._path" :title="project.title ?? ''" image="sdfg" :excerpt="project.excerpt ?? ''" :url="project._path ?? ''" date="" :timetoread="1" />
+    </div>
+    <Pagination :previous-page="previousPage" :next-page="nextPage" class="mt-10" />
+  </div>
 </template>

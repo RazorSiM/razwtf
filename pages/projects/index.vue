@@ -12,10 +12,10 @@ const nextPage = nextProjects.length === 1 ? `/projects/_${currentPage + 1}` : n
 </script>
 
 <template>
-  <div>
-    <div v-for="project in projects" :key="project._path" class="text-xs">
-      <ProjectCard :title="project.title ?? ''" image="sdfg" :excerpt="project.excerpt ?? ''" :url="project._path ?? ''" date="" :timetoread="1" />
+  <div class="max-w-4xl mx-auto">
+    <div>
+      <ProjectCard v-for="project in projects" :key="project._path" :title="project.title ?? ''" image="sdfg" :excerpt="project.excerpt ?? ''" :url="project._path ?? ''" date="" :timetoread="1" />
     </div>
+    <Pagination :previous-page="previousPage" :next-page="nextPage" class="mt-10" />
   </div>
-  <Pagination :previous-page="previousPage" :next-page="nextPage" />
 </template>

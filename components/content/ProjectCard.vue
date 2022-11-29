@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+interface Excerpt {
+
+}
 interface Props {
   title: string
   image: string
-  excerpt: unknown
+  excerpt: string
   url: string
   date: string
   timetoread: number
@@ -12,7 +15,7 @@ defineProps<Props>()
 
 <template>
   <div
-    class="flex flex-col transition-all duration-100 transform rounded shadow-2xl hover:scale-110 hover:z-50 project-card "
+    class="flex flex-col transition-all duration-100 transform rounded shadow-2xl hover:scale-105 hover:z-50 project-card "
   >
     <h3 class="px-3 pt-3 text-xl font-bold text-primary">
       {{ title }}
