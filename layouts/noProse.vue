@@ -3,7 +3,6 @@ import { useScroll } from '@vueuse/core'
 import { useThemeStore } from '@/stores/theme'
 import { useLightboxStore } from '@/stores/lightbox'
 import themesList from '@/helpers/themeList'
-// import socialsList from '@/helpers/socialList'
 const themeStore = useThemeStore()
 const lightboxStore = useLightboxStore()
 const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
@@ -21,7 +20,6 @@ const { y } = useScroll(mainContainer, { behavior: 'smooth' })
         <TopNav :pages="navigation" />
       </template>
       <template #rightSide>
-        <!-- <SocialLinks :socials="socialsList" /> -->
         <ThemePicker :themes="themesList" :theme-selected="themeStore.theme" @theme-selection="(newTheme:string) => themeStore.setTheme(newTheme)" />
       </template>
       <template #hamburgerContent>
@@ -38,11 +36,4 @@ const { y } = useScroll(mainContainer, { behavior: 'smooth' })
     </transition>
   </div>
 </template>
-
-<style>
-::selection {
-  color: rgb(var(--base00));
-  background: rgb(var(--base0C));
-}
-</style>
 

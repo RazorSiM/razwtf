@@ -38,11 +38,3 @@ const { y } = useScroll(mainContainer, { behavior: 'smooth' })
     </transition>
   </div>
 </template>
-
-<style>
-::selection {
-  color: rgb(var(--base00));
-  background: rgb(var(--base0C));
-}
-</style>
-
