@@ -4,6 +4,7 @@ specifiers:
   '@antfu/eslint-config': ^0.33.1
   '@headlessui/vue': ^1.7.4
   '@iconify-json/carbon': ^1.1.11
+  '@iconify-json/mdi': ^1.1.36
   '@iconify-json/twemoji': ^1.1.7
   '@nuxt/content': ^2.2.2
   '@nuxt/image-edge': 1.0.0-27827328.bc9ddc0
@@ -23,6 +24,7 @@ devDependencies:
   '@antfu/eslint-config': 0.33.1_hsf322ms6xhhd4b5ne6lb74y4a
   '@headlessui/vue': 1.7.4
   '@iconify-json/carbon': 1.1.11
+  '@iconify-json/mdi': 1.1.36
   '@iconify-json/twemoji': 1.1.7
   '@nuxt/content': 2.2.2
   '@nuxt/image-edge': 1.0.0-27827328.bc9ddc0
@@ -517,6 +519,12 @@ packages:
 
   /@iconify-json/carbon/1.1.11:
     resolution: {integrity: sha512-IHkHSNmTM6q6b8DuKSzd+AEMYPZywSxcb+37kZU7ywtcwsGen3aVEvWFykopIWjjwj3xdZ/5UdwJRqhZDQMlNg==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/mdi/1.1.36:
+    resolution: {integrity: sha512-3aWCVjDIseO8COo8zPkmxOZUFjdWsvTQQnk6zVrOaJh2K8oKuBznw10FSJZgQM7qAn6S54/oejyqkWfODRZV1Q==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true

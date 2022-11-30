@@ -3,7 +3,6 @@ import { useScroll } from '@vueuse/core'
 import { useThemeStore } from '@/stores/theme'
 import { useLightboxStore } from '@/stores/lightbox'
 import themesList from '@/helpers/themeList'
-// import socialsList from '@/helpers/socialList'
 const themeStore = useThemeStore()
 const lightboxStore = useLightboxStore()
 const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())

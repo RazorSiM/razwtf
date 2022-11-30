@@ -10,4 +10,19 @@ export default [
     url: 'https://twitter.com/Razor_SiM',
     icon: 'i-carbon-logo-twitter',
   },
+  {
+    name: 'Discord',
+    url: 'https://discordapp.com/users/150232517264408577',
+    icon: 'i-carbon-logo-discord',
+  },
+  {
+    name: 'Telegram',
+    url: 'https://t.me/RazorSiM',
+    icon: 'i-mdi-telegram',
+  },
+  {
+    name: 'Email',
+    url: 'mailto:me@raz.wtf',
+    icon: 'i-mdi-email',
+  },
 ]
