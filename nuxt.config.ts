@@ -2,6 +2,10 @@
 export default defineNuxtConfig({
   modules: ['@nuxt/content', '@unocss/nuxt', '@pinia/nuxt', '@vueuse/nuxt', '@nuxt/image-edge',
   ],
+  app: {
+    // pageTransition: { name: 'page', mode: 'out-in' },
+    layoutTransition: { name: 'layout', mode: 'out-in' },
+  },
   content: {
     documentDriven: true,
   },

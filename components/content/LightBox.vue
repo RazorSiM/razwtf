@@ -38,15 +38,3 @@ onKeyStroke('Escape', closeIfShown)
     </div>
   </Transition>
 </template>
-
-  <style scoped>
-.v-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
-  </style>
-

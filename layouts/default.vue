@@ -8,7 +8,7 @@ const themeStore = useThemeStore()
 const lightboxStore = useLightboxStore()
 const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
 const mainContainer = ref<HTMLElement | null>(null)
-const { y } = useScroll(mainContainer)
+const { y } = useScroll(mainContainer, { behavior: 'smooth' })
 </script>
 
 <template>
@@ -43,15 +43,6 @@ const { y } = useScroll(mainContainer)
 ::selection {
   color: rgb(var(--base00));
   background: rgb(var(--base0C));
-}
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
 }
 </style>
 
