@@ -8,3 +8,7 @@
     src: url('~/assets/fonts/VictorMono-Italic.woff2') format('woff2'),
          url('~/assets/fonts/VictorMono-Italic.woff') format('woff');
 }
+
+body {
+    overflow: hidden;
+}

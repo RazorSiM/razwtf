@@ -16,7 +16,7 @@ onKeyStroke('Escape', closeIfShown)
 </script>
 
 <template>
-  <Transition name="fade">
+  <Transition>
     <div
       v-if="show"
       class="fixed inset-0 z-50 flex items-center justify-center h-screen bg-base1/90 overflow-hidden"
@@ -40,13 +40,13 @@ onKeyStroke('Escape', closeIfShown)
 </template>
 
   <style scoped>
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: all 0.6s;
-  }
-  .fade-enter,
-  .fade-leave-to {
-    opacity: 0;
-  }
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
   </style>
 
