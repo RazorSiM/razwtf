@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import { useThemeStore } from '@/stores/theme'
+import { useLightboxStore } from '@/stores/lightbox'
 import themesList from '@/helpers/themeList'
 // import socialsList from '@/helpers/socialList'
 const themeStore = useThemeStore()
+const lightboxStore = useLightboxStore()
 const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
 </script>
 
 <template>
   <div
-    :class="themeStore.theme" class="bg-base0 min-h-screen transition max-w-screen text-foreground p-4 font-sans flex flex-col"
+    :class="themeStore.theme" class="bg-base0 min-h-screen transition max-w-screen text-foreground p-4 font-sans flex flex-col overflow-hidden"
   >
     <TopHeader>
       <template #leftSide>
@@ -27,6 +29,7 @@ const { data: navigation } = await useAsyncData('navigation', () => fetchContent
       <slot />
     </main>
     <DefaultFooter class="mt-10 w-110% -ml-5% " />
+    <LightBox :show="lightboxStore.lightbox.show" :show-close="true" :image="lightboxStore.lightbox.src" @close="lightboxStore.setLightbox({ show: false, src: '' }) " />
   </div>
 </template>
 
