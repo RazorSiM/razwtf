@@ -29,6 +29,5 @@ const lightboxStore = useLightboxStore()
 <template>
   <div>
     <NuxtImg class="cursor-pointer" :src="src" :alt="alt" :format="format" quality="80" :fit="fit" @click="lightboxStore.setLightbox({ show: true, src })" />
-    <!-- <LightBox :show="show" :show-close="true" :image="src" @close="show = false" /> -->
   </div>
 </template>
