@@ -17,19 +17,12 @@ const formattedDate = computed(() => {
 
 <template>
   <div
-    class="flex flex-col transition-all duration-100 transform rounded shadow-2xl hover:scale-105 hover:z-50 project-card "
+    class="flex flex-col transition-all duration-100 transform rounded-xl shadow-3xl hover:scale-105 hover:z-50 project-card "
   >
-    <h3 class="px-3 pt-3 text-xl font-bold text-primary">
-      {{ title }}
-    </h3>
-    <div class="px-3 pb-3 text-sm flex gap-3">
-      <span class="text-secondary">{{ formattedDate }} </span>
-      <span class="text-tertiary">{{ timetoread }} {{ timetoread > 1 ? "minutes" : "minute" }} read</span>
-    </div>
     <NuxtLink :to="url" class="relative">
-      <NuxtImg :alt="title" :src="image" />
+      <NuxtImg :alt="title" :src="image" class="rounded-t-xl" />
       <div
-        class="absolute top-0 flex-col items-center justify-center hidden w-full h-full bg-gray-900 bg-opacity-0 project-card__img-container"
+        class="absolute top-0 flex-col items-center justify-center hidden w-full h-full bg-gray-900 bg-opacity-0 project-card__img-container rounded-t-xl"
       >
         <svg
           class="w-10 h-10"
@@ -48,9 +41,18 @@ const formattedDate = computed(() => {
       </div>
     </NuxtLink>
     <div class="flex flex-col justify-between flex-1 p-3">
-      <p>{{ excerpt }}</p>
+      <h3 class="text-xl font-bold text-primary">
+        {{ title }}
+      </h3>
+      <div class="text-xs flex gap-3">
+        <span class="text-secondary">{{ formattedDate }} </span>
+        <span class="text-tertiary">{{ timetoread }} {{ timetoread > 1 ? "minutes" : "minute" }} read</span>
+      </div>
+      <p class="mt-2">
+        {{ excerpt }}
+      </p>
       <NuxtLink
-        class="block p-2 mt-2 font-bold text-center rounded shadow-lg bg-base1 hover:bg-base2 transition"
+        class="block p-2 mt-4 font-bold text-center rounded shadow-lg bg-base1 hover:bg-base2 transition"
         :to="url"
       >
         Checkout this project!

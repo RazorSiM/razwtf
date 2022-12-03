@@ -1,26 +1,17 @@
 <script setup lang="ts">
 import { useLightboxStore } from '@/stores/lightbox'
-defineProps({
-  src: {
-    type: String,
-    default: '',
-  },
-  alt: {
-    type: String,
-    default: '',
-  },
-  format: {
-    type: String,
-    default: 'webp',
-  },
-  quality: {
-    type: String,
-    default: '80',
-  },
-  fit: {
-    type: String,
-    default: 'cover',
-  },
+
+withDefaults(defineProps<{
+  src: string
+  alt?: string
+  format?: string
+  quality?: string
+  fit?: string
+}>(), {
+  alt: 'image',
+  format: 'auto',
+  quality: 'auto',
+  fit: 'cover',
 })
 
 const lightboxStore = useLightboxStore()

@@ -76,14 +76,6 @@ export default defineConfig({
     presetIcons({
       scale: 1.2,
     }),
-    // presetWebFonts({
-    //   provider: 'google',
-    //   fonts: {
-    //     sans: 'Roboto',
-    //     serif: 'Source Serif Pro',
-    //     mono: 'Fira Code',
-    //   },
-    // }),
   ],
   rules: [
     ['text-xxs', { 'font-size': '0.6rem' }],
@@ -109,6 +101,9 @@ export default defineConfig({
       foreground: 'rgb(var(--base06))',
       faccent: 'rgb(var(--base04))',
       fmuted: 'rgb(var(--base05))',
+    },
+    boxShadow: {
+      '3xl': '0 25px 50px -12px rgb(0 0 0 / 50%)',
     },
 
   },
