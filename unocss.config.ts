@@ -64,13 +64,13 @@ export default defineConfig({
         },
         'table>thead': {
           'color': 'rgb(var(--base09))',
-          'border-bottom-color': 'rgb(var(--base03))',
+          'border-bottom': 'rgb(var(--base03)) 2px solid',
         },
         'table>tbody': {
           color: 'rgb(var(--base06))',
         },
         'table>tbody>tr': {
-          'border-bottom-color': 'rgb(var(--base02))',
+          'border-bottom': 'rgb(var(--base02)) solid 1px',
         },
 
       },

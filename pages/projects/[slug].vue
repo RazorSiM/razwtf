@@ -22,5 +22,18 @@ definePageMeta({
   <ContentRenderer
     :key="page._id" :value="page" class="prose mx-auto text-base md:text-xl"
   />
+  {{ page.gallery }}}
+  <div v-if="page.gallery && page.gallery.length > 0">
+    <template v-for="image in page.gallery" :key="image.name">
+      <div class="prose text-base md:text-xl mx-auto">
+        <h3>
+          {{ image.description }}
+        </h3>
+      </div>
+
+      <ImagesGallery v-if="(image.images.length > 1)" :images="image.images" />
+      <ImgLightbox v-else-if="(image.images.length === 1)" :src="image.images[0].src" class="mx-auto" :width="800" />
+    </template>
+  </div>
   <Pagination :previous-page="prev._path" :previous-title="prev.title" :next-page="next._path" :next-title="next.title" class="mt-10 justify-center" />
 </template>

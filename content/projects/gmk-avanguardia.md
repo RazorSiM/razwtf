@@ -4,6 +4,86 @@ tags: [GMK, Keycaps, Keyboards, 3D, Design]
 date: 2022-12-07
 hero: /avanguardia/m60.jpg
 excerpt: GMK Avanguardia is a set inspired to the minimalistic art of Kandinsky with a futuristic twist.
+gallery:
+- description: Kits
+  images:
+  - name: Minimalistico
+    alt: GMK Avanguardia Base Kit
+    src: /avanguardia/kits/avanguardia_base.jpg
+  - name: Figure e Forme
+    alt: GMK Avanguardia Novelty Kit
+    src: /avanguardia/kits/avanguardia_novelty.jpg
+  - name: Alternativo
+    alt: GMK Avanguardia Light Alpha Kit
+    src: /avanguardia/kits/avanguardia_alpha.jpg
+  - name: Milleottocento
+    alt: GMK Avanguardia Numpad Kit
+    src: /avanguardia/kits/avanguardia_1800.jpg
+  - name: Striscia
+    alt: GMK Avanguardia Black Numrow Kit
+    src: /avanguardia/kits/avanguardia_num.jpg
+  - name: 40Per100
+    src: /avanguardia/kits/avanguardia_40.jpg
+  - name: Linee
+    src: /avanguardia/kits/avanguardia_space.jpg
+- description: Mousepads
+  images:
+  - name: Mousepad Dark
+    src: /avanguardia/mousepads/avanguardia_mousepad_dark.jpg
+  - name: Mousepad Light
+    src: /avanguardia/mousepads/avanguardia_mousepad_light.jpg
+- description: Rama M60
+  images:
+  - name: Rama M60
+    alt: Rama M60
+    src: /avanguardia/boards/m60_1.jpg
+  - name: Rama M60
+    alt: Rama M60
+    src: /avanguardia/boards/m60_2.jpg
+- description: Keebwerk Mega
+  images:
+  - name: Keebwerk Mega
+    alt: Keebwerk Mega
+    src: /avanguardia/boards/mega_1.jpg
+  - name: Keebwerk Mega
+    alt: Keebwerk Mega
+    src: /avanguardia/boards/mega_2.jpg
+  - name: Keebwerk Mega
+    alt: Keebwerk Mega
+    src: /avanguardia/boards/mega_3.jpg
+- description: Rama U80
+  images:
+  - name: Rama U80
+    alt: Rama U80
+    src: /avanguardia/boards/u80_1.jpg
+- description: TGR Alice
+  images:
+  - name: TGR Alice
+    alt: TGR Alice
+    src: /avanguardia/boards/alice_1.jpg
+- description: Melody65
+  images:
+  - name: Melody65
+    alt: Melody65
+    src: /avanguardia/boards/melody65.jpg
+- description: TGR 910
+  images:
+  - name: TGR 910
+    alt: TGR 910
+    src: /avanguardia/boards/tgr910.jpg
+- description: Alpine65
+  images:
+  - name: Alpine65
+    alt: Alpine65
+    src: /avanguardia/boards/alpine_1.jpg
+  - name: Alpine65
+    alt: Alpine65
+    src: /avanguardia/boards/alpine_2.jpg
+- description: Iris
+  images:
+  - name: Iris
+    alt: Iris
+    src: /avanguardia/boards/iris.jpg
 ---
 
 - Link to the [Discord Server](https://discord.gg/Mn2Ty3y)
@@ -37,7 +117,7 @@ src: https://i.imgur.com/r1Pl3t8.jpg
 
 We especially referred to **Vasilij Vasil’evič Kandinskij** and this painting to get the inspiration for the **novelties**:
 
-::img-lightbox
+::img-lightbox{.mx-auto}
 ---
 alt: Avanguardia Reference
 src: https://i.imgur.com/ND7672H.png
@@ -47,69 +127,6 @@ src: https://i.imgur.com/ND7672H.png
 We wanted to give our concept a more personal interpretation by using a palette oriented towards the tech world and so the result is down here!
 
 I would like to thank all my friends from the **ClickyClackClub Italian community** for the support they showed me and Johnnymalandra for the awesome artworks!
-
-### Kits
-::images-gallery
----
-images:
-  - alt: GMK Avanguardia Base Kit
-    src: /avanguardia/kits/avanguardia_base.jpg
-  - alt: GMK Avanguardia Novelty Kit
-    src: /avanguardia/kits/avanguardia_novelty.jpg
-  - alt: GMK Avanguardia Light Alpha Kit
-    src: /avanguardia/kits/avanguardia_alpha.jpg
-  - alt: GMK Avanguardia Numpad Kit
-    src: /avanguardia/kits/avanguardia_1800.jpg
-  - alt: GMK Avanguardia Black Numrow Kit
-    src: /avanguardia/kits/avanguardia_num.jpg
-  - alt: GMK Avanguardia Spacebar Kit 
-    src: /avanguardia/kits/avanguardia_space.jpg
----
-::
-
-### Mousepads
-::images-gallery
----
-images:
-  - alt: GMK Avanguardia Mosepad Dark
-    src: /avanguardia/mousepads/avanguardia_mousepad_dark.jpg
-  - alt: GMK Avanguardia Mousepad Light
-    src: /avanguardia/mousepads/avanguardia_mousepad_light.jpg
----
-::
-
-### Rama M60
-::images-gallery
----
-images:
-  - alt: M60
-    src: /avanguardia/boards/m60_1.jpg
-  - alt: M60
-    src: /avanguardia/boards/m60_2.jpg
----
-::
-
-### Keebwerk Mega
-::images-gallery
----
-images:
-  - alt: Keebwerk Mega
-    src: /avanguardia/boards/mega_1.jpg
-  - alt: Keebwerk Mega
-    src: /avanguardia/boards/mega_2.jpg
-  - alt: Keebwerk Mega
-    src: /avanguardia/boards/mega_3.jpg
----
-::
-
-### Rama U80
-::img-lightbox
----
-alt: Rama U80
-src: /avanguardia/boards/u80_1.jpg
-
----
-::
 ### This GB already ended 😢
 
 The GB will run from the **15th of December 2020** to the **15th of January 2021**!

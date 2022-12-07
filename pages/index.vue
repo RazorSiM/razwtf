@@ -66,7 +66,7 @@ const { page } = useContent()
     <div v-if="posts && posts.length > 0">
       <GlobSubtitle>Latest Posts</GlobSubtitle>
       <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <ContentCard v-for="post in posts" :key="post._path" :title="post.title ?? ''" image="/filco-majestouch.jpg" :excerpt="post.excerpt ?? ''" :url="post._path ?? ''" :date="post.date" :timetoread="1" />
+        <ContentCard v-for="post in posts" :key="post._path" :title="post.title ?? ''" image="/filco-majestouch.jpg" :excerpt="post.excerpt ?? ''" :url="post._path ?? ''" :date="post.date" :timetoread="post.readingTime.text" />
       </div>
     </div>
     <div v-if="posts && posts.length > 0">
@@ -74,7 +74,7 @@ const { page } = useContent()
         Latest Projects <GlobEmoji emoji="i-fluent-emoji-open-book" />
       </GlobSubtitle>
       <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <ContentCard v-for="post in posts" :key="post._path" :title="post.title ?? ''" image="/filco-majestouch.jpg" :excerpt="post.excerpt ?? ''" :url="post._path ?? ''" :date="post.date" :timetoread="1" />
+        <ContentCard v-for="post in posts" :key="post._path" :title="post.title ?? ''" image="/filco-majestouch.jpg" :excerpt="post.excerpt ?? ''" :url="post._path ?? ''" :date="post.date" :timetoread="post.readingTime.text" />
       </div>
       <div class="flex w-full justify-end mt-5">
         <NuxtLink class="text-right text-xl font-serif flex gap-2 transition hover:text-accent" to="/blog">
