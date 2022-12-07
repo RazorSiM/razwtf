@@ -7,10 +7,10 @@ definePageMeta({
 </script>
 
 <template>
-  <NuxtImg
+  <img
     v-if="page.hero" :src="page.hero" :alt="page.title" class="
   w-auto mx-auto rounded-3xl shadow-3xl max-h-2xl"
-  />
+  >
   <div class="flex flex-col items-center justify-center mt-10">
     <p class="text-primary">
       {{ formatDate(page.date) }}

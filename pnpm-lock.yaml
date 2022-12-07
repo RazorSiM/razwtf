@@ -8,7 +8,7 @@ specifiers:
   '@iconify-json/mdi': ^1.1.36
   '@iconify-json/twemoji': ^1.1.7
   '@nuxt/content': ^2.2.2
-  '@nuxt/image-edge': 1.0.0-27827328.bc9ddc0
+  '@nuxt/image-edge': 1.0.0-27840416.dc1ed65
   '@nuxt/kit': ^3.0.0
   '@pinia/nuxt': ^0.4.6
   '@unocss/nuxt': ^0.47.3
@@ -30,7 +30,7 @@ devDependencies:
   '@iconify-json/mdi': 1.1.36
   '@iconify-json/twemoji': 1.1.7
   '@nuxt/content': 2.2.2
-  '@nuxt/image-edge': 1.0.0-27827328.bc9ddc0
+  '@nuxt/image-edge': 1.0.0-27840416.dc1ed65
   '@nuxt/kit': 3.0.0
   '@pinia/nuxt': 0.4.6_typescript@4.9.3
   '@unocss/nuxt': 0.47.5
@@ -707,8 +707,8 @@ packages:
     resolution: {integrity: sha512-YBI/6o2EBz02tdEJRBK8xkt3zvOFOWlLBf7WKYGBsSYSRtjjgrqPe2skp6VLLmKx5WbHHDNcW+6oACaurxGzeA==}
     dev: true
 
-  /@nuxt/image-edge/1.0.0-27827328.bc9ddc0:
-    resolution: {integrity: sha512-8fy6dSJaH9I5FKPK4EA6ddgUWNkxz2Y1AGIKVbAaRKftyK4y66gHmA+pbPPjb1cgYw6pWoWrnA4JxsHKelD8+A==}
+  /@nuxt/image-edge/1.0.0-27840416.dc1ed65:
+    resolution: {integrity: sha512-r+lRkdAeB49wCpYmZAHWrhXNtjTSt3kz8MuPoVPpZB40FOVEpPCIQF8dBI5tXM19YOg76yFCdvpt1TFq3irA7g==}
     engines: {node: ^14.16.0 || ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0}
     dependencies:
       '@nuxt/kit': 3.0.0

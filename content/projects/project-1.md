@@ -1,6 +1,0 @@
---- 
-excerpt: random things written here
-date: 2022-11-29
-hero: /filco-majestouch.jpg
----
-Body1 asdhjfgbas dfa kjsdfasd hkjfakjshdfaskjdhfkajshd fkjahs dkjfha skjdhfak jshdfjkap hsdjfhas kdjfh askjdhf akjshd fkajshdfkajhs dkfjah sdkjfa hksdjfh aksjdh fkajshd fkjas hdkfjahs dkjfha kjsdhfa ksjdhf kasjdh fkjhaskjdhf akjshd fkajshdfkajhs dkfjah sdkjfa hksdjfh aksjdh fkajshd fkjas hdkfjahs dkjfha kjsdhfa ksjdhf kasjdh fkjhaskjdhf akjshd fkajshdfkajhs dkfjah sdkjfa hksdjfh aksjdh fkajshd fkjas hdkfjahs dkjfha kjsdhfa ksjdhf kasjdh fkjhaskjdhf akjshd fkajshdfkajhs dkfjah sdkjfa hksdjfh aksjdh fkajshd fkjas hdkfjahs dkjfha kjsdhfa ksjdhf kasjdh fkjhaskjdhf akjshd fkajshdfkajhs dkfjah sdkjfa hksdjfh aksjdh fkajshd fkjas hdkfjahs dkjfha kjsdhfa ksjdhf kasjdh fkjhaskjdhf akjshd fkajshdfkajhs dkfjah sdkjfa hksdjfh aksjdh fkajshd fkjas hdkfjahs dkjfha kjsdhfa ksjdhf kasjdh fkjhaskjdhf akjshd fkajshdfkajhs dkfjah sdkjfa hksdjfh aksjdh fkajshd fkjas hdkfjahs dkjfha kjsdhfa ksjdhf kasjdh fkjhaskjdhf akjshd fkajshdfkajhs dkfjah sdkjfa hksdjfh aksjdh fkajshd fkjas hdkfjahs dkjfha kjsdhfa ksjdhf kasjdh fkjhaskjdhf akjshd fkajshdfkajhs dkfjah sdkjfa hksdjfh aksjdh fkajshd fkjas hdkfjahs dkjfha kjsdhfa ksjdhf kasjdh fkjhaskjdhf akjshd fkajshdfkajhs dkfjah sdkjfa hksdjfh aksjdh fkajshd fkjas hdkfjahs dkjfha kjsdhfa ksjdhf kas

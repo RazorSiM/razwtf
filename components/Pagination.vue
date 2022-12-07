@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 interface Props {
   previousPage: string | null
-  previousTitle: string | null
-  nextPage?: string | null
+  previousTitle?: string | null
+  nextPage: string | null
   nextTitle?: string | null
 }
 withDefaults(defineProps<Props>(), {

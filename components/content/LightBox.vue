@@ -32,7 +32,7 @@ onKeyStroke('Escape', closeIfShown)
           >
             <div class="i-carbon-close-filled" />
           </button>
-          <img :src="image" class="w-auto h-full mx-auto">
+          <NuxtImg :src="image" class="w-auto h-full mx-auto" />
         </div>
       </div>
     </div>
