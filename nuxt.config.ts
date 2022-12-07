@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     },
   },
   image: {
-    domains: ['unsplash.com', 'raz.wtf', 'imgur.com'],
+    domains: ['unsplash.com', 'raz.wtf', 'i.imgur.com', 'imgur.com'],
   },
   css: ['@unocss/reset/tailwind.css', '@/assets/css/themes.css', '@/assets/css/globals.css',
   ],
