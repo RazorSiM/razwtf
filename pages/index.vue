@@ -87,7 +87,7 @@ const { page } = useContent()
         Latest Projects <GlobEmoji emoji="i-fluent-emoji-hammer-and-pick" />
       </GlobSubtitle>
       <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <ContentCard v-for="project in projects" :key="project._path" :title="project.title ?? ''" image="/filco-majestouch.jpg" :excerpt="project.excerpt ?? ''" :url="project._path ?? ''" :date="project.date" :timetoread="1" />
+        <ContentCard v-for="project in projects" :key="project._path" :title="project.title ?? ''" :image="project.hero" :excerpt="project.excerpt ?? ''" :url="project._path ?? ''" :date="project.date" :timetoread="project.readingTime.text" />
       </div>
       <div class="flex w-full justify-end mt-5">
         <NuxtLink class="text-right text-xl font-serif flex gap-2 transition hover:text-accent" to="/projects">
