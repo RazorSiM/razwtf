@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
-
+import { formatDate } from '@/helpers/dateFormat'
 interface Props {
   title: string
   image: string
@@ -11,7 +10,7 @@ interface Props {
 }
 const props = defineProps<Props>()
 const formattedDate = computed(() => {
-  return dayjs(props.date).format('MMMM D, YYYY')
+  return formatDate('MMMM D, YYYY')
 })
 </script>
 

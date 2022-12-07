@@ -13,6 +13,7 @@
     "@antfu/eslint-config": "^0.33.1",
     "@headlessui/vue": "^1.7.4",
     "@iconify-json/carbon": "^1.1.11",
+    "@iconify-json/fluent-emoji": "^1.1.7",
     "@iconify-json/mdi": "^1.1.36",
     "@iconify-json/twemoji": "^1.1.7",
     "@nuxt/content": "^2.2.2",
@@ -24,11 +25,10 @@
     "dayjs": "^1.11.6",
     "eslint": "^8.28.0",
     "nuxt": "^3.0.0",
+    "remark-reading-time": "^2.0.1",
     "serve": "^14.1.2",
     "sitemap": "^7.1.1",
-    "typescript": "^4.9.3"
-  },
-  "dependencies": {
-    "@iconify-json/fluent-emoji": "^1.1.7"
+    "typescript": "^4.9.3",
+    "unocss-preset-scrollbar": "^0.2.1"
   }
 }

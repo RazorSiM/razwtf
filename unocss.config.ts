@@ -1,9 +1,11 @@
 import { defineConfig, presetIcons, presetTypography, presetUno, transformerDirectives } from 'unocss'
+import { presetScrollbar } from 'unocss-preset-scrollbar'
 
 export default defineConfig({
   transformers: [transformerDirectives()],
   presets: [
     presetUno(),
+    presetScrollbar(),
     presetTypography({
       cssExtend: {
         'p': {

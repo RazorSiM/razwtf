@@ -12,7 +12,7 @@ const { y } = useScroll(mainContainer, { behavior: 'smooth' })
 
 <template>
   <div
-    ref="mainContainer" :class="themeStore.theme" class="bg-base0 h-screen transition w-screen text-foreground p-4 font-sans flex flex-col overflow-x-hidden overflow-y-scroll"
+    ref="mainContainer" :class="themeStore.theme" class="bg-base0 h-screen transition w-screen text-foreground p-4 font-sans flex flex-col overflow-x-hidden overflow-y-scroll scrollbar"
   >
     <TopHeader>
       <template #leftSide>
@@ -27,7 +27,7 @@ const { y } = useScroll(mainContainer, { behavior: 'smooth' })
         <TopNavHamburgerContent :pages="navigation" />
       </template>
     </TopHeader>
-    <main class="prose mx-auto mt-10 mx-auto text-base md:text-xl">
+    <main class="prose mx-auto mt-10 text-base md:text-xl">
       <slot />
     </main>
     <DefaultFooter class="mt-10 w-110% -ml-5% " />

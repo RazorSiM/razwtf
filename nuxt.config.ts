@@ -8,6 +8,9 @@ export default defineNuxtConfig({
   },
   content: {
     documentDriven: true,
+    markdown: {
+      remarkPlugins: ['remark-reading-time'],
+    },
   },
   css: ['@unocss/reset/tailwind.css', '@/assets/css/themes.css', '@/assets/css/globals.css',
   ],
