@@ -6,7 +6,7 @@ interface Props {
   excerpt: string
   url: string
   date: string
-  timetoread: number
+  timetoread: string
 }
 const props = defineProps<Props>()
 const formattedDate = computed(() => {
@@ -19,7 +19,8 @@ const formattedDate = computed(() => {
     class="flex flex-col transition-all duration-100 transform rounded-xl shadow-3xl hover:scale-105 hover:z-50 project-card "
   >
     <NuxtLink :to="url" class="relative">
-      <NuxtImg :alt="title" :src="image" class="rounded-t-xl" />
+      <NuxtImg v-if="image" :alt="title" :src="image" class="rounded-t-xl" height="200" width="300" fit="cover" />
+      <div v-else class="aspect-ratio-[300/200]" />
       <div
         class="absolute top-0 flex-col items-center justify-center hidden w-full h-full bg-gray-900 bg-opacity-0 project-card__img-container rounded-t-xl"
       >
@@ -45,7 +46,7 @@ const formattedDate = computed(() => {
       </h3>
       <div class="text-xs flex gap-3">
         <span class="text-secondary">{{ formattedDate }} </span>
-        <span class="text-tertiary">{{ timetoread }} {{ timetoread > 1 ? "minutes" : "minute" }} read</span>
+        <span class="text-tertiary">{{ timetoread }}</span>
       </div>
       <p class="mt-2">
         {{ excerpt }}

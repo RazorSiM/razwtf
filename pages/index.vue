@@ -95,6 +95,5 @@ const { page } = useContent()
         </NuxtLink>
       </div>
     </div>
-    <ImagesGallery :images="images" />
   </div>
 </template>
