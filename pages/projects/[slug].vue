@@ -22,7 +22,6 @@ definePageMeta({
   <ContentRenderer
     :key="page._id" :value="page" class="prose mx-auto text-base md:text-xl"
   />
-  {{ page.gallery }}}
   <div v-if="page.gallery && page.gallery.length > 0">
     <template v-for="image in page.gallery" :key="image.name">
       <div class="prose text-base md:text-xl mx-auto">
