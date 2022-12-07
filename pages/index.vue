@@ -9,7 +9,7 @@ const images: ImageProps[] = [{
   alt: 'Filco Majestouch 2',
 },
 {
-  src: '/filco-majestouch.jpg',
+  src: 'https://images.unsplash.com/photo-1658409646484-be8b0d1c5835?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1025&q=80',
   alt: 'Filco Majestouch 2',
 },
 {
