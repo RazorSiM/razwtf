@@ -11,6 +11,11 @@ export default [
     icon: 'i-carbon-logo-twitter',
   },
   {
+    name: 'Instagram',
+    url: 'https://instagram.com/razorsim',
+    icon: 'i-carbon-logo-instagram',
+  },
+  {
     name: 'Discord',
     url: 'https://discordapp.com/users/150232517264408577',
     icon: 'i-carbon-logo-discord',

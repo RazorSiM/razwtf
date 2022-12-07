@@ -12,6 +12,9 @@ export default defineNuxtConfig({
       remarkPlugins: ['remark-reading-time'],
     },
   },
+  image: {
+    domains: ['unsplash.com', 'raz.wtf'],
+  },
   css: ['@unocss/reset/tailwind.css', '@/assets/css/themes.css', '@/assets/css/globals.css',
   ],
   nitro: {
@@ -19,5 +22,4 @@ export default defineNuxtConfig({
       routes: ['/sitemap.xml'],
     },
   },
-
 })
