@@ -88,10 +88,9 @@ gallery:
 >Most people know that I'm a topre lover, I don't deny it, I always wanted to make a set that would be a direct tribute to a topre keyboard/keyset. That said, there was always 1 specific topre keyboard that I loved, the norbaforce owned by nmur. I asked his permission on that, and he was keen to let me use his very personal colorway to make this particular GMK set! I decided to tweak it a bit to make it more "modern" by having icon mods and more flashy colors instead of the standard RGB Desko look.
 
 The Color Palette
-![Palette](https://i.imgur.com/ebETnks.webp)
-
-Some links to follow Enjoy's works:
-
-[![Discord Server](https://i.postimg.cc/NfP8RNvT/discord-banner.png)](https://discord.com/invite/4MC7Egw)
-
-[![Instagram](https://i.postimg.cc/8cZRK4F2/instagram-banner.webp)](https://www.instagram.com/enjoymyinsec/)
+::img-lightbox
+---
+alt: Japanese Modern Desko palette
+src: https://i.imgur.com/ebETnks.webp
+---
+::

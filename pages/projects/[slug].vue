@@ -4,6 +4,7 @@ const { page, next, prev } = useContent()
 definePageMeta({
   layout: 'no-prose',
 })
+useContentHead(page)
 </script>
 
 <template>

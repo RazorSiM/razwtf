@@ -11,7 +11,7 @@ const listValue = ref(props.themeSelected)
 
 <template>
   <Listbox v-model="listValue" as="div" class="relative">
-    <ListboxButton class="bg-base1 rounded-full h-8 w-8 flex items-center justify-center ring-1 ring-transparent focus:outline-none active:( ring-1 ring-accent ) hover:( bg-base2 shadow-md ) transition shadow">
+    <ListboxButton aria-label="Theme Picker" class="bg-base1 rounded-full h-8 w-8 flex items-center justify-center ring-1 ring-transparent focus:outline-none active:( ring-1 ring-accent ) hover:( bg-base2 shadow-md ) transition shadow">
       <div class="i-carbon-color-palette" />
     </ListboxButton>
     <transition

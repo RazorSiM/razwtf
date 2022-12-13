@@ -3,7 +3,8 @@ title: GMK Avanguardia
 tags: [GMK, Keycaps, Keyboards, 3D, Design]
 date: 2020-04-26
 hero: /avanguardia/m60.webp
-excerpt: GMK Avanguardia is a set inspired to the minimalistic art of Kandinsky with a futuristic twist.
+description: GMK Avanguardia is a keycap set inspired to the minimalistic art of Kandinsky with a futuristic twist.
+excerpt: GMK Avanguardia is a keycap set inspired to the minimalistic art of Kandinsky with a futuristic twist.
 gallery:
 - description: Kits
   images:

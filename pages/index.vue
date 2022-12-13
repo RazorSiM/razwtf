@@ -73,7 +73,7 @@ const { page } = useContent()
       </div>
       <div class="flex w-full justify-end mt-5">
         <NuxtLink class="text-right text-xl font-serif flex gap-2 transition hover:text-accent" to="/projects">
-          See More <GlobEmoji emoji="i-fluent-emoji-right-arrow" />
+          All projects <GlobEmoji emoji="i-fluent-emoji-right-arrow" />
         </NuxtLink>
       </div>
     </div>
