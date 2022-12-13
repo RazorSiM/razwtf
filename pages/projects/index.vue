@@ -2,7 +2,7 @@
 definePageMeta({
   layout: 'no-prose',
 })
-const elementsPerPage = 4
+const elementsPerPage = 6
 const currentPage = 1
 const projects = await queryContent('projects').limit(elementsPerPage).skip(elementsPerPage * (currentPage - 1)).sort({ date: -1 }).find()
 const nextProjects = await queryContent('projects').limit(1).skip(elementsPerPage * (currentPage)).sort({ date: -1 }).find()
