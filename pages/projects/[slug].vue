@@ -7,10 +7,10 @@ definePageMeta({
 </script>
 
 <template>
-  <img
-    v-if="page.hero" :src="page.hero" :alt="page.title" class="
+  <NuxtImg
+    v-if="page.hero" :src="page.hero" :width="1000" :height="600" :alt="page.title" class="
   w-auto mx-auto rounded-3xl shadow-3xl max-h-2xl"
-  >
+  />
   <div class="flex flex-col items-center justify-center mt-10">
     <p class="text-primary">
       {{ formatDate(page.date) }}
@@ -31,8 +31,8 @@ definePageMeta({
       </div>
 
       <ImagesGallery v-if="(image.images.length > 1)" :images="image.images" />
-      <ImgLightbox v-else-if="(image.images.length === 1)" :src="image.images[0].src" class="mx-auto" :width="800" />
+      <ImgLightbox v-else-if="(image.images.length === 1)" :src="image.images[0].src" class="mx-auto" :width="700" :height="500" />
     </template>
   </div>
-  <Pagination :previous-page="prev._path" :previous-title="prev.title" :next-page="next._path" :next-title="next.title" class="mt-10 justify-center" />
+  <Pagination :previous-page="prev?._path ?? null" :previous-title="prev?.title ?? null" :next-page="next?._path ?? null" :next-title="next?.title ?? null" class="mt-10 justify-center" />
 </template>
