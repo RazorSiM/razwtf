@@ -46,25 +46,19 @@ const { page } = useContent()
   </TerminalShell>
   <div class="container mx-auto lg:max-w-6xl mt-20">
     <div v-if="posts && posts.length > 0">
-      <GlobSubtitle>Latest Posts</GlobSubtitle>
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <ContentCard v-for="post in posts" :key="post._path" :title="post.title ?? ''" image="/filco-majestouch.jpg" :excerpt="post.excerpt ?? ''" :url="post._path ?? ''" :date="post.date" :timetoread="post.readingTime.text" />
-      </div>
-    </div>
-    <div v-if="posts && posts.length > 0">
       <GlobSubtitle class="mb-8 flex items-center gap-2">
-        Latest Projects <GlobEmoji emoji="i-fluent-emoji-open-book" />
+        Latest Posts <GlobEmoji emoji="i-fluent-emoji-notebook-with-decorative-cover" />
       </GlobSubtitle>
       <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <ContentCard v-for="post in posts" :key="post._path" :title="post.title ?? ''" image="/filco-majestouch.jpg" :excerpt="post.excerpt ?? ''" :url="post._path ?? ''" :date="post.date" :timetoread="post.readingTime.text" />
+        <ContentCard v-for="post in posts" :key="post._path" :title="post.title ?? ''" :image="post.hero ?? null" :excerpt="post.excerpt ?? ''" :url="post._path ?? ''" :date="post.date" :timetoread="post.readingTime.text" />
       </div>
       <div class="flex w-full justify-end mt-5">
         <NuxtLink class="text-right text-xl font-serif flex gap-2 transition hover:text-accent" to="/blog">
-          See More <GlobEmoji emoji="i-fluent-emoji-right-arrow" />
+          All Posts <GlobEmoji emoji="i-fluent-emoji-right-arrow" />
         </NuxtLink>
       </div>
     </div>
-    <div v-if="projects && projects.length > 0">
+    <div v-if="projects && projects.length > 0" class="mt-20">
       <GlobSubtitle class="mb-8 flex items-center gap-2">
         Latest Projects <GlobEmoji emoji="i-fluent-emoji-hammer-and-pick" />
       </GlobSubtitle>

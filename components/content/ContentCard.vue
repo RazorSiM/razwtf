@@ -2,15 +2,18 @@
 import { formatDate } from '@/helpers/dateFormat'
 interface Props {
   title: string
-  image: string
+  image?: string
   excerpt: string
   url: string
   date: string
   timetoread: string
 }
-defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  image: undefined,
+})
+// const props = defineProps<Props>()
 const formattedDate = computed(() => {
-  return formatDate('MMMM D, YYYY')
+  return formatDate(props.date)
 })
 </script>
 
@@ -19,8 +22,8 @@ const formattedDate = computed(() => {
     class="flex flex-col transition-all duration-100 transform rounded-xl shadow-3xl hover:scale-105 hover:z-50 project-card "
   >
     <NuxtLink :to="url" class="relative">
-      <NuxtImg v-if="image" :alt="title" :src="image" class="rounded-t-xl" :width="400" :height="210" quality="80" />
-      <div v-else class="aspect-ratio-[400/300]" />
+      <NuxtImg v-if="image" :alt="title" :src="image" class="rounded-t-xl w-full h-auto object-cover" :width="400" :height="210" quality="80" />
+      <div v-else class="aspect-ratio-[400/300] bg-base-1" />
       <div
         class="absolute top-0 flex-col items-center justify-center hidden w-full h-full bg-gray-900 bg-opacity-0 project-card__img-container rounded-t-xl"
       >
@@ -55,7 +58,9 @@ const formattedDate = computed(() => {
         class="block p-2 mt-4 font-bold text-center rounded shadow-lg bg-base1 hover:bg-base2 transition"
         :to="url"
       >
-        Checkout this project!
+        <slot>
+          Read more
+        </slot>
       </NuxtLink>
     </div>
   </div>
