@@ -1,26 +1,8 @@
 <script lang="ts" setup>
 import socials from '@/helpers/socialList'
-import type { ImageProps } from '@/types'
 definePageMeta({
   layout: 'no-prose',
 })
-const images: ImageProps[] = [{
-  src: '/filco-majestouch.jpg',
-  alt: 'Filco Majestouch 2',
-},
-{
-  src: 'https://images.unsplash.com/photo-1658409646484-be8b0d1c5835?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1025&q=80',
-  alt: 'Filco Majestouch 2',
-},
-{
-  src: '/filco-majestouch.jpg',
-  alt: 'Filco Majestouch 2',
-},
-{
-  src: '/filco-majestouch.jpg',
-  alt: 'Filco Majestouch 2',
-},
-]
 
 const { data: posts } = await useAsyncData('posts', () => queryContent('blog').limit(3).find())
 const { data: projects } = await useAsyncData('projects', () => queryContent('projects').limit(3).find())

@@ -2,88 +2,88 @@
 title: GMK Avanguardia
 tags: [GMK, Keycaps, Keyboards, 3D, Design]
 date: 2020-04-26
-hero: /avanguardia/m60.jpg
+hero: /avanguardia/m60.webp
 excerpt: GMK Avanguardia is a set inspired to the minimalistic art of Kandinsky with a futuristic twist.
 gallery:
 - description: Kits
   images:
   - name: Minimalistico
     alt: GMK Avanguardia Base Kit
-    src: /avanguardia/kits/avanguardia_base.jpg
+    src: /avanguardia/kits/avanguardia_base.webp
   - name: Figure e Forme
     alt: GMK Avanguardia Novelty Kit
-    src: /avanguardia/kits/avanguardia_novelty.jpg
+    src: /avanguardia/kits/avanguardia_novelty.webp
   - name: Alternativo
     alt: GMK Avanguardia Light Alpha Kit
-    src: /avanguardia/kits/avanguardia_alpha.jpg
+    src: /avanguardia/kits/avanguardia_alpha.webp
   - name: Milleottocento
     alt: GMK Avanguardia Numpad Kit
-    src: /avanguardia/kits/avanguardia_1800.jpg
+    src: /avanguardia/kits/avanguardia_1800.webp
   - name: Striscia
     alt: GMK Avanguardia Black Numrow Kit
-    src: /avanguardia/kits/avanguardia_num.jpg
+    src: /avanguardia/kits/avanguardia_num.webp
   - name: 40Per100
-    src: /avanguardia/kits/avanguardia_40.jpg
+    src: /avanguardia/kits/avanguardia_40.webp
   - name: Linee
-    src: /avanguardia/kits/avanguardia_space.jpg
+    src: /avanguardia/kits/avanguardia_space.webp
 - description: Mousepads
   images:
   - name: Mousepad Dark
-    src: /avanguardia/mousepads/avanguardia_mousepad_dark.jpg
+    src: /avanguardia/mousepads/avanguardia_mousepad_dark.webp
   - name: Mousepad Light
-    src: /avanguardia/mousepads/avanguardia_mousepad_light.jpg
+    src: /avanguardia/mousepads/avanguardia_mousepad_light.webp
 - description: Rama M60
   images:
   - name: Rama M60
     alt: Rama M60
-    src: /avanguardia/boards/m60_1.jpg
+    src: /avanguardia/boards/m60_1.webp
   - name: Rama M60
     alt: Rama M60
-    src: /avanguardia/boards/m60_2.jpg
+    src: /avanguardia/boards/m60_2.webp
 - description: Keebwerk Mega
   images:
   - name: Keebwerk Mega
     alt: Keebwerk Mega
-    src: /avanguardia/boards/mega_1.jpg
+    src: /avanguardia/boards/mega_1.webp
   - name: Keebwerk Mega
     alt: Keebwerk Mega
-    src: /avanguardia/boards/mega_2.jpg
+    src: /avanguardia/boards/mega_2.webp
   - name: Keebwerk Mega
     alt: Keebwerk Mega
-    src: /avanguardia/boards/mega_3.jpg
+    src: /avanguardia/boards/mega_3.webp
 - description: Rama U80
   images:
   - name: Rama U80
     alt: Rama U80
-    src: /avanguardia/boards/u80_1.jpg
+    src: /avanguardia/boards/u80_1.webp
 - description: TGR Alice
   images:
   - name: TGR Alice
     alt: TGR Alice
-    src: /avanguardia/boards/alice_1.jpg
+    src: /avanguardia/boards/alice_1.webp
 - description: Melody65
   images:
   - name: Melody65
     alt: Melody65
-    src: /avanguardia/boards/melody65.jpg
+    src: /avanguardia/boards/melody65.webp
 - description: TGR 910
   images:
   - name: TGR 910
     alt: TGR 910
-    src: /avanguardia/boards/tgr910.jpg
+    src: /avanguardia/boards/tgr910.webp
 - description: Alpine65
   images:
   - name: Alpine65
     alt: Alpine65
-    src: /avanguardia/boards/alpine_1.jpg
+    src: /avanguardia/boards/alpine_1.webp
   - name: Alpine65
     alt: Alpine65
-    src: /avanguardia/boards/alpine_2.jpg
+    src: /avanguardia/boards/alpine_2.webp
 - description: Iris
   images:
   - name: Iris
     alt: Iris
-    src: /avanguardia/boards/iris.jpg
+    src: /avanguardia/boards/iris.webp
 ---
 
 - Link to the [Discord Server](https://discord.gg/Mn2Ty3y)
@@ -93,7 +93,7 @@ gallery:
 ::img-lightbox
 ---
 alt: Avanguardia Packaging
-src: /avanguardia/packaging.jpg
+src: /avanguardia/packaging.webp
 ---
 ::
 
@@ -110,7 +110,7 @@ The Color Palette
 ::img-lightbox
 ---
 alt: Avanguardia Color Palette
-src: https://i.imgur.com/r1Pl3t8.jpg
+src: https://i.imgur.com/r1Pl3t8.webp
 ---
 ::
 

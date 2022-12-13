@@ -1,0 +1,26 @@
+diff --git a/dist/runtime/components/nuxt-img.mjs b/dist/runtime/components/nuxt-img.mjs
+index ffb837dfa60869d169f5f51d73d4bbf18f2189f6..d3cce7c53adffc13954411c831df262b5277233e 100644
+--- a/dist/runtime/components/nuxt-img.mjs
++++ b/dist/runtime/components/nuxt-img.mjs
+@@ -72,7 +72,7 @@ export default defineComponent({
+     if (process.server && process.env.prerender) {
+       const sources = [
+         src.value,
+-        ...(sizes.value.srcset || "").split(",").map((s) => s.split(" ")[0])
++        ...(sizes.value.srcset || '').split(',').map(s => s.trim().split(' ')[0])
+       ].filter((s) => s && s.includes("/_ipx/"));
+       appendHeader(useRequestEvent(), "X-Nitro-Prerender", sources.join(","));
+     }
+diff --git a/dist/runtime/providers/ipx.mjs b/dist/runtime/providers/ipx.mjs
+index 294d893deeed634a623fb94a08ac8db034430bd8..eb1b124fa93859679e21affbc7f71d14180d4f6c 100644
+--- a/dist/runtime/providers/ipx.mjs
++++ b/dist/runtime/providers/ipx.mjs
+@@ -10,7 +10,7 @@ const operationsGenerator = createOperationsGenerator({
+     quality: "q",
+     background: "b"
+   },
+-  joinWith: ",",
++  joinWith: '_',
+   formatter: (key, val) => encodeParam(key) + "_" + encodeParam(val)
+ });
+ export const getImage = (src, { modifiers = {}, baseURL } = {}, _ctx) => {
