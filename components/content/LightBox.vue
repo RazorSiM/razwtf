@@ -22,7 +22,7 @@ onKeyStroke('Escape', closeIfShown)
       class="fixed inset-0 z-50 flex items-center justify-center h-screen bg-base1/90 overflow-hidden"
       @click="closeIfShown"
     >
-      <div class="relative max-h-screen mx-auto overflow-hidden">
+      <div class="relative h-screen w-screen mx-auto overflow-x-hidden scrollbar scrollbar-track-color-base0 scrollbar-thumb-color-primary scrollbar-rounded scrollbar-w-1">
         <button
           v-if="showClose"
           aria-label="close"
@@ -31,7 +31,7 @@ onKeyStroke('Escape', closeIfShown)
         >
           <div class="i-carbon-close-filled" />
         </button>
-        <img class="cursor-pointer h-screen w-auto" :src="image" alt="lightbox" :width="800" :height="500">
+        <img class="cursor-pointer h-sauto w-screen object-cover" :src="image" alt="lightbox" :width="800" :height="500">
       </div>
     </div>
   </Transition>

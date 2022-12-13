@@ -9,7 +9,7 @@ useContentHead(page)
 
 <template>
   <NuxtImg
-    v-if="page.hero" :src="page.hero" :width="1000" :height="600" :alt="page.title" class="
+    v-if="page.hero" :src="page.hero" quality="80" :width="1000" :height="600" :alt="page.title" class="
   w-auto mx-auto rounded-3xl shadow-3xl max-h-2xl"
   />
   <div class="flex flex-col items-center justify-center mt-10">
