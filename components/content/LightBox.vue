@@ -22,7 +22,7 @@ onKeyStroke('Escape', closeIfShown)
       class="fixed inset-0 z-50 flex items-center justify-center h-screen bg-base1/90 overflow-hidden"
       @click="closeIfShown"
     >
-      <div class="relative h-screen w-screen mx-auto overflow-x-hidden scrollbar scrollbar-track-color-base0 scrollbar-thumb-color-primary scrollbar-rounded scrollbar-w-1">
+      <div class="relative h-screen w-screen mx-auto overflow-x-hidden scrollbar scrollbar-track-color-base0 scrollbar-thumb-color-primary scrollbar-rounded scrollbar-w-1 flex items-center justify-center">
         <button
           v-if="showClose"
           aria-label="close"
