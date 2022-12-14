@@ -21,7 +21,7 @@ useContentHead(page)
     </p>
   </div>
   <ContentRenderer
-    :key="page._id" :value="page" class="max-w-4xl text-xl mx-auto text-text bg-base rounded-xl shadow-3xl p-4 mt-10"
+    :key="page._id" :value="page" class="max-w-4xl md:text-xl mx-auto text-text bg-base rounded-xl shadow-3xl p-4 mt-10"
   />
   <div v-if="page.gallery && page.gallery.length > 0" class="mt-10 max-w-4xl mx-auto bg-base rounded-xl p-4 shadow-3xl">
     <h2 class="text-5xl font-bold mb-10">
