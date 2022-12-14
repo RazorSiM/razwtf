@@ -13,4 +13,3 @@ export const useLightboxStore = defineStore('lightbox', () => {
 
 if (import.meta.hot)
   import.meta.hot.accept(acceptHMRUpdate(useLightboxStore, import.meta.hot))
-
