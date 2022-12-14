@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useScroll } from '@vueuse/core'
 import { useLightboxStore } from '@/stores/lightbox'
-const { themesList, selectedTheme, setTheme } = useTheme()
+const { themesList, mode, selectedTheme, setTheme } = useTheme()
 const lightboxStore = useLightboxStore()
 const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
 const mainContainer = ref<HTMLElement | null>(null)
@@ -20,6 +20,11 @@ const { y } = useScroll(mainContainer, { behavior: 'smooth' })
       </template>
       <template #rightSide>
         <ThemePicker :themes="themesList" :theme-selected="selectedTheme" @theme-selection="(newTheme: 'latte' | 'frappe' | 'macchiato' | 'mocha' | 'light' | 'dark') => setTheme(newTheme)" />
+
+        <button class="rounded-full flex items-center justify-center  shadow text-2xl" @click="mode === 'light' || mode === 'latte' ? mode = 'dark' : mode = 'light'">
+          <div v-if="mode === 'light' || mode === 'latte'" class="i-fluent-emoji-new-moon" /><div v-else class="i-fluent-emoji-sun" />
+        </button>
+        <button />
       </template>
       <template #hamburgerContent>
         <TopNavHamburgerContent :pages="navigation" />

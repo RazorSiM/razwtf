@@ -18,7 +18,7 @@ const navOpened = ref(false)
             <div class="justify-self-end flex items-center gap-5">
               <slot name="leftSide" />
             </div>
-            <div class="justify-self-end flex items-center gap-0.5">
+            <div class="justify-self-end flex items-center gap-2">
               <slot name="rightSide" />
             </div>
           </div>
