@@ -22,7 +22,7 @@ const formattedDate = computed(() => {
     class="flex flex-col transition-all duration-100 transform rounded-xl shadow-3xl hover:scale-105 hover:z-50 project-card "
   >
     <NuxtLink :to="url" class="relative">
-      <NuxtImg v-if="image" :alt="title" :src="image" class="rounded-t-xl w-full h-auto object-cover" :width="400" :height="210" quality="80" />
+      <NuxtImg v-if="image" :alt="title" :src="image" class="rounded-t-xl w-full h-[210px] object-cover" :width="400" :height="210" quality="80" />
       <div v-else class="aspect-ratio-[400/300] bg-overlay-0" />
       <div
         class="absolute top-0 flex-col items-center justify-center hidden w-full h-full bg-overlay-1/30 backdrop-blur bg-opacity-0 project-card__img-container rounded-t-xl"
