@@ -33,6 +33,17 @@ export default defineNuxtConfig({
     markdown: {
       remarkPlugins: ['remark-reading-time'],
     },
+    highlight: {
+      theme: 'dracula',
+      preload: [
+        'bash',
+        'css',
+        'javascript',
+        'typescript',
+        'vue',
+        'markdown',
+      ],
+    },
   },
   image: {
     domains: ['unsplash.com', 'raz.wtf', 'i.imgur.com', 'imgur.com'],

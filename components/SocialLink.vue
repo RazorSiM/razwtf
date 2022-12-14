@@ -8,7 +8,7 @@ defineProps<Props>()
 </script>
 
 <template>
-  <a :href="url" target="_blank" class=" hover:text-primary">
+  <a :href="url" target="_blank" class="text-subtext-0 hover:text-sapphire">
     <div
       :title="name"
       :class="icon"

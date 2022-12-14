@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({
-  layout: 'no-prose',
+  layout: 'default',
 })
 const route = useRoute()
 const elementsPerPage = 6

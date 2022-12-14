@@ -17,7 +17,6 @@ specifiers:
   '@nuxt/kit': ^3.0.0
   '@nuxtjs/robots': ^3.0.0
   '@pinia/nuxt': ^0.4.6
-  '@types/fluent-ffmpeg': ^2.1.20
   '@unocss/nuxt': ^0.47.6
   '@vueuse/nuxt': ^9.6.0
   dayjs: ^1.11.7
@@ -41,7 +40,6 @@ devDependencies:
   '@nuxt/kit': 3.0.0
   '@nuxtjs/robots': 3.0.0
   '@pinia/nuxt': 0.4.6_typescript@4.9.4
-  '@types/fluent-ffmpeg': 2.1.20
   '@unocss/nuxt': 0.47.6
   '@vueuse/nuxt': 9.6.0_nuxt@3.0.0
   dayjs: 1.11.7
@@ -1107,12 +1105,6 @@ packages:
 
   /@types/estree/1.0.0:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
-    dev: true
-
-  /@types/fluent-ffmpeg/2.1.20:
-    resolution: {integrity: sha512-B+OvhCdJ3LgEq2PhvWNOiB/EfwnXLElfMCgc4Z1K5zXgSfo9I6uGKwR/lqmNPFQuebNnes7re3gqkV77SyypLg==}
-    dependencies:
-      '@types/node': 18.11.14
     dev: true
 
   /@types/hast/2.3.4:

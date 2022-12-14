@@ -14,9 +14,9 @@ defineProps(['command', 'distroIcon', 'distroTitle'])
         <title>{{ distroTitle }}</title>
         <path :d="distroIcon" />
       </svg>
-      <span class="font-bold text-accentone"> ~ </span>
-      <span class="font-bold text-faccent">> </span>
-      <span class="font-bold text-secondary font-dankit">{{ command }}</span>
+      <span class="font-bold text-teal"> ~ </span>
+      <span class="font-bold text-sapphire">> </span>
+      <span class="font-bold text-teal font-serif">{{ command }}</span>
     </p>
   </div>
 </template>

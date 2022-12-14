@@ -1,5 +1,7 @@
 <template>
-  <button class="rounded-full p-3 bg-base1 inline-flex items-center justify-center hover:bg-base2 transition hover:scale-110 shadow-xl">
-    <div class="i-carbon-arrow-up" />
+  <button
+    class="rounded-full p-3 bg-overlay-0 inline-flex items-center justify-center transition shadow-xl opacity-40 hover:(bg-overlay-1 scale-110 opacity-100)"
+  >
+    <div class="i-carbon-arrow-up text-text" />
   </button>
 </template>

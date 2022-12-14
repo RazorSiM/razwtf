@@ -2,7 +2,7 @@
   <div class="relative w-7 h-7">
     <div class="absolute w-7 h-7">
       <svg
-        class="w-7 h-7 fill-current text-base00"
+        class="w-7 h-7 fill-current text-text"
         viewBox="0 0 243 243"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +17,7 @@
       class="absolute flex flex-col items-center justify-center w-7 h-7"
     >
       <svg
-        class="w-5 h-5 fill-current text-primary"
+        class="w-5 h-5 fill-current text-sapphire"
         viewBox="0 0 151 151"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

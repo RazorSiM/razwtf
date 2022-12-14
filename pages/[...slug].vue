@@ -9,10 +9,12 @@ if (!page.value && process.server) {
 </script>
 
 <template>
-  <ContentRenderer v-if="page" :key="page._id" :value="page">
-    <template #empty="{ value }">
-      <DocumentDrivenEmpty :value="value" />
-    </template>
-  </ContentRenderer>
-  <DocumentDrivenNotFound v-else />
+  <div class="max-w-2xl mx-auto">
+    <ContentRenderer v-if="page" :key="page._id" :value="page">
+      <template #empty="{ value }">
+        <DocumentDrivenEmpty :value="value" />
+      </template>
+    </ContentRenderer>
+    <DocumentDrivenNotFound v-else />
+  </div>
 </template>

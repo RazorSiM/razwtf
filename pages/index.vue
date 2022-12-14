@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import socials from '@/helpers/socialList'
 definePageMeta({
-  layout: 'no-prose',
+  layout: 'default',
 })
 
 const { data: posts } = await useAsyncData('posts', () => queryContent('blog').limit(3).find())
@@ -40,7 +40,7 @@ const { page } = useContent()
       :distro-title="distroTitle"
     />
 
-    <div class="mx-auto prose">
+    <div class="mx-auto max-w-2xl text-lg">
       <ContentRenderer :key="page._id" :value="page" />
     </div>
   </TerminalShell>

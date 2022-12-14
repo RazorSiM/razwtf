@@ -14,12 +14,12 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="flex items-center gap-7 not-prose">
-    <nuxt-link v-if="previousPage && previousTitle" class="flex gap-2 items-center transition " :class="previousPage ? 'text-primary hover:text-secondary' : 'cursor-not-allowed text-foreground/30'" :to="previousPage">
+  <div class="flex items-center gap-7">
+    <nuxt-link v-if="previousPage && previousTitle" class="flex gap-2 items-center transition " :class="previousPage ? 'text-teal hover:text-green' : 'cursor-not-allowed text-subtext-0/30'" :to="previousPage">
       <div class="i-carbon-previous-outline" /><span>{{ previousTitle ?? '' }}</span>
     </nuxt-link>
 
-    <nuxt-link v-if="nextPage && nextTitle" class="flex gap-2 items-center transition " :class="nextPage ? 'text-primary hover:text-secondary' : 'cursor-not-allowed text-foreground/30'" :to="nextPage">
+    <nuxt-link v-if="nextPage && nextTitle" class="flex gap-2 items-center transition " :class="nextPage ? 'text-teal hover:text-green' : 'cursor-not-allowed text-subtext-0/30'" :to="nextPage">
       <span>{{ nextTitle }}</span><div class="i-carbon-next-outline" />
     </nuxt-link>
   </div>

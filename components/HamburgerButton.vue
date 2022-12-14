@@ -7,7 +7,7 @@ defineProps<Props>()
 
 <template>
   <button
-    class="inline-flex items-center justify-center p-2 transition duration-150 ease-in-out rounded-md text-faccent hover:text-primary focus:outline-none focus:bg-transparent focus:text-accent"
+    class="inline-flex items-center justify-center p-2 transition duration-150 ease-in-out rounded-md text-mauve hover:text-teal focus:outline-none focus:bg-transparent focus:text-teal"
     aria-label="Main menu"
     aria-expanded="false"
   >
