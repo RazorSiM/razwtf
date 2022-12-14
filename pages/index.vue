@@ -18,7 +18,7 @@ const { page } = useContent()
     title="Intro"
     distro-title="Arch Linux"
     :distro-icon="distroIcon"
-    class="container mx-auto lg:max-w-6xl shadow-3xl"
+    class="container mx-auto lg:max-w-6xl shadow-3xl overflow-x-hidden"
   >
     <TerminalCommand
       command="./intro.sh"

@@ -21,7 +21,7 @@ const { y } = useScroll(mainContainer, { behavior: 'smooth' })
       <template #rightSide>
         <ThemePicker :themes="themesList" :theme-selected="selectedTheme" @theme-selection="(newTheme: 'latte' | 'frappe' | 'macchiato' | 'mocha' | 'light' | 'dark') => setTheme(newTheme)" />
 
-        <button class="rounded-full flex items-center justify-center  shadow text-2xl" @click="mode === 'light' || mode === 'latte' ? mode = 'dark' : mode = 'light'">
+        <button aria-label="Switch Light and Dark" class="rounded-full flex items-center justify-center  shadow text-2xl" @click="mode === 'light' || mode === 'latte' ? mode = 'dark' : mode = 'light'">
           <div v-if="mode === 'light' || mode === 'latte'" class="i-fluent-emoji-new-moon" /><div v-else class="i-fluent-emoji-sun" />
         </button>
         <button />
