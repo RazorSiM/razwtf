@@ -1,7 +1,11 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-  modules: ['@nuxt/content', '@unocss/nuxt', '@pinia/nuxt', '@vueuse/nuxt', '@nuxt/image-edge', '@nuxtjs/robots',
-  ],
+  modules: ['@nuxt/content', '@unocss/nuxt', '@pinia/nuxt', '@vueuse/nuxt', '@nuxt/image-edge', '@nuxtjs/robots', '@nuxtjs/fontaine'],
+  // critters: {
+  //   config: {
+  //     path: './assets/css/',
+  //   },
+  // },
   app: {
     // pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: { name: 'layout', mode: 'out-in' },
@@ -47,9 +51,8 @@ export default defineNuxtConfig({
   },
   image: {
     domains: ['unsplash.com', 'raz.wtf', 'i.imgur.com', 'imgur.com'],
-    // dir: 'assets/images',
   },
-  css: ['@unocss/reset/tailwind.css', '@/assets/css/themes.css', '@/assets/css/globals.css',
+  css: ['@unocss/reset/tailwind.css', '@/assets/css/globals.css',
   ],
   postcss: {
     plugins: {

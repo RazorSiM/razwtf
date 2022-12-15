@@ -1,3 +1,4 @@
+@import url("@/assets/css/themes.css");
 @font-face {
     font-family: 'Victor';
     src: url('~/assets/fonts/VictorMono-Regular.woff2') format('woff2'),
@@ -13,10 +14,10 @@
 
 body {
     overflow: hidden;
-    background-color: rgb(var(--crust))
+    /* background-color: rgb(var(--crust)) */
 }
 html {
-    background-color: rgb(var(--crust))
+    /* background-color: rgb(17, 17, 27) */
 }
 
 ::selection {

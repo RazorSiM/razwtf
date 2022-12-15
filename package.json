@@ -7,7 +7,9 @@
     "preview": "nuxi preview",
     "serve": "serve ./dist",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "netlify:deploy:draft": "pnpm generate && netlify deploy --dir=.output/public",
+    "netlify:deploy:prod": "pnpm generate && netlify deploy --prod --dir=.output/public"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.34.0",
@@ -19,12 +21,15 @@
     "@nuxt/content": "^2.2.2",
     "@nuxt/image-edge": "1.0.0-27840416.dc1ed65",
     "@nuxt/kit": "^3.0.0",
+    "@nuxtjs/critters": "^0.4.0",
+    "@nuxtjs/fontaine": "^0.2.3",
     "@nuxtjs/robots": "^3.0.0",
     "@pinia/nuxt": "^0.4.6",
     "@unocss/nuxt": "^0.47.6",
     "@vueuse/nuxt": "^9.6.0",
     "dayjs": "^1.11.7",
     "eslint": "^8.29.0",
+    "netlify-cli": "^12.3.0",
     "nuxt": "^3.0.0",
     "remark-reading-time": "^2.0.1",
     "serve": "^14.1.2",
