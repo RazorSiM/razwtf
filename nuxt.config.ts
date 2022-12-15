@@ -1,11 +1,6 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   modules: ['@nuxt/content', '@unocss/nuxt', '@pinia/nuxt', '@vueuse/nuxt', '@nuxt/image-edge', '@nuxtjs/robots', '@nuxtjs/fontaine'],
-  // critters: {
-  //   config: {
-  //     path: './assets/css/',
-  //   },
-  // },
   app: {
     // pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: { name: 'layout', mode: 'out-in' },
