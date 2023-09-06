@@ -1,5 +1,5 @@
 <template>
-  <p class="leading-normal my-8">
+  <p class="my-8 leading-normal">
     <slot />
   </p>
 </template>

@@ -1,9 +1,19 @@
 <script lang="ts" setup>
 import { useScroll } from '@vueuse/core'
-import { useLightboxStore } from '@/stores/lightbox'
-const { themesList, mode, selectedTheme, setTheme } = useTheme()
-const lightboxStore = useLightboxStore()
+import type { Themes } from '@/composables/useTheme'
+
+const { themesList, theme, selectedTheme, setTheme } = useTheme()
+function handleSwitchLightDarkMode() {
+  if (theme.value === 'light' || theme.value === 'latte')
+    setTheme('dark')
+  else
+    setTheme('light')
+}
+
+const { setImage, image } = injectLightbox()
+
 const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
+
 const mainContainer = ref<HTMLElement | null>(null)
 const { y } = useScroll(mainContainer, { behavior: 'smooth' })
 </script>
@@ -11,7 +21,7 @@ const { y } = useScroll(mainContainer, { behavior: 'smooth' })
 <template>
   <div
     id="mainContainer"
-    ref="mainContainer" class="bg-crust h-screen transition w-screen text-text p-4 font-sans flex flex-col overflow-x-hidden overflow-y-scroll scrollbar scrollbar-track-color-base scrollbar-thumb-color-flamingo scrollbar-rounded scrollbar-w-1"
+    ref="mainContainer" class="h-screen w-screen flex flex-col overflow-x-hidden overflow-y-scroll bg-crust p-4 font-sans text-text transition scrollbar-thumb-color-flamingo scrollbar-track-color-base scrollbar-w-1 scrollbar scrollbar-rounded"
   >
     <TopHeader>
       <template #leftSide>
@@ -19,10 +29,10 @@ const { y } = useScroll(mainContainer, { behavior: 'smooth' })
         <TopNav :pages="navigation" />
       </template>
       <template #rightSide>
-        <ThemePicker :themes="themesList" :theme-selected="selectedTheme" @theme-selection="(newTheme: 'latte' | 'frappe' | 'macchiato' | 'mocha' | 'light' | 'dark') => setTheme(newTheme)" />
+        <ThemePicker :themes="themesList" :theme-selected="selectedTheme" @theme-selection="(newTheme: Themes) => setTheme(newTheme)" />
 
-        <button aria-label="Switch Light and Dark" class="rounded-full flex items-center justify-center  shadow text-2xl" @click="mode === 'light' || mode === 'latte' ? mode = 'dark' : mode = 'light'">
-          <div v-if="mode === 'light' || mode === 'latte'" class="i-fluent-emoji-new-moon" /><div v-else class="i-fluent-emoji-sun" />
+        <button aria-label="Switch Light and Dark" class="flex items-center justify-center rounded-full text-2xl shadow" @click="handleSwitchLightDarkMode()">
+          <div v-if="theme === 'light' || theme === 'latte'" class="i-fluent-emoji-new-moon" /><div v-else class="i-fluent-emoji-sun" />
         </button>
         <button />
       </template>
@@ -34,9 +44,9 @@ const { y } = useScroll(mainContainer, { behavior: 'smooth' })
       <slot />
     </main>
     <DefaultFooter class="mt-10 w-110% -ml-5%" />
-    <LightBox :show="lightboxStore.lightbox.show" :show-close="true" :image="lightboxStore.lightbox.src" @close="lightboxStore.setLightbox({ show: false, src: '' }) " />
+    <LightBox :show="image.show" :show-close="true" :image="image.src" @close="setImage({ show: false, src: '' }) " />
     <transition>
-      <ScrollTop v-if="(y >= 20)" class="self-start fixed bottom-10 right-15" @click="(y = 0)" />
+      <ScrollTop v-if="(y >= 20)" class="fixed bottom-10 right-15 self-start" @click="(y = 0)" />
     </transition>
   </div>
 </template>

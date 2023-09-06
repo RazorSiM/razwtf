@@ -1,9 +1,44 @@
-// https://v3.nuxtjs.org/api/configuration/nuxt.config
+// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/content', '@unocss/nuxt', '@pinia/nuxt', '@vueuse/nuxt', '@nuxt/image-edge', '@nuxtjs/robots', '@nuxtjs/fontaine'],
+  devtools: { enabled: true },
+  modules: [
+    '@unocss/nuxt',
+    '@nuxt/content',
+    '@nuxt/image',
+    '@vueuse/nuxt',
+  ],
+  content: {
+    documentDriven: true,
+    markdown: {
+      remarkPlugins: ['remark-reading-time'],
+    },
+    highlight: {
+      theme: 'dracula',
+      preload: [
+        'bash',
+        'css',
+        'javascript',
+        'typescript',
+        'vue',
+        'markdown',
+      ],
+    },
+  },
+  image: {
+    quality: 70,
+    format: ['webp', 'avif'],
+    domains: ['unsplash.com', 'raz.wtf', 'i.imgur.com', 'imgur.com'],
+  },
+  css: [
+    '@unocss/reset/tailwind-compat.css',
+    '@/assets/css/globals.css',
+  ],
+  nitro: {
+    prerender: {
+      routes: ['/sitemap.xml'],
+    },
+  },
   app: {
-    // pageTransition: { name: 'page', mode: 'out-in' },
-    layoutTransition: { name: 'layout', mode: 'out-in' },
     head: {
       title: 'Raz - Simone Colabufalo',
       meta: [
@@ -25,40 +60,6 @@ export default defineNuxtConfig({
         { name: 'og:type', content: 'website' },
         { name: 'og:locale', content: 'en_US' },
       ],
-    },
-  },
-  content: {
-    documentDriven: true,
-    markdown: {
-      remarkPlugins: ['remark-reading-time'],
-    },
-    highlight: {
-      theme: 'dracula',
-      preload: [
-        'bash',
-        'css',
-        'javascript',
-        'typescript',
-        'vue',
-        'markdown',
-      ],
-    },
-  },
-  image: {
-    domains: ['unsplash.com', 'raz.wtf', 'i.imgur.com', 'imgur.com'],
-  },
-  css: ['@unocss/reset/tailwind.css', '@/assets/css/globals.css',
-  ],
-  postcss: {
-    plugins: {
-      autoprefixer: {
-        grid: false,
-      },
-    },
-  },
-  nitro: {
-    prerender: {
-      routes: ['/sitemap.xml'],
     },
   },
 })

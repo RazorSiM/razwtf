@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useLightboxStore } from '@/stores/lightbox'
-
 withDefaults(defineProps<{
   src: string
   alt?: string
@@ -18,9 +16,9 @@ withDefaults(defineProps<{
   height: 400,
 })
 
-const lightboxStore = useLightboxStore()
+const { setImage } = injectLightbox()
 </script>
 
 <template>
-  <NuxtImg class="cursor-pointer" :src="src" :alt="alt" format="webp" :width="width" :height="height" :quality="quality" @click="lightboxStore.setLightbox({ show: true, src })" />
+  <NuxtImg class="cursor-pointer" :src="src" :alt="alt" format="webp" :width="width" :height="height" :quality="quality" @click="setImage({ show: true, src })" />
 </template>

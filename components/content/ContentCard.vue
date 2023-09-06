@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { formatDate } from '@/helpers/dateFormat'
 interface Props {
   title: string
   image?: string
@@ -13,28 +12,29 @@ const props = withDefaults(defineProps<Props>(), {
 })
 // const props = defineProps<Props>()
 const formattedDate = computed(() => {
-  return formatDate(props.date)
+  const date = new Date(props.date)
+  return formatDate(date)
 })
 </script>
 
 <template>
   <div
-    class="flex flex-col transition-all duration-100 transform rounded-xl shadow-3xl hover:scale-105 hover:z-50 project-card "
+    class="project-card flex flex-col transform rounded-xl shadow-3xl transition-all duration-100 hover:z-50 hover:scale-105"
   >
     <NuxtLink :to="url" class="relative">
-      <NuxtImg v-if="image" :alt="title" :src="image" class="rounded-t-xl w-full h-[210px] object-cover" :width="400" :height="210" quality="80" />
+      <NuxtImg v-if="image" :alt="title" :src="image" class="h-[210px] w-full rounded-t-xl object-cover" :width="400" :height="210" quality="80" />
       <div v-else class="aspect-ratio-[400/300] bg-overlay-0" />
       <div
-        class="absolute top-0 flex-col items-center justify-center hidden w-full h-full bg-overlay-1/30 backdrop-blur bg-opacity-0 project-card__img-container rounded-t-xl"
+        class="project-card__img-container absolute top-0 hidden h-full w-full flex-col items-center justify-center rounded-t-xl bg-overlay-1/30 bg-opacity-0 backdrop-blur"
       >
         <div class="i-fluent-emoji-link text-3xl" />
       </div>
     </NuxtLink>
-    <div class="flex flex-col justify-between flex-1 p-3 bg-base rounded-b-xl">
+    <div class="flex flex-1 flex-col justify-between rounded-b-xl bg-base p-3">
       <h3 class="text-xl font-bold text-sky">
         {{ title }}
       </h3>
-      <div class="text-xs flex gap-3">
+      <div class="flex gap-3 text-xs">
         <span class="text-lavender">{{ formattedDate }} </span>
         <span class="text-subtext-0">{{ timetoread }}</span>
       </div>
@@ -42,7 +42,7 @@ const formattedDate = computed(() => {
         {{ excerpt }}
       </p>
       <NuxtLink
-        class="block p-2 mt-4 font-bold text-center rounded shadow-lg bg-surface-1 hover:bg-surface-2 transition"
+        class="mt-4 block rounded bg-surface-1 p-2 text-center font-bold shadow-lg transition hover:bg-surface-2"
         :to="url"
       >
         <slot>

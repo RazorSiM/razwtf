@@ -12,7 +12,7 @@ defineProps<Props>()
     <div
       :title="name"
       :class="icon"
-      class="h-8 w-8 transition  "
+      class="h-8 w-8 transition"
     />
   </a>
 </template>

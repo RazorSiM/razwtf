@@ -22,7 +22,7 @@ const hovered = ref(false)
 </script>
 
 <template>
-  <div :class="`highlight-${language}`" class="bg-[#282936] rounded-xl p-4 my-5 overflow-x-scroll  scrollbar scrollbar-track-color-base scrollbar-thumb-color-flamingo scrollbar-rounded scrollbar-h-1 scrollbar-w-1" @mouseenter="hovered = true" @mouseleave="hovered = false">
+  <div :class="`highlight-${language}`" class="my-5 overflow-x-scroll rounded-xl bg-[#282936] p-4 scrollbar-thumb-color-flamingo scrollbar-track-color-base scrollbar-h-1 scrollbar-w-1 scrollbar scrollbar-rounded" @mouseenter="hovered = true" @mouseleave="hovered = false">
     <span v-if="filename" class="filename">
       {{ filename }}
     </span>

@@ -7,13 +7,13 @@ defineProps<Props>()
 
 <template>
   <button
-    class="inline-flex items-center justify-center p-2 transition duration-150 ease-in-out rounded-md text-mauve hover:text-teal focus:outline-none focus:bg-transparent focus:text-teal"
+    class="inline-flex items-center justify-center rounded-md p-2 text-mauve transition duration-150 ease-in-out focus:bg-transparent focus:text-teal hover:text-teal focus:outline-none"
     aria-label="Main menu"
     aria-expanded="false"
   >
     <svg
       v-if="navOpened === false"
-      class="block w-6 h-6"
+      class="block h-6 w-6"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
@@ -29,7 +29,7 @@ defineProps<Props>()
 
     <svg
       v-if="navOpened === true"
-      class="block w-6 h-6"
+      class="block h-6 w-6"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

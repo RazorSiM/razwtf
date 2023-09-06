@@ -1,5 +1,6 @@
 // @unocss-include
-export default [
+
+export const socials = [
   {
     name: 'Github',
     url: 'https://github.com/RazorSiM',
@@ -30,4 +31,11 @@ export default [
     url: 'mailto:me@raz.wtf',
     icon: 'i-mdi-email',
   },
+]
+
+export const themesList = [
+  'latte',
+  'frappe',
+  'macchiato',
+  'mocha',
 ]

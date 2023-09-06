@@ -1,4 +1,7 @@
-export const useTheme = () => {
+import { useStorage } from '@vueuse/core'
+
+export type Themes = 'latte' | 'frappe' | 'macchiato' | 'mocha' | 'light' | 'dark'
+export function useTheme() {
   const themesList = [
     'latte',
     'frappe',
@@ -15,9 +18,16 @@ export const useTheme = () => {
     },
   })
 
-  const setTheme = (newTheme: 'latte' | 'frappe' | 'macchiato' | 'mocha' | 'light' | 'dark') => {
-    mode.value = newTheme
+  const theme = useStorage<Themes>('theme', 'latte')
+  mode.value = theme.value
+
+  const setTheme = (newTheme: Themes) => {
+    theme.value = newTheme
   }
+
+  watch(theme, (newTheme) => {
+    mode.value = newTheme
+  })
 
   const selectedTheme = computed(() => {
     if (mode.value === 'light')
@@ -30,6 +40,7 @@ export const useTheme = () => {
   return {
     themesList,
     mode,
+    theme,
     selectedTheme,
     setTheme,
   }

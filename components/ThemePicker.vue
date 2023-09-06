@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/vue'
+
 interface Props {
   themes: string[]
   themeSelected: string
@@ -11,7 +12,7 @@ const listValue = ref(props.themeSelected)
 
 <template>
   <Listbox v-model="listValue" as="div" class="relative">
-    <ListboxButton aria-label="Theme Picker" class="rounded-full text-2xl flex items-center justify-center transition shadow">
+    <ListboxButton aria-label="Theme Picker" class="flex items-center justify-center rounded-full text-2xl shadow transition">
       <div class="i-fluent-emoji-artist-palette" />
     </ListboxButton>
     <transition
@@ -24,8 +25,7 @@ const listValue = ref(props.themeSelected)
     >
       <ListboxOptions
         as="div"
-        class="
-          flex flex-col absolute rounded-md mt-1 right-0 shadow-lg bg-overlay-0 max-h-300px overflow-y-auto z-1 shadow"
+        class="absolute right-0 z-1 mt-1 max-h-300px flex flex-col overflow-y-auto rounded-md bg-overlay-0 shadow shadow-lg"
       >
         <ListboxOption
           v-for="theme in themes"
@@ -38,7 +38,7 @@ const listValue = ref(props.themeSelected)
           @click="emits('themeSelection', theme)"
         >
           <div
-            class=" px-3 py-2 transition flex justify-between items-center leading-none capitalize hover:(bg-overlay-1)"
+            class="flex items-center justify-between px-3 py-2 leading-none capitalize transition hover:(bg-overlay-1)"
             :class="{ 'bg-overlay-0': active, 'bg-overlay-2': selected }"
           >
             {{ theme.replace("-", " ") }}

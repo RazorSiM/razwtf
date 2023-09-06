@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { formatDate } from '@/helpers/dateFormat'
 const { page, next, prev } = useContent()
 definePageMeta({
   layout: 'default',
@@ -12,12 +11,11 @@ const distroTitle = 'Arch Linux'
 
 <template>
   <NuxtImg
-    v-if="page.hero" :src="page.hero" quality="80" :width="1000" :height="600" :alt="page.title" class="
-   mx-auto rounded-3xl shadow-3xl w-full"
+    v-if="page.hero" :src="page.hero" quality="80" :width="1000" :height="600" :alt="page.title" class="mx-auto w-full rounded-3xl shadow-3xl"
   />
-  <div class="flex flex-col items-center justify-center mt-10">
+  <div class="mt-10 flex flex-col items-center justify-center">
     <p class="text-subtext-0">
-      {{ formatDate(page.date) }}
+      {{ formatDate(new Date(page.date)) }}
     </p>
     <p class="text-subtext-1">
       {{ page.readingTime.text }}
@@ -27,7 +25,7 @@ const distroTitle = 'Arch Linux'
     title="projects"
     distro-title="Arch Linux"
     :distro-icon="distroIcon"
-    class="max-w-4xl md:text-xl mx-auto overflow-x-hidden shadow-3xl mt-10"
+    class="mx-auto mt-10 max-w-4xl overflow-x-hidden shadow-3xl md:text-xl"
   >
     <template v-if="page">
       <TerminalCommand
@@ -41,14 +39,14 @@ const distroTitle = 'Arch Linux'
         </template>
       </ContentRenderer>
       <div
-        v-if="page.gallery && page.gallery.length > 0" class="mt-10 max-w-4xl mx-auto"
+        v-if="page.gallery && page.gallery.length > 0" class="mx-auto mt-10 max-w-4xl"
       >
-        <h2 class="text-5xl font-bold mb-10">
+        <h2 class="mb-10 text-5xl font-bold">
           Gallery
         </h2>
         <template v-for="image in page.gallery" :key="image.name">
-          <div class="text-text md:text-xl mx-auto">
-            <h3 class="text-center mt-5 mb-2 font-bold text-3xl">
+          <div class="mx-auto text-text md:text-xl">
+            <h3 class="mb-2 mt-5 text-center text-3xl font-bold">
               {{ image.description }}
             </h3>
           </div>

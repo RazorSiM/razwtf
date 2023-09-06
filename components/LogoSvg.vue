@@ -1,8 +1,8 @@
 <template>
-  <div class="relative w-7 h-7">
-    <div class="absolute w-7 h-7">
+  <div class="relative h-7 w-7">
+    <div class="absolute h-7 w-7">
       <svg
-        class="w-7 h-7 fill-current text-text"
+        class="h-7 w-7 fill-current text-text"
         viewBox="0 0 243 243"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -14,10 +14,10 @@
     </div>
 
     <div
-      class="absolute flex flex-col items-center justify-center w-7 h-7"
+      class="absolute h-7 w-7 flex flex-col items-center justify-center"
     >
       <svg
-        class="w-5 h-5 fill-current text-sapphire"
+        class="h-5 w-5 fill-current text-sapphire"
         viewBox="0 0 151 151"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

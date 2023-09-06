@@ -3,10 +3,10 @@ defineProps<{ id: string }>()
 </script>
 
 <template>
-  <h5 :id="id" class="block mt-12 mb-8 text-xl leading-tight font-bold tracking-tight text-subtext-0">
-    <NuxtLink :href="`#${id}`" class="group ">
+  <h5 :id="id" class="mb-8 mt-12 block text-xl font-bold leading-tight tracking-tight text-subtext-0">
+    <NuxtLink :href="`#${id}`" class="group">
       <slot />
-      <div class="i-fluent-emoji-link opacity-0 group-hover:opacity-100 transition text-lg inline-block ml-7" />
+      <div class="i-fluent-emoji-link ml-7 inline-block text-lg opacity-0 transition group-hover:opacity-100" />
     </NuxtLink>
   </h5>
 </template>
