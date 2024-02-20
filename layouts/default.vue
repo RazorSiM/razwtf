@@ -21,7 +21,7 @@ const { y } = useScroll(mainContainer, { behavior: 'smooth' })
 <template>
   <div
     id="mainContainer"
-    ref="mainContainer" class="h-screen w-screen flex flex-col overflow-x-hidden overflow-y-scroll bg-crust p-4 font-sans text-text transition scrollbar-thumb-color-flamingo scrollbar-track-color-base scrollbar-w-1 scrollbar scrollbar-rounded"
+    ref="mainContainer" class="h-screen w-screen flex flex-col overflow-x-hidden overflow-y-scroll bg-crust p-4 text-text font-sans transition scrollbar-thumb-color-flamingo scrollbar-track-color-base scrollbar-w-1 scrollbar scrollbar-rounded"
   >
     <TopHeader>
       <template #leftSide>

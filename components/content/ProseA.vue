@@ -19,7 +19,7 @@ defineProps({
 </script>
 
 <template>
-  <NuxtLink :to="href" :blank="blank" :static="static" class="border-b border-flamingo border-dashed pb-[2px] font-medium text-rosewater decoration-none transition hover:(border-flamingo text-flamingo)">
+  <NuxtLink :to="href" :blank="blank" :static="static" class="border-b border-flamingo border-dashed pb-[2px] text-rosewater font-medium decoration-none transition hover:(border-flamingo text-flamingo)">
     <slot />
   </NuxtLink>
 </template>
