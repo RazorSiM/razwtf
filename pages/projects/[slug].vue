@@ -18,7 +18,7 @@ const distroTitle = 'Arch Linux'
       {{ formatDate(new Date(page.date)) }}
     </p>
     <p class="text-subtext-1">
-      {{ page.readingTime.text }}
+      {{ page.readingTime?.text ?? '' }}
     </p>
   </div>
   <TerminalShell
