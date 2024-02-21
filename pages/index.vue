@@ -48,7 +48,7 @@ const { page } = useContent()
         Latest Projects <GlobEmoji emoji="i-fluent-emoji-hammer-and-pick" />
       </GlobSubtitle>
       <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <ContentCard v-for="project in projects" :key="project._path" :title="project.title ?? ''" :image="project.hero" :excerpt="project.excerpt ?? ''" :url="project._path ?? ''" :date="project.date" :timetoread="project.readingTime.text" />
+        <ContentCard v-for="project in projects" :key="project._path" :title="project.title ?? ''" :image="project.hero" :excerpt="project.description ?? ''" :url="project._path ?? ''" :date="project.date" :time-to-read="project.readingTime?.text" />
       </div>
       <div class="mt-5 w-full flex justify-end">
         <NuxtLink class="hover:text-accent flex gap-2 text-right text-xl font-serif transition" to="/projects">

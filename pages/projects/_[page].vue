@@ -17,7 +17,7 @@ const nextPage = nextProjects.value?.length === 1 ? `/projects/_${currentPage + 
 <template>
   <div class="mx-auto max-w-4xl">
     <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-      <ContentCard v-for="project in projects" :key="project._path" :title="project.title ?? ''" :image="project.hero" :excerpt="project.excerpt ?? ''" :url="project._path ?? ''" :date="project.date" :timetoread="project.readingTime.text" />
+      <ContentCard v-for="project in projects" :key="project._path" :title="project.title ?? ''" :image="project.hero" :excerpt="project.description ?? ''" :url="project._path ?? ''" :date="project.date" :time-to-read="project.readingTime?.text" />
     </div>
     <Pagination :previous-page="previousPage" :next-page="nextPage" class="mt-10 justify-center" />
   </div>
