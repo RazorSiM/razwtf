@@ -5,12 +5,11 @@ interface Props {
   excerpt: string
   url: string
   date: string
-  timetoread: string
+  timeToRead?: string
 }
 const props = withDefaults(defineProps<Props>(), {
   image: undefined,
 })
-// const props = defineProps<Props>()
 const formattedDate = computed(() => {
   const date = new Date(props.date)
   return formatDate(date)
@@ -36,7 +35,7 @@ const formattedDate = computed(() => {
       </h3>
       <div class="flex gap-3 text-xs">
         <span class="text-lavender">{{ formattedDate }} </span>
-        <span class="text-subtext-0">{{ timetoread }}</span>
+        <span v-if="timeToRead" class="text-subtext-0">{{ timeToRead ?? '' }}</span>
       </div>
       <p class="mt-2 text-text">
         {{ excerpt }}
