@@ -32,7 +32,7 @@ export default defineNuxtConfig({
   },
   css: [
     '@unocss/reset/tailwind-compat.css',
-    '@/assets/css/globals.css',
+    '~/assets/css/main.css',
   ],
   nitro: {
     prerender: {

@@ -1,46 +1,41 @@
-import { useStorage } from '@vueuse/core'
+const themesList = [
+  'auto',
+  'frappe',
+  'macchiato',
+  'dark',
+  'light',
+] as const
 
-export type Themes = 'latte' | 'frappe' | 'macchiato' | 'mocha' | 'light' | 'dark'
+export type Theme = typeof themesList[number]
+
 export function useTheme() {
-  const themesList = [
-    'latte',
-    'frappe',
-    'macchiato',
-    'mocha',
-  ]
-  const mode = useColorMode({
+  const { store, system } = useColorMode({
     attribute: 'class',
     modes: {
-      latte: 'latte',
       frappe: 'frappe',
       macchiato: 'macchiato',
-      mocha: 'mocha',
     },
   })
 
-  const theme = useStorage<Themes>('theme', 'latte')
-  mode.value = theme.value
+  // const theme = useStorage<Themes>('theme', 'latte')
+  // mode.value = theme.value
 
-  const setTheme = (newTheme: Themes) => {
-    theme.value = newTheme
+  const setTheme = (newTheme: Theme) => {
+    store.value = newTheme
   }
 
-  watch(theme, (newTheme) => {
-    mode.value = newTheme
-  })
-
   const selectedTheme = computed(() => {
-    if (mode.value === 'light')
+    if (store.value === 'light')
       return 'latte'
-    if (mode.value === 'dark')
+    if (store.value === 'dark')
       return 'mocha'
-    return mode.value
+    return store.value
   })
 
   return {
     themesList,
-    mode,
-    theme,
+    store,
+    system,
     selectedTheme,
     setTheme,
   }

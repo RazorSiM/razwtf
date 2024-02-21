@@ -25,13 +25,13 @@ const formattedDate = computed(() => {
       <NuxtImg v-if="image" :alt="title" :src="image" class="h-[210px] w-full rounded-t-xl object-cover" :width="400" :height="210" quality="80" />
       <div v-else class="aspect-ratio-[400/300] bg-overlay-0" />
       <div
-        class="project-card__img-container absolute top-0 hidden h-full w-full flex-col items-center justify-center rounded-t-xl bg-overlay-1/30 bg-opacity-0 backdrop-blur"
+        class="project-card__img-container absolute top-0 h-full w-full flex-col items-center justify-center rounded-t-xl bg-overlay-1/30 bg-opacity-0 backdrop-blur hidden"
       >
         <div class="i-fluent-emoji-link text-3xl" />
       </div>
     </NuxtLink>
     <div class="flex flex-1 flex-col justify-between rounded-b-xl bg-base p-3">
-      <h3 class="text-xl font-bold text-sky">
+      <h3 class="text-xl text-sky font-bold">
         {{ title }}
       </h3>
       <div class="flex gap-3 text-xs">

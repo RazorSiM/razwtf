@@ -26,7 +26,7 @@ onKeyStroke('Escape', closeIfShown)
         <button
           v-if="showClose"
           aria-label="close"
-          class="absolute right-0 top-0 mx-10 my-2 p-4 text-xl leading-5 text-blue transition duration-100 hover:text-sky focus:outline-none"
+          class="absolute right-0 top-0 mx-10 my-2 p-4 text-xl text-blue leading-5 transition duration-100 hover:text-sky focus:outline-none"
           @click="closeIfShown"
         >
           <div class="i-carbon-close-filled" />

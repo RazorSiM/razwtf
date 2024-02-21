@@ -14,9 +14,9 @@ defineProps<Props>()
 </script>
 
 <template>
-  <div class="hidden gap-3 sm:ml-6 sm:flex">
+  <div class="gap-3 hidden sm:ml-6 sm:flex">
     <template v-for="page in pages" :key="page._path">
-      <NuxtLink :to="page._path" class="rounded px-3 py-2 text-sm font-medium leading-5 text-subtext-0 transition duration-150 ease-in-out hover:bg-surface-0 hover:text-flamingo focus:outline-none">
+      <NuxtLink :to="page._path" class="rounded px-3 py-2 text-sm text-subtext-0 font-medium leading-5 transition duration-150 ease-in-out hover:bg-surface-0 hover:text-flamingo focus:outline-none">
         {{ page.title }}
       </NuxtLink>
     </template>
