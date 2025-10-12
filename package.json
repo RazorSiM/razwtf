@@ -29,7 +29,7 @@
     "@vueuse/core": "^10.8.0",
     "@vueuse/nuxt": "^10.8.0",
     "eslint": "^8.56.0",
-    "nuxt": "3.10.2",
+    "nuxt": "3.15.1",
     "remark-reading-time": "^2.0.1",
     "sitemap": "^7.1.1",
     "unocss-preset-scrollbar": "^0.3.1"
