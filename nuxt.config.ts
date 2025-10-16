@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
+
   modules: [
     '@unocss/nuxt',
     '@nuxt/content',
@@ -8,6 +9,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxthq/studio',
   ],
+
   content: {
     documentDriven: true,
     markdown: {
@@ -25,20 +27,24 @@ export default defineNuxtConfig({
       ],
     },
   },
+
   image: {
     quality: 70,
     format: ['webp', 'avif'],
     domains: ['unsplash.com', 'raz.wtf', 'i.imgur.com', 'imgur.com'],
   },
+
   css: [
     '@unocss/reset/tailwind-compat.css',
     '~/assets/css/main.css',
   ],
+
   nitro: {
     prerender: {
       routes: ['/sitemap.xml'],
     },
   },
+
   app: {
     head: {
       title: 'Raz - Simone Colabufalo',
@@ -63,4 +69,6 @@ export default defineNuxtConfig({
       ],
     },
   },
+
+  compatibilityDate: '2025-10-17',
 })
