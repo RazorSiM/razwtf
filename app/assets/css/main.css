@@ -1,0 +1,288 @@
+@import './themes.css';
+
+/* ==========================================================================
+   Fonts
+   - Victor Mono: self-hosted (dominant voice). One family, normal + italic.
+   - Fraunces: provisioned & self-hosted by @nuxt/fonts (see nuxt.config.ts).
+   ========================================================================== */
+/* Served from /public/fonts (stable, unhashed URLs) so the Regular woff2 can be
+   <link rel=preload>-ed in app.vue - a hashed ~/assets URL couldn't be. */
+@font-face {
+  font-family: 'Victor Mono';
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: swap;
+  src: url('/fonts/VictorMono-Regular.woff2') format('woff2'),
+       url('/fonts/VictorMono-Regular.woff') format('woff');
+}
+@font-face {
+  font-family: 'Victor Mono';
+  font-style: italic;
+  font-weight: 100 700;
+  font-display: swap;
+  src: url('/fonts/VictorMono-Italic.woff2') format('woff2'),
+       url('/fonts/VictorMono-Italic.woff') format('woff');
+}
+
+/* ==========================================================================
+   Design tokens - scale + rhythm (Studio Terminal). Consumed by uno.config.ts
+   theme (text-*, radius, ease) and by hand CSS below.
+   ========================================================================== */
+:root {
+  --font-mono: 'Victor Mono', ui-monospace, 'SFMono-Regular', 'Cascadia Code', Menlo, Consolas, monospace;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+
+  --maxw: 1220px;
+  --maxw-read: 760px;
+  /* Reading measure system: text stays at a comfortable line length (--measure)
+     while media/code/tables/callouts break out to the wider reading frame
+     (--measure-wide). See the .prose grid below. */
+  --measure: 68ch;
+  --measure-wide: 900px;
+  --pad-x: clamp(1.3rem, 5vw, 4rem);
+  --nav-h: 66px;
+  --section-y: clamp(5rem, 11vw, 9.5rem);
+
+  --radius: 4px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease: cubic-bezier(.22, .61, .36, 1);
+
+  /* hairlines (surface tones with alpha) */
+  --hair: rgb(var(--surface0) / .9);
+  --hair-soft: rgb(var(--surface0) / .55);
+  --hair-strong: rgb(var(--surface1) / .9);
+
+  /* Code surface - FIXED (flavour-independent). The syntax highlighter ships a
+     single dark theme (dracula, see nuxt.config), whose token colours are tuned
+     for a dark background; on the light flavours' mantle they wash out (neon on
+     near-white). Pinning the code surface + default text to constant dark values
+     keeps code readable in all four flavours - the usual light-theme pattern. */
+  --code-bg: 30 30 46; /* mocha base */
+  --code-bar: 24 24 37; /* mocha mantle */
+  --code-fg: 205 214 244; /* light default text */
+  --code-muted: 148 155 179; /* filename / lang labels - light on dark bar */
+  --code-hair: rgb(69 71 90 / .9);
+
+  /* fluid type scale */
+  --fs-micro: .72rem;
+  --fs-cap: .76rem;
+  --fs-sm: .86rem;
+  --fs-body: clamp(.96rem, .92rem + .18vw, 1.06rem);
+  --fs-lead: clamp(1.1rem, 1rem + .6vw, 1.4rem);
+  --fs-h3: clamp(1.4rem, 1.12rem + 1.15vw, 2rem);
+  --fs-h2: clamp(2rem, 1.35rem + 2.9vw, 3.55rem);
+  --fs-h1: clamp(2.5rem, 1.4rem + 4.8vw, 4.75rem);
+  --fs-mark: clamp(3rem, .4rem + 11vw, 8.5rem);
+
+  color-scheme: dark;
+}
+:root[data-flavor='latte'] { color-scheme: light; }
+:root[data-flavor='frappe'],
+:root[data-flavor='macchiato'],
+:root[data-flavor='mocha'] { color-scheme: dark; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-flavor]) { color-scheme: light; }
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  min-height: 100svh;
+  background-color: rgb(var(--crust));
+  color: rgb(var(--text));
+  font-family: var(--font-mono);
+  line-height: 1.55;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: inherit; text-decoration: none; }
+::selection { background: rgb(var(--mauve) / .28); color: rgb(var(--text)); }
+:where(:focus-visible) { outline: 2px solid rgb(var(--mauve)); outline-offset: 2px; }
+p, h1, h2, h3, h4, h5, h6 { overflow-wrap: break-word; }
+
+/* ==========================================================================
+   Scroll reveal (JS-gated, reduced-motion safe). Add data-reveal to any
+   element; the v-reveal directive / reveal plugin toggles .is-in in view.
+   Stagger with style="--rd:.08s".
+   ========================================================================== */
+/* Initial hidden state only - the v-reveal plugin springs it in with motion on
+   the client. Reduced-motion / no-JS falls back to .is-in (instant show). */
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+}
+html.js [data-reveal].is-in { opacity: 1; transform: none; }
+
+/* Kinetic type (KineticText): per-word / per-letter cascade unit. Words are
+   split on the client only; inter-word whitespace is preserved so lines wrap
+   and copy/select normally. `will-change` is set inline only for the duration
+   of the cascade (see kinetic.ts) - never left on the spans afterwards, so we
+   don't retain a promoted layer per word for the life of the page. */
+.kt-word { display: inline-block; }
+
+/* Hero wordmark is fill-to-width: KineticText's JS measures the text and scales
+   the font to fill its column exactly. We pre-size here with the same width
+   ratio (~0.243 for "raz.wtf" in Victor Mono, capped at the wrap max-width) so
+   the box is already the filled height at first paint - the JS correction that
+   lands after fonts load then shifts nothing (no CLS). If the wordmark text
+   changes, the JS still fits it exactly; only this placeholder would need a new
+   ratio. */
+#hero-title { font-size: min(24.3vw, calc(var(--maxw) * 0.243)); }
+
+/* ==========================================================================
+   Page / layout transitions
+   ========================================================================== */
+/* Opacity-only, and a quick leave: the RouteWipe curtain owns the visible
+   route choreography for full-motion users (the swap happens hidden behind it),
+   while this fade is the reduced-motion / no-JS fallback. No transform, so the
+   incoming page's kinetic cascade + scroll reveals own all the vertical motion. */
+.page-enter-active { transition: opacity .3s var(--ease); }
+.page-leave-active { transition: opacity .16s var(--ease); }
+.page-enter-from, .page-leave-to { opacity: 0; }
+
+/* ==========================================================================
+   Prose - reading views (about + project markdown). The one place hand CSS
+   earns its keep: styling markup we don't control class-by-class.
+   ========================================================================== */
+.prose {
+  color: rgb(var(--subtext1));
+  font-size: var(--fs-body);
+  line-height: 1.78;
+  max-width: var(--measure-wide);
+}
+/* @nuxt/content's <ContentRenderer> wraps all output in a single <div>. THAT
+   wrapper is the real flow container, so the breakout grid + the sibling rhythm
+   live on it - `.prose > *` only ever sees the wrapper and never the content. */
+.prose > div {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(0, 1fr)
+    [text-start] min(var(--measure), 100%) [text-end]
+    minmax(0, 1fr) [full-end];
+  align-content: start;
+}
+/* text flow is centred in the reading column; wide elements break out to the
+   full frame, so media sits symmetrically around the centred text (Raz's call). */
+.prose > div > * { grid-column: text-start / text-end; min-width: 0; }
+.prose > div > :is(figure, pre, table, hr, .callout, .figbox, img),
+.prose > div > .wide { grid-column: full-start / full-end; }
+/* vertical rhythm (was `.prose > * + *`, which the wrapper div silently broke) */
+.prose > div > * { margin-top: 1.15em; }
+.prose > div > :first-child { margin-top: 0; }
+.prose > div > :is(figure, pre, table, .callout, .figbox) { margin-top: 1.9em; }
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  font-family: var(--font-display); font-optical-sizing: auto; font-weight: 560;
+  color: rgb(var(--text)); letter-spacing: -.018em; line-height: 1.08; text-wrap: balance;
+}
+.prose h1 { font-size: var(--fs-h1); }
+.prose h2 { font-size: var(--fs-h2); margin-top: 2.4em; }
+.prose h3 { font-size: var(--fs-h3); margin-top: 1.9em; }
+.prose h4 { font-size: 1.15rem; margin-top: 1.6em; }
+.prose :is(h1, h2, h3, h4) + * { margin-top: .6em; }
+.prose strong { color: rgb(var(--text)); font-weight: 700; }
+.prose em { font-style: italic; }
+.prose a {
+  color: rgb(var(--text));
+  background-image: linear-gradient(rgb(var(--mauve)), rgb(var(--mauve)));
+  background-size: 100% 1px; background-repeat: no-repeat; background-position: 0 1.15em;
+  transition: color .25s var(--ease), background-position .25s var(--ease);
+}
+.prose a:hover { color: rgb(var(--mauve)); }
+/* Heading anchor links are auto-generated by MDC (the heading text is wrapped
+   in an <a href="#id">). Keep headings as plain Fraunces - no underline
+   gradient, inherit color - while staying deep-linkable. */
+.prose :is(h1, h2, h3, h4, h5, h6) a {
+  color: inherit; background-image: none; text-decoration: none;
+}
+.prose ul, .prose ol { padding-left: 1.35em; }
+.prose li + li { margin-top: .4em; }
+.prose ul li::marker { color: rgb(var(--mauve)); }
+.prose ol li::marker { color: rgb(var(--overlay1)); font-family: var(--font-mono); }
+.prose blockquote {
+  border-left: 2px solid rgb(var(--mauve));
+  padding: .2em 0 .2em 1.25em; margin-block: 1.6em;
+  color: rgb(var(--text));
+  font-family: var(--font-display); font-style: italic; font-weight: 420;
+  font-size: var(--fs-lead); line-height: 1.45;
+}
+/* Inline code: peach on a fixed dark chip in every flavour - matching the code
+   blocks. On the light flavours' surface0 the peach dropped to ~2:1; the warm
+   accent reads cleanly on the constant dark chip instead. */
+.prose code {
+  font-family: var(--font-mono); font-size: .88em;
+  background: rgb(var(--code-bg) / .9); color: rgb(var(--peach));
+  padding: .12em .4em; border-radius: 4px;
+}
+.prose pre {
+  background: rgb(var(--code-bg)); border: 1px solid var(--code-hair);
+  border-radius: var(--radius-md); padding: 1.1rem 1.25rem;
+  overflow-x: auto; font-size: var(--fs-sm); line-height: 1.6;
+}
+.prose pre code { background: none; color: rgb(var(--code-fg)); padding: 0; }
+.prose hr { border: 0; border-top: 1px solid var(--hair); margin-top: 2.4em; }
+.prose img { width: 100%; border-radius: var(--radius-md); border: 1px solid var(--hair); }
+.prose figure { margin: 0; }
+.prose figcaption { font-family: var(--font-mono); font-size: var(--fs-micro); color: rgb(var(--overlay1)); margin-top: .6rem; text-align: left; }
+
+/* Tables - full styling (there was none; markdown tables rendered raw). They
+   break out to the reading frame and scroll horizontally when too wide. */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.prose thead th {
+  background: rgb(var(--surface0) / .5);
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: rgb(var(--subtext0));
+  font-weight: 700;
+}
+.prose th, .prose td {
+  padding: .7em 1em;
+  text-align: left;
+  border-bottom: 1px solid var(--hair);
+  vertical-align: top;
+}
+.prose tbody tr:last-child td { border-bottom: 0; }
+.prose tbody td { color: rgb(var(--subtext1)); }
+.prose td a { white-space: nowrap; }
+
+/* Accent-fill controls (primary CTA + mauve status badge) use crust text, which
+   clears AA on the light-purple mauve/lavender of the DARK flavours. In LATTE
+   mauve is a dark purple and the lavender hover is a mid periwinkle, where no
+   single label colour clears 4.5:1 on both - so give the light flavour white
+   text and a hover that DARKENS (staying dark enough for white) instead of
+   lightening to lavender. Dark flavours are already AA and untouched. */
+:root[data-flavor='latte'] .btn-primary,
+:root[data-flavor='latte'] .status-seg.bg-mauve { color: #fff; }
+:root[data-flavor='latte'] .btn-primary:hover { background: rgb(109 46 191); }
+@media (prefers-color-scheme: light) {
+  :root:not([data-flavor]) .btn-primary,
+  :root:not([data-flavor]) .status-seg.bg-mauve { color: #fff; }
+  :root:not([data-flavor]) .btn-primary:hover { background: rgb(109 46 191); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+  html.js [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
+}

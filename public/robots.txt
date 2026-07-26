@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://raz.wtf/sitemap.xml

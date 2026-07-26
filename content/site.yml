@@ -1,0 +1,63 @@
+# Global chrome. Anything a visitor reads that is not tied to one page lives
+# here: the author identity behind bylines, the footer, the furniture around
+# posts and case studies, and the error page.
+
+author:
+  name: Simone “Raz” Colabufalo
+  monogram: r
+  bio: 'Web designer & developer from Italy, Engineering Manager by day. Vue, Nuxt and lean Node backends, plus GMK keycaps rendered in Blender when the tabs get quiet. This site is the portfolio and the scratchpad. 🫡'
+
+footer:
+  blurb: 'Web designer & developer. Occasionally, keycaps. Emojis sprinkled throughout 🫡'
+  elsewhereHeading: Elsewhere
+  siteHeading: Site
+  links:
+    - label: Work
+      to: /projects
+    - label: About
+      to: /about
+    - label: Notes
+      to: /blog
+      requiresPosts: true
+    - label: Source on GitHub
+      to: https://github.com/RazorSiM/razwtf
+  statusLine:
+    mode: NORMAL
+    branch: main
+    path: ~/raz.wtf
+    coords: 41.9°N 12.5°E
+    flavorLabel: 'flavor:'
+  colophon:
+    left: © 2026 Simone Colabufalo · Made in Italy
+    right: Victor Mono + Fraunces · Catppuccin, four flavours
+
+post:
+  tocHeading: On this page
+  backLabel: All notes
+  bylinePrefix: By
+  readSuffix: min read
+  relatedLabel: Keep reading
+  relatedNote: A blog, but not a blog
+  bioLabel: About the author
+
+project:
+  backLabel: All work
+  eyebrow: 00 · Case study
+  overview:
+    label: Overview
+    note: The write-up
+  gallery:
+    label: Gallery
+    note: Rendered on real boards
+  details:
+    label: Details
+    note: What shipped
+
+error:
+  kicker: Error
+  notFoundHeading: Page not found
+  notFoundDetail: 'That route doesn’t exist. It may have moved, or it never did.'
+  genericHeading: Something broke
+  genericDetail: An unexpected error got in the way.
+  homeCta: Back to home
+  workCta: Browse the work

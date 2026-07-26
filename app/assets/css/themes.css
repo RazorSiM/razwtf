@@ -1,0 +1,188 @@
+/* ==========================================================================
+   raz.wtf - Catppuccin flavor tokens (four flavors)
+   ---------------------------------------------------------------------------
+   Every color is a SPACE-separated "R G B" triple so it composes with modern
+   rgb()/alpha syntax:  rgb(var(--mauve))  and  rgb(var(--mauve) / .5).
+   This is what lets UnoCSS opacity modifiers work (text-mauve/28, bg-crust/72…)
+   via the theme colors defined in uno.config.ts as `rgb(var(--x) / <alpha-value>)`.
+
+   Flavor is selected by the `data-flavor` attribute on <html>, set before paint
+   by the no-flash script in nuxt.config.ts and kept in sync by useFlavor().
+   Default (no attribute) = mocha; a prefers-color-scheme fallback covers the
+   no-JS / pre-hydration "Auto" case.
+   ========================================================================== */
+
+/* --- Mocha (dark) - the :root default --- */
+:root,
+:root[data-flavor='mocha'] {
+  --rosewater: 245 224 220;
+  --flamingo: 242 205 205;
+  --pink: 245 194 231;
+  --mauve: 203 166 247;
+  --red: 243 139 168;
+  --maroon: 235 160 172;
+  --peach: 250 179 135;
+  --yellow: 249 226 175;
+  --green: 166 227 161;
+  --teal: 148 226 213;
+  --sky: 137 220 235;
+  --sapphire: 116 199 236;
+  --blue: 135 176 249;
+  --lavender: 180 190 254;
+  /* "ink" accents = the accent colour when used as TEXT. Default to the plain
+     accent; overridden darker in the light (latte) flavour so accent-coloured
+     text clears WCAG AA on the light base. Lazy var() means dark flavours pick
+     up their own --peach etc. automatically. */
+  --peach-ink: var(--peach);
+  --green-ink: var(--green);
+  --sapphire-ink: var(--sapphire);
+  --blue-ink: var(--blue);
+  --text: 198 208 245;
+  --subtext1: 179 188 223;
+  --subtext0: 161 168 201;
+  --overlay2: 142 149 179;
+  --overlay1: 123 129 157;
+  --overlay0: 105 109 134;
+  --surface2: 86 89 112;
+  --surface1: 67 70 90;
+  --surface0: 49 50 68;
+  --base: 30 30 46;
+  --mantle: 24 24 37;
+  --crust: 17 17 27;
+}
+
+/* --- Latte (light) --- muted greys (subtext0 + overlay0/1/2) are darkened
+   from the Catppuccin Latte defaults so small uppercase label text clears
+   WCAG AA (~4.5:1) on the light base; the muted ramp compresses as a result.
+   Dark flavors keep the original Catppuccin values. See raz-eir. */
+:root[data-flavor='latte'] {
+  --rosewater: 220 138 120;
+  --flamingo: 221 120 120;
+  --pink: 234 118 203;
+  --mauve: 136 57 239;
+  --red: 210 15 57;
+  --maroon: 230 69 83;
+  --peach: 254 100 11;
+  --yellow: 223 142 29;
+  --green: 64 160 43;
+  --teal: 23 146 153;
+  --sky: 4 165 229;
+  --sapphire: 32 159 181;
+  --blue: 30 102 245;
+  --lavender: 114 135 253;
+  /* AA-safe darker accents for text on the light base (see --*-ink above) */
+  --peach-ink: 168 60 0;
+  --green-ink: 39 110 24;
+  --sapphire-ink: 12 97 120;
+  --blue-ink: 29 78 216;
+  --text: 76 79 105;
+  --subtext1: 92 95 119;
+  --subtext0: 103 106 125;
+  --overlay2: 104 107 126;
+  --overlay1: 105 108 127;
+  --overlay0: 106 109 128;
+  --surface2: 172 176 190;
+  --surface1: 188 192 204;
+  --surface0: 204 208 218;
+  --base: 239 241 245;
+  --mantle: 230 233 239;
+  --crust: 220 224 232;
+}
+
+/* --- Frappé --- */
+:root[data-flavor='frappe'] {
+  --rosewater: 242 213 207;
+  --flamingo: 238 190 190;
+  --pink: 244 184 228;
+  --mauve: 202 158 230;
+  --red: 231 130 132;
+  --maroon: 234 153 156;
+  --peach: 239 159 118;
+  --yellow: 229 200 144;
+  --green: 166 209 137;
+  --teal: 129 200 190;
+  --sky: 153 209 219;
+  --sapphire: 133 193 220;
+  --blue: 140 170 238;
+  --lavender: 186 187 241;
+  --text: 198 208 245;
+  --subtext1: 181 192 217;
+  --subtext0: 165 173 206;
+  --overlay2: 148 155 183;
+  --overlay1: 131 139 167;
+  --overlay0: 115 121 148;
+  --surface2: 98 104 128;
+  --surface1: 81 87 109;
+  --surface0: 65 69 89;
+  --base: 48 52 70;
+  --mantle: 41 44 60;
+  --crust: 35 38 52;
+}
+
+/* --- Macchiato --- */
+:root[data-flavor='macchiato'] {
+  --rosewater: 244 219 214;
+  --flamingo: 240 198 198;
+  --pink: 245 189 230;
+  --mauve: 198 160 246;
+  --red: 237 135 150;
+  --maroon: 238 153 160;
+  --peach: 245 169 127;
+  --yellow: 238 212 159;
+  --green: 166 218 149;
+  --teal: 139 213 202;
+  --sky: 145 215 227;
+  --sapphire: 125 196 228;
+  --blue: 138 173 244;
+  --lavender: 183 189 248;
+  --text: 202 211 245;
+  --subtext1: 184 192 224;
+  --subtext0: 165 173 203;
+  --overlay2: 147 154 183;
+  --overlay1: 128 135 162;
+  --overlay0: 110 115 141;
+  --surface2: 91 96 120;
+  --surface1: 72 76 100;
+  --surface0: 54 58 79;
+  --base: 36 39 58;
+  --mantle: 30 32 48;
+  --crust: 24 25 38;
+}
+
+/* No-JS / pre-hydration "Auto": if no explicit flavor is chosen, follow the
+   system. The head script overrides this before paint when JS is available. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-flavor]) {
+    --rosewater: 220 138 120;
+    --flamingo: 221 120 120;
+    --pink: 234 118 203;
+    --mauve: 136 57 239;
+    --red: 210 15 57;
+    --maroon: 230 69 83;
+    --peach: 254 100 11;
+    --yellow: 223 142 29;
+    --green: 64 160 43;
+    --teal: 23 146 153;
+    --sky: 4 165 229;
+    --sapphire: 32 159 181;
+    --blue: 30 102 245;
+    --lavender: 114 135 253;
+    /* AA-safe darker accents for text on the light base (see --*-ink above) */
+    --peach-ink: 168 60 0;
+    --green-ink: 39 110 24;
+    --sapphire-ink: 12 97 120;
+    --blue-ink: 29 78 216;
+    --text: 76 79 105;
+    --subtext1: 92 95 119;
+    --subtext0: 103 106 125;
+    --overlay2: 104 107 126;
+    --overlay1: 105 108 127;
+    --overlay0: 106 109 128;
+    --surface2: 172 176 190;
+    --surface1: 188 192 204;
+    --surface0: 204 208 218;
+    --base: 239 241 245;
+    --mantle: 230 233 239;
+    --crust: 220 224 232;
+  }
+}

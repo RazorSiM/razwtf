@@ -1,3 +1,5 @@
+import { getBlogTagRoutes } from './scripts/content-tags'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -6,25 +8,49 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
     '@nuxt/content',
     '@nuxt/image',
+    '@nuxt/fonts',
     '@vueuse/nuxt',
-    '@nuxthq/studio',
   ],
 
+  // UI-kit primitives are bare-named (<WorkCard>, <TagList>, <SectionMarker>…)
+  // for ergonomics since they're reused across every page; everything else
+  // keeps Nuxt's default directory prefix (<LayoutAppHeader>, etc.).
+  components: [
+    { path: '~/components/ui', pathPrefix: false },
+    '~/components',
+  ],
+
+  // Fraunces is fetched & self-hosted at build (CLS-safe fallback metrics).
+  // Victor Mono is declared via @font-face in main.css and is left untouched.
+  fonts: {
+    families: [
+      { name: 'Fraunces', provider: 'google', styles: ['normal', 'italic'], weights: [340, 420, 460, 540, 560, 600] },
+    ],
+  },
+
   content: {
-    documentDriven: true,
-    markdown: {
-      remarkPlugins: ['remark-reading-time'],
+    build: {
+      markdown: {
+        highlight: {
+          theme: 'dracula',
+          langs: [
+            'bash',
+            'css',
+            'javascript',
+            'typescript',
+            'vue',
+            'markdown',
+          ],
+        },
+      },
     },
-    highlight: {
-      theme: 'dracula',
-      preload: [
-        'bash',
-        'css',
-        'javascript',
-        'typescript',
-        'vue',
-        'markdown',
-      ],
+    experimental: {
+      // Use Node's built-in node:sqlite (Node 22+/26) instead of the native
+      // better-sqlite3 addon. The addon renders fine in the node-server build
+      // but fails in the `nuxt generate` prerender context on NixOS ("Module
+      // did not self-register"), 500-ing every queryCollection page. node:sqlite
+      // needs no compiled binary, so prerender + static WASM client both work.
+      sqliteConnector: 'native',
     },
   },
 
@@ -35,38 +61,54 @@ export default defineNuxtConfig({
   },
 
   css: [
-    '@unocss/reset/tailwind-compat.css',
+    // preset-wind4 ships a built-in reset (enabled via preflights.reset in uno.config.ts),
+    // so the standalone @unocss/reset import is no longer needed.
     '~/assets/css/main.css',
   ],
 
   nitro: {
+    // Content-type for the feed set declaratively (works in dev, node-server
+    // and the static _headers output) - avoids h3's setResponseHeader, which
+    // resolves to a mismatched h3 version in this dep tree and throws.
+    routeRules: {
+      '/rss.xml': { headers: { 'content-type': 'application/rss+xml; charset=utf-8' } },
+      '/sitemap.xml': { headers: { 'content-type': 'application/xml; charset=utf-8' } },
+      // GMK Retroguardia was renamed to SWG Retroguardia (OEM change) - forward
+      // the old URL permanently so existing links don't 404.
+      '/projects/gmk-retroguardia': { redirect: { to: '/projects/swg-retroguardia', statusCode: 301 } },
+    },
     prerender: {
-      routes: ['/sitemap.xml'],
+      // Tag pages aren't linked from anywhere the crawler reaches before the
+      // blog pages that link them are themselves rendered, so they're listed
+      // explicitly (raz-paj) - enumerated from content/blog frontmatter at
+      // config-eval time, see scripts/content-tags.ts. /rss.xml (raz-5c6) is
+      // a plain server route with no page linking to it, so it needs the
+      // same treatment.
+      routes: ['/sitemap.xml', '/rss.xml', '/projects/gmk-retroguardia', ...getBlogTagRoutes()],
     },
   },
 
   app: {
+    // Fade between routes; pairs with .page-* transitions in main.css.
+    pageTransition: { name: 'page', mode: 'out-in' },
     head: {
-      title: 'Raz - Simone Colabufalo',
-      meta: [
-        { name: 'description', content: 'Raz.WTF - Web Designer & Developer. I build things on the web, like this website' },
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: '@Razor_SiM' },
-        { name: 'twitter:creator', content: '@Razor_SiM' },
-        { name: 'twitter:title', content: 'Raz.WTF' },
-        { name: 'twitter:description', content: 'Raz.WTF - Web Designer & Developer. I build things on the web, like this website' },
-        { name: 'twitter:image', content: 'https://raz.wtf/socialShare.jpg' },
-        { name: 'twitter:url', content: 'https://raz.wtf' },
-        { name: 'twitter:image:alt', content: 'Raz.WTF render' },
-        { name: 'og:title', content: 'Raz.WTF' },
-        { name: 'og:description', content: 'Raz.WTF - Web Designer & Developer. I build things on the web, like this website' },
-        { name: 'og:image', content: 'https://raz.wtf/socialShare.jpg' },
-        { name: 'og:url', content: 'https://raz.wtf' },
-        { name: 'og:image:alt', content: 'Raz.WTF render' },
-        { name: 'og:site_name', content: 'Raz.WTF' },
-        { name: 'og:type', content: 'website' },
-        { name: 'og:locale', content: 'en_US' },
+      // No-flash flavor init: runs in <head> before first paint, resolves the
+      // stored preference (or system for "auto") to a concrete data-flavor, and
+      // marks <html class="js"> so JS-gated reveals can activate. Keeps the
+      // canvas logo + switcher from mismatching on hydration.
+      script: [
+        {
+          innerHTML: ';(function(){try{var d=document.documentElement;d.classList.add("js");var p=localStorage.getItem("flavor")||"auto";var f=p==="auto"?(window.matchMedia("(prefers-color-scheme: light)").matches?"latte":"mocha"):p;d.setAttribute("data-flavor",f);}catch(e){document.documentElement.setAttribute("data-flavor","mocha");}})();',
+          tagPosition: 'head',
+          tagPriority: 'critical',
+        },
       ],
+      // NOTE: title here is only the SSR default before Vue hydrates. All
+      // social/meta tags (description, OG, Twitter, canonical) are owned by a
+      // single source - app.vue's useSeoMeta - so they stay correct per-route
+      // and emit OG as `property=` (the previous inline array emitted the OG
+      // tags as `name=`, which the OG protocol ignores, and duplicated them).
+      title: 'Raz - Simone Colabufalo',
     },
   },
 
