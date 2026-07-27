@@ -469,9 +469,11 @@ extracted script program - with the true location buried in the message text,
 so editor squiggles and `--fix` land on the wrong line. Two commands, correct
 ranges.
 
-**Why these four rules are off.** The `nuxt` preset reports 225 diagnostics
-here, 148 of them from rules that fight deliberate choices in this codebase, and
-none of the four is fixable or configurable:
+**Why rules are disabled.** The `nuxt` preset reports 225 diagnostics here.
+Everything actionable was fixed; what stays off in `vize.config.json` is either
+inapplicable to a prerendered content site or fights a deliberate choice. None of
+it is autofixable - `vize lint --fix` is currently inert even for rules the docs
+mark fixable.
 
 - `vue/no-inline-style` (31) - `:style="{ '--accent': accent }"` _is_ the
   per-card accent mechanism. See [styling system](#styling-system).
@@ -479,8 +481,45 @@ none of the four is fixable or configurable:
   in `app/plugins/reveal.ts`.
 - `vue/multi-word-component-names` (5, as errors) - `Callout`/`Info`/`Note`/
   `Tip`/`Warning` names are dictated by their MDC usage (`::note`).
+- `vue/no-unsafe-url` (18) - the rule guards against `javascript:` URLs arriving
+  from untrusted input. Every flagged binding reads a zod-validated frontmatter
+  field or `site.yml`, so the "input" is a file in this repo.
+- `vue/no-root-v-if` (7) - the page roots guard on `page`, which `useAsyncData`
+  resolves before render and prerendering makes certain. Restructuring seven
+  roots would put the page transition and RouteWipe choreography at risk for a
+  condition that cannot be false.
+- `vue/use-unique-element-ids` (9) - the static IDs all sit on singleton page
+  sections (`hero-title`, `notes-h`), and the rule cannot know a page renders
+  once. Components that _can_ repeat already take the id as a prop (SearchField's
+  `ariaControls`).
+- `vue/v-on-handler-style` (8) - wants a named method instead of an inline
+  statement. For one-liners like `@click="model = ''"` the indirection costs more
+  than it explains.
 - `css/prefer-nested-selectors` (66) - a nesting convention the `<style>` blocks
   consistently do not follow.
+- `css/prefer-logical-properties` (7) - no RTL locale is planned; the site ships
+  English and Italian only.
+- `css/prefer-slotted` (1) - MediaFrame's `:deep(img)` is correct and documented.
+  `::v-slotted()` matches only direct slot children and could break it.
+- `css/no-hardcoded-values` (8) - two are outright false positives (`transparent`
+  on a text-stroke, a `3.1em` relative drop cap); the rest need a design call
+  rather than a lint fix. See the two open items below.
+
+Every `css/*` diagnostic reports at the `<style scoped>` line rather than the
+offending declaration, so acting on one means grepping for it by hand.
+
+**Two open items this surfaced,** both deliberately left alone:
+
+1. `ProjectGallery.vue` and `ImgLightbox.vue` set `font-size: 0.8rem`, which is
+   off the `--fs-*` scale - it lands between `--fs-cap` (0.76rem) and `--fs-sm`
+   (0.86rem). Snapping it either way is a visible type change, so it wants an eye
+   rather than a codemod.
+2. The layer scale is split between raw `z-index` in scoped CSS (200, 300) and
+   UnoCSS utilities in class attributes (`z-40`, `z-50`, `z-[60]`, `z-100`,
+   `z-201`). The two halves are coupled - `LightBox` puts its content on `z-201`,
+   exactly one above its own `z-index: 200` overlay - so tokenising only the CSS
+   half splits the pair and makes the ordering harder to follow, not easier. A
+   real layer scale has to cover both halves at once.
 
 **What was lost with ESLint**, with no oxlint equivalent: `regexp` (60 rules),
 `e18e`, `antfu`, `command`, the `pnpm` workspace rules, jsonc/yaml key sorting,
