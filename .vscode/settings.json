@@ -1,44 +1,43 @@
 {
-// Enable the ESlint flat config support
-  "eslint.experimental.useFlatConfig": true,
+  // Oxc owns both linting and formatting (oxc.oxc-vscode). The extension does
+  // not bundle the tools - it picks up the project-local `oxlint` and `oxfmt`
+  // from node_modules, so `pnpm install` is enough. If the status item stays
+  // grey after installing, run "Developer: Reload Window".
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
 
-  // Disable the default formatter, use eslint instead
-  "prettier.enable": false,
-  "editor.formatOnSave": false,
-
-  // Auto fix
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
+    "source.fixAll.oxc": "explicit",
     "source.organizeImports": "never"
   },
 
-  // Silent the stylistic rules in you IDE, but still auto fix them
-  "eslint.rules.customizations": [
-    { "rule": "style/*", "severity": "off" },
-    { "rule": "*-indent", "severity": "off" },
-    { "rule": "*-spacing", "severity": "off" },
-    { "rule": "*-spaces", "severity": "off" },
-    { "rule": "*-order", "severity": "off" },
-    { "rule": "*-dangle", "severity": "off" },
-    { "rule": "*-newline", "severity": "off" },
-    { "rule": "*quotes", "severity": "off" },
-    { "rule": "*semi", "severity": "off" }
-  ],
+  "prettier.enable": false,
 
-  // Enable eslint for all supported languages
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "html", "markdown", "json", "jsonc", "yaml"],
+  // Vue template, a11y and <style> diagnostics come from Vize (ubugeeei.vize),
+  // which is the half oxlint cannot do: all 46 of its vue/* rules are <script>
+  // rules, because oxlint has no Vue template parser.
+  "vize.lint.enable": true,
+  // Formatting stays with oxfmt so the two never fight over the same buffer.
+  // Mirrors `lsp.formatting: false` in vize.config.json.
+  "vize.formatting.enable": false,
+  // Types stay with Volar + `pnpm typecheck` (vue-tsc). Vize's own checker is
+  // still maturing upstream and would only double up the diagnostics.
+  "vize.typecheck.enable": false,
+
   "cSpell.words": [
-    "antfu",
-    "antfueslint",
     "degit",
     "Icones",
     "iconify",
+    "oxfmt",
+    "oxlint",
+    "patina",
     "pinia",
+    "ubugeeei",
     "unocss",
     "unplugin",
-    "Vetur",
     "Vite",
     "Vitest",
+    "vize",
     "vueuse"
   ]
 }

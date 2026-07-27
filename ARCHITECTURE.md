@@ -447,6 +447,49 @@ Content types are set through `routeRules` rather than `setResponseHeader`
 because `h3` auto-imports a version in this dependency tree that mismatches the
 one nitro uses, and throws at runtime.
 
+## Linting and formatting
+
+Three Rust tools replaced ESLint and `@antfu/eslint-config`:
+
+| Tool | Owns | Config |
+| --- | --- | --- |
+| `oxfmt` | formatting: TS, Vue (template *and* script), Markdown, YAML, JSON, CSS | `.oxfmtrc.json` |
+| `oxlint` | linting: JS/TS and SFC `<script>` blocks | `.oxlintrc.json` |
+| `vize lint` | linting: Vue templates, a11y, SFC `<style>`, SSR | `vize.config.json` |
+
+**Why two linters.** Oxlint ships 46 `vue/*` rules and every one of them is a
+`<script>` rule; it has no Vue template parser, and the upstream position is
+that `eslint-plugin-vue` is not a compatibility target
+([oxc#15761](https://github.com/oxc-project/oxc/issues/15761)). Vize (Patina) is
+the template half. There is an `oxlint-plugin-vize` bridge that folds both into
+one command, but it anchors every diagnostic to `2:2` - the start of the
+extracted script program - with the true location buried in the message text,
+so editor squiggles and `--fix` land on the wrong line. Two commands, correct
+ranges.
+
+**Why these four rules are off.** The `nuxt` preset reports 225 diagnostics
+here, 148 of them from rules that fight deliberate choices in this codebase, and
+none of the four is fixable or configurable:
+
+- `vue/no-inline-style` (31) - `:style="{ '--accent': accent }"` *is* the
+  per-card accent mechanism. See [styling system](#styling-system).
+- `vue/warn-custom-directive` (44) - `v-reveal` is a real directive, registered
+  in `app/plugins/reveal.ts`.
+- `vue/multi-word-component-names` (5, as errors) - `Callout`/`Info`/`Note`/
+  `Tip`/`Warning` names are dictated by their MDC usage (`::note`).
+- `css/prefer-nested-selectors` (66) - a nesting convention the `<style>` blocks
+  consistently do not follow.
+
+**What was lost with ESLint**, with no oxlint equivalent: `regexp` (60 rules),
+`e18e`, `antfu`, `command`, the `pnpm` workspace rules, jsonc/yaml key sorting,
+and linting of fenced code inside Markdown. Oxlint's `jsPlugins` can load ESLint
+plugins directly if any of these turn out to be missed.
+
+`sortTailwindcss` in `.oxfmtrc.json` stands in for the `unocss/order` rules.
+It reorders class attributes but not the generated CSS: verified against a
+build, where the only difference was the order of custom properties inside a
+single `:root` block, with an identical declaration set.
+
 ## Gotchas
 
 Failures that already cost a session each.
@@ -481,3 +524,8 @@ Failures that already cost a session each.
    client's 1-argument form. Twenty phantom type errors came from that alone.
 10. **`pnpm typecheck` is the only thing that checks types.** `nuxt generate`
     does not typecheck, so a build passing says nothing about types.
+11. **Vize config must be `vize.config.json`, not `.ts`.** The docs list
+    `vize.config.ts` as a supported filename, but `vize lint` silently ignores
+    it and falls back to the default preset - the same settings yielded 22
+    diagnostics via `.ts` and 77 via `.json`. Silently, so the only symptom is
+    a suspiciously short report.

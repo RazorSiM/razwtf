@@ -72,7 +72,8 @@ image is older than this needs. See [Deploy](#deploy).
 | `pnpm generate` | static build to `.output/public` (Cloudflare writes `dist`; see Deploy) |
 | `pnpm build` | server build, for a Node host |
 | `pnpm preview` | serve the last build |
-| `pnpm lint:check` / `pnpm lint:fix` | ESLint 9 flat config (`@antfu/eslint-config`) |
+| `pnpm lint` / `pnpm lint:fix` | `oxlint` (JS/TS + SFC `<script>`) then `vize lint` (Vue templates, a11y, `<style>`) |
+| `pnpm fmt` / `pnpm fmt:check` | `oxfmt` - formats TS, Vue, Markdown, YAML, JSON and CSS |
 | `pnpm typecheck` | `vue-tsc` via `nuxt typecheck`; the build does **not** check types |
 
 `nuxt prepare` runs on install. Note that `nuxt generate` overwrites the

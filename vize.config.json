@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/vize/schemas/vize.config.schema.json",
+  "linter": {
+    "preset": "nuxt",
+    "rules": {
+      "vue/no-inline-style": "off",
+      "vue/warn-custom-directive": "off",
+      "vue/multi-word-component-names": "off",
+      "css/prefer-nested-selectors": "off"
+    }
+  },
+  "lsp": {
+    "formatting": false
+  }
+}
