@@ -23,7 +23,7 @@
 
   # https://devenv.sh/basics/
   enterShell = ''
-    echo "raz.wtf devenv ready — node $(node --version), pnpm ${pkgs.pnpm_11.version}"
+    echo "raz.wtf devenv ready - node $(node --version), pnpm ${pkgs.pnpm_11.version}"
     echo "  pnpm install   # install deps"
     echo "  pnpm dev       # or: devenv up"
   '';

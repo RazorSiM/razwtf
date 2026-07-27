@@ -1,5 +1,10 @@
+shellEmulator: true
 allowBuilds:
   '@parcel/watcher': true
+  # Transitive dep of @nuxt/content, never used: content.experimental.sqliteConnector
+  # is 'native' (node:sqlite), so the compiled addon is dead weight. Skipping its
+  # build also avoids the node-gyp step and the ABI mismatch it caused on NixOS.
+  better-sqlite3: false
   esbuild: true
   sharp: true
   unrs-resolver: true

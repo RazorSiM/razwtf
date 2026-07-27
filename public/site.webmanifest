@@ -1,0 +1,13 @@
+{
+  "name": "Raz.WTF · Simone Colabufalo",
+  "short_name": "Raz.WTF",
+  "description": "Raz.WTF - Web Designer & Developer. I build things on the web, like this website.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e1e2e",
+  "theme_color": "#1e1e2e",
+  "icons": [
+    { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

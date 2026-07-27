@@ -30,3 +30,6 @@ devenv.local.yaml
 
 # direnv
 .direnv
+
+# Claude Code workflow scripts (local process artifacts)
+.claude-workflows
