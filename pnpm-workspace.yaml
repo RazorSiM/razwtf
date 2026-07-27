@@ -6,6 +6,11 @@ allowBuilds:
   # build also avoids the node-gyp step and the ABI mismatch it caused on NixOS.
   better-sqlite3: false
   esbuild: true
+  # lefthook's postinstall only runs `lefthook install -f`, and the binary ships
+  # in an optionalDependency rather than being built by this script, so denying
+  # it costs nothing. The repo's own `prepare` script calls `lefthook install`
+  # instead, where it is visible in package.json rather than implied by a dep.
+  lefthook: false
   sharp: true
   unrs-resolver: true
   vue-demi: true

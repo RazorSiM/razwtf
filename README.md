@@ -73,6 +73,7 @@ image is older than this needs. See [Deploy](#deploy).
 | `pnpm build`                  | server build, for a Node host                                                       |
 | `pnpm preview`                | serve the last build                                                                |
 | `pnpm lint` / `pnpm lint:fix` | `oxlint` (JS/TS + SFC `<script>`) then `vize lint` (Vue templates, a11y, `<style>`) |
+| `pnpm lint:strict`            | same as `pnpm lint` but fails on warnings too; what pre-push runs                   |
 | `pnpm fmt` / `pnpm fmt:check` | `oxfmt` - formats TS, Vue, Markdown, YAML, JSON and CSS                             |
 | `pnpm typecheck`              | `vue-tsc` via `nuxt typecheck`; the build does **not** check types                  |
 
@@ -80,6 +81,25 @@ image is older than this needs. See [Deploy](#deploy).
 generated dev types in `.nuxt`, which makes editors report phantom
 "Cannot find name `defineNuxtConfig`" errors; run `devenv shell -- nuxt prepare`
 to restore them.
+
+## Git hooks
+
+Lefthook, configured in `lefthook.yml` and installed by the `prepare` script, so
+`pnpm install` is all it takes.
+
+| Hook         | Runs                                                          | Cost |
+| ------------ | ------------------------------------------------------------- | ---- |
+| `pre-commit` | `oxfmt` on staged files (re-staged), then `oxlint` and `vize` | ~1s  |
+| `pre-push`   | `pnpm typecheck`, `pnpm lint:strict`, `pnpm fmt:check`        | ~6s  |
+
+The two differ on purpose. Both linters exit 0 on warnings, so **pre-commit only
+blocks on errors** and work-in-progress commits stay cheap. **Pre-push adds
+`--max-warnings 0`**, so what leaves the machine is clean - the ruleset is
+curated down to zero warnings, which makes any hit there a new one.
+
+Formatting is fixed and re-staged rather than reported, so a commit will quietly
+contain reformatted files. Escape hatches: `git commit --no-verify`, or `LEFTHOOK=0`
+in front of any git command.
 
 ## Layout
 
