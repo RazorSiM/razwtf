@@ -26,28 +26,50 @@ headings). Colour is Catppuccin in latte, frappe, macchiato and mocha.
 ## Requirements
 
 This repo is developed on NixOS with [devenv](https://devenv.sh), which pins
-**Node 26** and **pnpm 11.9**. Everything runs inside that shell:
+**Node 26** and **pnpm 11.9**. `.envrc` loads it through direnv, so an
+interactive shell in this directory already has both; scripted runs should be
+explicit:
 
 ```bash
 devenv shell -- pnpm install
 devenv shell -- pnpm dev        # or: devenv up
 ```
 
-Two things to know before working around it:
+Without Nix, use Node 24 or newer and pnpm 11, and drop the `devenv shell --`
+prefix from every command below. Do not use corepack; devenv provides pnpm
+directly.
 
-- Ambient `node` on this machine is v24. Content's SQLite connector is set to
-  `native` (`node:sqlite`), so a lower Node breaks `nuxt generate`.
-- Do not use corepack. devenv provides pnpm directly.
+### Why the Node floor is a hard requirement
 
-Without Nix, any Node 26 plus pnpm 11 toolchain works; drop the
-`devenv shell --` prefix from every command below.
+It is not a preference, and it is worth understanding before you try to build
+on an older runtime.
+
+`@nuxt/content` keeps parsed markdown in a SQLite database that it builds
+during `nuxt generate`, so the build needs a SQLite driver. There are two:
+
+- **`better-sqlite3`**, a native C++ addon that has to be compiled against the
+  exact Node ABI it will run under.
+- **`node:sqlite`**, built into Node itself, nothing to compile.
+
+This project uses the second, via `content.experimental.sqliteConnector:
+'native'` in `nuxt.config.ts`, because the native addon kept failing under
+NixOS during the prerender step with `Module did not self-register` (an ABI
+mismatch between the Node that compiled it and the Node that loaded it), which
+turned every content page into a 500.
+
+The consequence: because the driver is a Node built-in, **the Node version
+decides whether the build works at all**. `node:sqlite` is a recent addition
+(currently "release candidate" in Node's own stability index) and older
+releases either lack it or hide it behind `--experimental-sqlite`. That is also
+why the Cloudflare Pages project pins `NODE_VERSION`, since its default build
+image is older than this needs. See [Deploy](#deploy).
 
 ## Commands
 
 | Command | Does |
 | --- | --- |
 | `pnpm dev` | dev server on http://localhost:3000 |
-| `pnpm generate` | static build to `.output/public` (the deploy artifact) |
+| `pnpm generate` | static build to `.output/public` (Cloudflare writes `dist`; see Deploy) |
 | `pnpm build` | server build, for a Node host |
 | `pnpm preview` | serve the last build |
 | `pnpm lint:check` / `pnpm lint:fix` | ESLint 9 flat config (`@antfu/eslint-config`) |
@@ -68,6 +90,8 @@ app/
     ui/            design-system primitives, bare-named (<WorkCard>, <TagList>)
     layout/        header, footer, scroll-to-top
     content/       MDC + Prose components usable from markdown
+    *.vue          one-off page furniture (HeroAsciiLogo, KineticText, RouteWipe,
+                   ProjectGallery)
   composables/     useFlavor, useLightbox, usePretext, blog visibility
   utils/           formatters, socials, tag slugs, kinetic helpers
   assets/css/      main.css (tokens, prose, motion) + themes.css (4 flavours)
@@ -92,7 +116,9 @@ no code change. Full field tables are in
 
 **A project.** Copy `docs/templates/project.md` to
 `content/projects/<slug>.md`. It publishes at `/projects/<slug>` and appears on
-the work grid and the homepage. Put its images under `public/<slug>/`. Required
+the work grid and the homepage. Put its images in a folder under `public/` and
+reference them from the site root; existing sets use a short name that does not
+have to match the slug (`swg-retroguardia.md` uses `/retroguardia/`). Required
 frontmatter is `title`, `description` and `date`; everything else is optional
 and degrades gracefully. `featured: true` gives it the large card,
 `spotlight: true` drives homepage section 02.
@@ -120,29 +146,63 @@ Three things that otherwise waste your time:
 
 ## Deploy
 
-The deploy artifact is a pure static bundle, with no database or Node runtime
-needed at serve time. Where it lands depends on the nitro preset:
+[raz.wtf](https://raz.wtf) is served by **Cloudflare Pages**, from the
+git-connected project `razwtf`. Pushing to `main` builds and deploys
+production; any other branch gets a preview build and its own URL. There is
+nothing to run by hand.
 
-| Building | Output | Extras |
+These live in the Cloudflare dashboard, not in this repo, under **Workers &
+Pages → razwtf → Settings**:
+
+| Setting | Value | Where |
 | --- | --- | --- |
-| locally (`pnpm generate`) | `.output/public` | none |
-| on Cloudflare Pages | `dist` | `_headers` and `_redirects` |
+| Build command | `pnpm run generate` | Build configuration |
+| Output directory | `dist` | Build configuration |
+| Production branch | `main` | Build configuration |
+| `NODE_VERSION` | `26` | Environment variables (production **and** preview) |
+| `PNPM_VERSION` | `11.9.0` | Environment variables (production **and** preview) |
 
-Nitro detects the Pages environment and switches presets on its own, so the
-build command stays `pnpm run generate` and only the output directory differs.
-That preset is also what turns the nitro `routeRules` into real artifacts: the
-`gmk-retroguardia` 301 becomes a `_redirects` entry instead of the meta-refresh
-stub the plain static preset emits.
+Both are pinned because the v3 build image defaults to **Node 22.16.0 and pnpm
+10.11.1** ([Cloudflare's build image
+reference](https://developers.cloudflare.com/pages/configuration/build-image/#supported-languages-and-tools)),
+neither of which matches what this project is developed against.
 
-The Cloudflare Pages project is `razwtf` (git-connected, production branch
-`main`, build `pnpm run generate`, output `dist`). It needs two environment
-variables, and fails without them: `NODE_VERSION` at 24 or higher, because the
-default build image ships Node 22 and `node:sqlite` is only stable from 24, and
-`PNPM_VERSION` at 11.9.0, because the image's own pnpm cannot read this
-lockfile.
+`NODE_VERSION` is the one that matters: Node 22 predates unflagged
+`node:sqlite`, which the content build depends on (see
+[Why the Node floor is a hard requirement](#why-the-node-floor-is-a-hard-requirement)).
 
-The site still runs on Vercel while the cutover happens; see beads `raz-50q.2`,
-`raz-50q.3` and `raz-lgx`.
+`PNPM_VERSION` is a reproducibility pin, matching `packageManager` in
+`package.json`. It is **not** known to be required: `pnpm-lock.yaml` is
+`lockfileVersion: '9.0'`, which pnpm 10 reads without trouble. The real risk of
+falling back to pnpm 10 is `pnpm-workspace.yaml`, which uses pnpm 11 settings
+(`shellEmulator`, `allowBuilds`); an older pnpm ignoring `allowBuilds` would try
+to compile `better-sqlite3` again. Neither default has been tested on Pages,
+because both variables were set before the first build ever ran.
+
+Set them per environment. A variable added only to production does not apply to
+preview builds, so branch previews would fail on their own.
+
+The Node version is *also* pinned in-repo by `.node-version`, which Cloudflare
+reads as an alternative to `NODE_VERSION` (`.nvmrc` works too). That keeps the
+requirement visible to anyone reading the repo instead of living only in a
+dashboard. pnpm has no equivalent file, so `PNPM_VERSION` has to stay a
+dashboard variable. Note Cloudflare does **not** read `package.json` `engines`,
+and does not infer pnpm from the lockfile, so neither of those is an option.
+
+**The output directory is not a typo.** Nitro detects the Pages environment and
+switches presets by itself, so the same `pnpm run generate` writes `dist` there
+and `.output/public` locally. That preset is also what turns the nitro
+`routeRules` into real files: the `gmk-retroguardia` 301 becomes a `_redirects`
+entry, and the feed content types become `_headers`. A plain local static build
+emits neither, and degrades the redirect to a meta-refresh stub.
+
+The artifact is a pure static bundle. No database and no Node runtime at serve
+time: content ships to the browser as a WASM SQLite database, which is why no
+D1 binding is needed despite what the Nuxt Content Cloudflare guide says. That
+is explained in [ARCHITECTURE.md](./ARCHITECTURE.md#no-d1-despite-what-the-content-docs-say).
+
+DNS lives in the same Cloudflare account: `raz.wtf` and `www.raz.wtf` are
+CNAMEs to `razwtf.pages.dev`, attached to the project as custom domains.
 
 ## Issue tracking
 
