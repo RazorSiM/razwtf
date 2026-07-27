@@ -57,15 +57,20 @@ let drawStaticHook: (() => void) | null = null
 let reduce = false
 
 onMounted(() => {
-  const el = host.value
-  if (!el)
+  // Both are re-declared with explicitly non-null types after their guards:
+  // TypeScript drops flow narrowing inside the nested functions below (measure,
+  // draw, the rAF loop), so without this every use reads as possibly-null.
+  const hostEl = host.value
+  if (!hostEl)
     return
+  const el: HTMLElement = hostEl
 
   const canvas = document.createElement('canvas')
   el.appendChild(canvas)
-  const ctx = canvas.getContext('2d')
-  if (!ctx)
+  const ctx2d = canvas.getContext('2d')
+  if (!ctx2d)
     return
+  const ctx: CanvasRenderingContext2D = ctx2d
 
   // Set true by cleanup() so a late-resolving font-load promise can no longer
   // start the rAF loop after the component has already unmounted.
@@ -77,7 +82,7 @@ onMounted(() => {
   const WEIGHT = 600
 
   const ROWS = GRID.length
-  const COLS = GRID[0][0].length
+  const COLS = GRID[0]![0]!.length
 
   /* mono advance ratio + line-height factor - used to build a SQUARE field so
      the circular mask reads as a true circle (glyph cells are tall-narrow). */
@@ -108,8 +113,8 @@ onMounted(() => {
     for (let r = 0; r < FROWS; r++) {
       const gr = r - ROFF
       const real = (gr >= 0 && gr < ROWS)
-      const chars = real ? GRID[gr][0] : null
-      const tiers = real ? GRID[gr][1] : null
+      const chars = real ? GRID[gr]![0]! : null
+      const tiers = real ? GRID[gr]![1]! : null
       for (let c = 0; c < COLS; c++) {
         if (real && chars && tiers) {
           CHAR[i] = chars.charAt(c)
@@ -124,13 +129,13 @@ onMounted(() => {
         SPD[i] = 0.5 + Math.random() * 1.5 // [0.5, 2.0]
         SPARK[i] = Math.random()
         SCALE[i] = 0.80 + Math.random() * 0.42 // [0.80, 1.22]
-        let b = ((SCALE[i] - 0.80) / 0.42 * NBUCKETS) | 0
+        let b = ((SCALE[i]! - 0.80) / 0.42 * NBUCKETS) | 0
         if (b < 0)
           b = 0
         if (b > NBUCKETS - 1)
           b = NBUCKETS - 1
         BUCKET[i] = b
-        REVEALT[i] = ((c / COLS) * 0.62 + RAND[i] * 0.38) * REVEAL_MS
+        REVEALT[i] = ((c / COLS) * 0.62 + RAND[i]! * 0.38) * REVEAL_MS
         i++
       }
     }
@@ -160,7 +165,7 @@ onMounted(() => {
     ACCENT2 = triplet('--lavender')
     BRIGHT = COL[3]
     for (let t = 0; t < 5; t++)
-      COLSTR[t] = `rgb(${COL[t][0]},${COL[t][1]},${COL[t][2]})`
+      COLSTR[t] = `rgb(${COL[t]![0]},${COL[t]![1]},${COL[t]![2]})`
   }
   readColors()
   readColorsHook = readColors
@@ -172,7 +177,7 @@ onMounted(() => {
   let dpr = 1
   let cssW = 640
   let cssH = 640
-  const FONTS = new Array(NBUCKETS) // one font string per size bucket
+  const FONTS: string[] = new Array(NBUCKETS) // one font string per size bucket
   function measure() {
     dpr = Math.min(window.devicePixelRatio || 1, 2)
     cssW = Math.max(160, el.clientWidth || 640)
@@ -299,8 +304,8 @@ onMounted(() => {
         if (mask <= 0)
           continue // outside the circle - skip
 
-        const tier = TIER[i]
-        let ch = CHAR[i]
+        const tier = TIER[i]!
+        let ch = CHAR[i]!
         let glow = 0
         let tint = 0
         let ox = 0
@@ -308,17 +313,17 @@ onMounted(() => {
         let alpha = 1
 
         /* per-cell random shimmer - a calm field of independent twinkles */
-        const s = 0.5 + 0.5 * Math.sin(t * SPD[i] + RAND[i] * TAU)
+        const s = 0.5 + 0.5 * Math.sin(t * SPD[i]! + RAND[i]! * TAU)
         if (tier >= 3)
           glow += 0.06 + 0.16 * s // bright wordmark cells breathe
         else
           glow += 0.04 * s // faint field cells twinkle
 
         /* occasional coloured glints on a sparse random subset */
-        if (SPARK[i] > 0.86) {
-          let pulse = Math.sin(t * 0.8 + SPARK[i] * 57.0)
+        if (SPARK[i]! > 0.86) {
+          let pulse = Math.sin(t * 0.8 + SPARK[i]! * 57.0)
           pulse = pulse > 0 ? pulse * pulse * pulse * pulse : 0 // brief spikes only
-          tint += 0.5 * pulse * ((SPARK[i] - 0.86) / 0.14)
+          tint += 0.5 * pulse * ((SPARK[i]! - 0.86) / 0.14)
         }
 
         /* pointer ripple lens */
@@ -336,15 +341,15 @@ onMounted(() => {
             ox = Math.cos(ang) * ripple
             oy = Math.sin(ang) * ripple
             if (infl > 0.5)
-              ch = SCR[(Math.floor(t * 18) + i * 7) % SCR.length]
+              ch = SCR[(Math.floor(t * 18) + i * 7) % SCR.length]!
           }
         }
 
         /* reveal scramble-in (initial + movement-retriggered) */
         if (revealing) {
-          const at = REVEALT[i]
+          const at = REVEALT[i]!
           if (rev < at) {
-            ch = SCR[(Math.floor(rev / 45) + i) % SCR.length]
+            ch = SCR[(Math.floor(rev / 45) + i) % SCR.length]!
             alpha = 0.32
           }
           else {
@@ -361,33 +366,33 @@ onMounted(() => {
         /* colour */
         let col
         if (glow < 0.004 && tint < 0.004) {
-          col = COLSTR[tier] // cached - no allocation for idle field
+          col = COLSTR[tier]! // cached - no allocation for idle field
         }
         else {
-          const base = COL[tier]
-          let cr = base[0]
-          let cg = base[1]
-          let cb = base[2]
+          const base = COL[tier]!
+          let cr = base[0]!
+          let cg = base[1]!
+          let cb = base[2]!
           if (tint > 0) {
-            const ar = lerp(ACCENT[0], ACCENT2[0], aMix)
-            const ag = lerp(ACCENT[1], ACCENT2[1], aMix)
-            const ab = lerp(ACCENT[2], ACCENT2[2], aMix)
+            const ar = lerp(ACCENT[0]!, ACCENT2[0]!, aMix)
+            const ag = lerp(ACCENT[1]!, ACCENT2[1]!, aMix)
+            const ab = lerp(ACCENT[2]!, ACCENT2[2]!, aMix)
             cr = lerp(cr, ar, tint)
             cg = lerp(cg, ag, tint)
             cb = lerp(cb, ab, tint)
           }
           if (glow > 0) {
-            cr = lerp(cr, BRIGHT[0], glow)
-            cg = lerp(cg, BRIGHT[1], glow)
-            cb = lerp(cb, BRIGHT[2], glow)
+            cr = lerp(cr, BRIGHT[0]!, glow)
+            cg = lerp(cg, BRIGHT[1]!, glow)
+            cb = lerp(cb, BRIGHT[2]!, glow)
           }
           col = `rgb(${cr | 0},${cg | 0},${cb | 0})`
         }
 
         const fa = alpha * mask // compose reveal fade with circular mask
         if (BUCKET[i] !== lastB) {
-          lastB = BUCKET[i]
-          ctx.font = FONTS[lastB]
+          lastB = BUCKET[i]!
+          ctx.font = FONTS[lastB]!
         }
         if (fa !== 1)
           ctx.globalAlpha = fa
@@ -426,13 +431,13 @@ onMounted(() => {
         if (mask <= 0)
           continue
         if (BUCKET[i] !== lastB) {
-          lastB = BUCKET[i]
-          ctx.font = FONTS[lastB]
+          lastB = BUCKET[i]!
+          ctx.font = FONTS[lastB]!
         }
         if (mask !== 1)
           ctx.globalAlpha = mask
-        ctx.fillStyle = COLSTR[TIER[i]]
-        ctx.fillText(CHAR[i], xc, yc)
+        ctx.fillStyle = COLSTR[TIER[i]!]!
+        ctx.fillText(CHAR[i]!, xc, yc)
         if (mask !== 1)
           ctx.globalAlpha = 1
       }

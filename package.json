@@ -9,6 +9,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck",
     "lint:check": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -30,10 +31,11 @@
     "@unocss/nuxt": "66.7.5",
     "@vueuse/core": "^14.3.0",
     "@vueuse/nuxt": "^14.3.0",
-    "better-sqlite3": "^12.11.1",
     "eslint": "^9.39.5",
     "nuxt": "4.5.0",
     "sitemap": "^9.0.1",
-    "unocss-preset-scrollbar": "^4.0.0"
+    "typescript": "^5.9.3",
+    "unocss-preset-scrollbar": "^4.0.0",
+    "vue-tsc": "^3.3.8"
   }
 }

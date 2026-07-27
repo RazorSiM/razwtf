@@ -32,7 +32,14 @@ export default defineNuxtConfig({
     build: {
       markdown: {
         highlight: {
-          theme: 'dracula',
+          // Catppuccin Mocha, matching the rest of the site's palette. Its
+          // editor.background (#1e1e2e) and editor.foreground (#cdd6f4) are
+          // exactly the pinned --code-bg / --code-fg in main.css, so the
+          // highlighter and the surface it sits on are one palette.
+          // A single theme, deliberately: the code surface stays dark in all
+          // four flavours (see ARCHITECTURE.md). This also fixes the comment
+          // token, which was 3.49:1 under dracula and is 5.81:1 here.
+          theme: 'catppuccin-mocha',
           langs: [
             'bash',
             'css',
@@ -78,6 +85,12 @@ export default defineNuxtConfig({
       '/projects/gmk-retroguardia': { redirect: { to: '/projects/swg-retroguardia', statusCode: 301 } },
     },
     prerender: {
+      // Emit `about.html` rather than `about/index.html`, per Nuxt's Cloudflare
+      // deployment guide: it matches Pages' route matching, which otherwise
+      // 308-redirects every extension-less path to its trailing-slash form.
+      // That redirect also desynced the canonical URL - app.vue derives it from
+      // route.path ("/about") while Pages served "/about/".
+      autoSubfolderIndex: false,
       // Tag pages aren't linked from anywhere the crawler reaches before the
       // blog pages that link them are themselves rendered, so they're listed
       // explicitly (raz-paj) - enumerated from content/blog frontmatter at

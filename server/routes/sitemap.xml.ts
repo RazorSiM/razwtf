@@ -1,3 +1,8 @@
+// queryCollection is imported EXPLICITLY rather than left to the auto-import:
+// see the note in rss.xml.ts. Short version - nitro-routes.d.ts pulls server
+// routes into the app TS project, where the auto-import is the client's
+// 1-argument form and this file would not type-check.
+import { queryCollection } from '@nuxt/content/server'
 import { SitemapStream, streamToPromise } from 'sitemap'
 import { slugifyTag } from '../../app/utils/tags'
 

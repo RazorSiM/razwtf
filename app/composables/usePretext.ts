@@ -26,12 +26,12 @@ export function loadPretext(): Promise<Pretext | null> {
  * matches rendered metrics. Measuring before this yields fallback-font numbers.
  */
 export function fontsReady(faces: string[] = ['600 100px Fraunces', 'italic 460 100px Fraunces']): Promise<void> {
-  if (!import.meta.client || !(document as any).fonts?.load)
+  if (!import.meta.client || !document.fonts?.load)
     return Promise.resolve()
   fontsPromise ??= (async () => {
     try {
-      await Promise.all(faces.map(f => (document as any).fonts.load(f)))
-      await (document as any).fonts.ready
+      await Promise.all(faces.map(f => document.fonts.load(f)))
+      await document.fonts.ready
     }
     catch {}
   })()

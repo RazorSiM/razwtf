@@ -1,0 +1,483 @@
+# Architecture
+
+How raz.wtf is built, and the reasoning behind the parts that are not obvious
+from reading the code. Setup and commands are in [README.md](./README.md).
+
+- [Shape of the site](#shape-of-the-site)
+- [Directory conventions](#directory-conventions)
+- [Content collections and routing](#content-collections-and-routing)
+- [The frontmatter contract](#the-frontmatter-contract)
+- [Copy lives in content, not in templates](#copy-lives-in-content-not-in-templates)
+- [Theming: four flavours](#theming-four-flavours)
+- [Contrast rules](#contrast-rules)
+- [Styling system](#styling-system)
+- [The reading measure](#the-reading-measure)
+- [Motion](#motion)
+- [SEO and metadata](#seo-and-metadata)
+- [Blog machinery](#blog-machinery)
+- [Build and deploy](#build-and-deploy)
+- [Gotchas](#gotchas)
+
+## Shape of the site
+
+A static site. `nuxt generate` prerenders every route to HTML in
+`.output/public`, ships the content database as WASM SQLite for client-side
+navigation and search, and needs no server at runtime.
+
+Three ideas carry most of the design:
+
+1. **Content owns the words, Vue owns the layout.** Which sections exist, their
+   order and their styling live in `.vue` files. The strings live in `content/`,
+   validated by zod. This is deliberately not a page builder: each schema
+   describes the copy for a fixed set of sections, so the fields stay typed and
+   the layout stays designed.
+2. **The design system is UnoCSS shortcuts.** Named shortcuts in
+   `uno.config.ts` (`eyebrow`, `secmark`, `btn-primary`, `kicker`, `chip`) are
+   the vocabulary. Hand-written CSS is reserved for what utilities genuinely
+   cannot reach.
+3. **Four flavours, resolved before first paint.** Colour is a set of CSS custom
+   properties swapped by one attribute on `<html>`, so there is no theme flash
+   and no duplicated stylesheet.
+
+## Directory conventions
+
+`app/` is the Nuxt 4 app directory. Within it:
+
+| Directory | Holds | Naming |
+| --- | --- | --- |
+| `components/ui/` | design-system primitives reused across pages | **bare-named** (`<WorkCard>`, `<TagList>`, `<SectionMarker>`) via `pathPrefix: false` in `nuxt.config.ts` |
+| `components/layout/` | header, footer, scroll-to-top | prefixed (`<LayoutAppHeader>`) |
+| `components/content/` | MDC block components and Prose overrides, callable from markdown | prefixed in Vue, kebab-case in markdown (`::img-lightbox`) |
+| `composables/` | shared reactive state and behaviour | `useX()` |
+| `utils/` | pure helpers, no reactivity | plain functions |
+| `plugins/` | flavour sync, the `v-reveal` scroll-reveal directive | `.client.ts` where client-only |
+| `assets/css/` | `main.css` (tokens, base, prose, motion) importing `themes.css` (the four palettes) | |
+
+Root-level: `content.config.ts` is the frontmatter contract, `uno.config.ts` is
+the design tokens, `scripts/` holds build-time helpers that run during config
+evaluation, and `server/routes/` holds the two generated feeds.
+
+Only `components/ui/` is bare-named. Adding a bare-named component elsewhere
+breaks the convention that tells you, from a template, whether you are looking
+at a primitive or at page-specific chrome.
+
+## Content collections and routing
+
+Each singleton page owns its own richly-typed collection rather than sharing one
+catch-all `pages` collection. That way the homepage schema can require
+`hero.eyebrow` without every other page inheriting the field.
+
+| Collection | Source | Route | Rendered by |
+| --- | --- | --- | --- |
+| `home` | `content/index.md` | `/` | `app/pages/index.vue` |
+| `about` | `content/about.md` | `/about` | `app/pages/about.vue` |
+| `projectsIndex` | `content/projects/index.md` | `/projects` | `app/pages/projects/index.vue` |
+| `projects` | `content/projects/*.md` (minus `index.md`) | `/projects/<slug>` | `app/pages/projects/[slug].vue` |
+| `blogIndex` | `content/blog.md` | `/blog` | `app/pages/blog/index.vue` |
+| `posts` | `content/blog/**/*.md` | `/blog/<slug>` | `app/pages/blog/[slug].vue` |
+| (derived from `posts`) | frontmatter `tags` | `/blog/tag/<tag>` | `app/pages/blog/tag/[tag].vue` |
+| `site` | `content/site.yml` | none (`data` collection) | global chrome |
+| `pages` | any other `content/*.md` | `/<slug>` | `app/pages/[...slug].vue` |
+
+Two consequences worth remembering:
+
+- The notes index is `content/blog.md`, at the content root, not
+  `content/blog/index.md`. If it sat inside `blog/`, the `posts` glob would try
+  to parse it as a post and fail its schema.
+- `app/pages/about.vue` takes precedence over the `[...slug].vue` catch-all, so
+  `about.md` gets the editorial masthead rather than a bare reading column.
+- Authoring templates live in `docs/templates/`, deliberately outside
+  `content/`. A template inside `content/projects/` would be matched by the
+  glob and fail validation on its placeholder values.
+
+## The frontmatter contract
+
+Defined in `content.config.ts`. zod validates at build time, so a malformed file
+fails the build instead of rendering a half-empty page. Copy-paste starting
+points: `docs/templates/project.md`, `docs/templates/post.md`.
+
+### Projects
+
+| Field | Required | Purpose |
+| --- | --- | --- |
+| `title` | yes | h1, card title, `<title>` |
+| `description` | yes | lead paragraph, meta description, card excerpt fallback |
+| `date` | yes | ordering fallback and `<lastmod>` |
+| `hero` (or `cover` / `image`) | no | hero render and card image |
+| `heroCaption` | no | caption under the hero; falls back to the title |
+| `type` | no | hero metabar label ("SWG keycap set", "Vue template") |
+| `year`, `role`, `collab`, `kicker` | no | card and metabar editorial bits |
+| `tags`, `tech` | no | tag chips; `tech` doubles as the Details stack line |
+| `accent` | no | per-project signature colour, one of the nine Catppuccin accent names |
+| `featured` | no | large card in the work grid (default `false`) |
+| `spotlight` | no | drives homepage section 02 (default `false`) |
+| `spotlightCopy` | no | that section's heading, pullquote, body, palette chips, extra spec rows |
+| `order` | no | homepage ordering, lower first; falls back to `date` |
+| `gallery` | no | ordered groups of `{ description, images[] }`, rendered as the labelled gallery, all images sharing one lightbox |
+| `links`, `url` | no | outbound links (repo, IC thread, Discord) |
+| `head` | no | raw `<head>` passthrough for bespoke OG or Twitter tags |
+
+Body convention: **do not start the markdown with an `# H1`.** The page template
+renders the title from frontmatter, so a leading H1 in the body produces two.
+
+`spotlightCopy` lives on the project rather than on the homepage on purpose:
+moving `spotlight: true` to another project would otherwise leave the previous
+set's prose stranded on the homepage. One caveat is recorded in
+[Gotchas](#gotchas): the spotlight section markup is still partly bespoke.
+
+### Posts
+
+| Field | Required | Purpose |
+| --- | --- | --- |
+| `title` | yes | h1, card title |
+| `date` | yes | byline, ordering, RSS `pubDate` |
+| `description` | no | standfirst and meta description |
+| `tags` | no | accent-cycled chips, and the tag pages they generate |
+| `draft` | no | `true` hides it everywhere including RSS and the sitemap (default `false`) |
+| `cover` | no | list and article image |
+
+The article template reads `body.toc.links` for its sticky table of contents and
+falls back to a single-column layout when a post has no headings.
+
+## Copy lives in content, not in templates
+
+`content/site.yml` (the `site` collection) holds the strings that are not part of
+any one page: author identity for bylines, the footer including its vim-style
+status line, the labels on post and case-study furniture, and the error page.
+
+Two patterns show up in these schemas and look odd until you know why:
+
+- **Split fields** such as `nameBefore` / `nameEm` / `nameAfter`. A single
+  string could not carry the italic mauve `<em>` treatment through
+  `KineticText`, which splits per word for animation. Splitting the copy in
+  frontmatter keeps the typography without putting markup in a data field.
+- **`requiresPosts`** on footer links. The Notes link is data, but its
+  visibility depends on whether any post is published, so the flag travels with
+  the link instead of being hardcoded in the footer component.
+
+## Theming: four flavours
+
+Every colour is a **space-separated `R G B` triple** in
+`app/assets/css/themes.css`:
+
+```css
+:root[data-flavor='mocha'] { --mauve: 203 166 247; }
+```
+
+That format composes with modern alpha syntax, `rgb(var(--mauve) / .5)`, which
+is what makes UnoCSS opacity modifiers work (`text-mauve/28`, `bg-crust/72`).
+
+The pipeline:
+
+1. A blocking script in `nuxt.config.ts` `app.head` runs before first paint. It
+   reads `localStorage.flavor` (or resolves `auto` against
+   `prefers-color-scheme`), sets `<html data-flavor="…">`, and adds
+   `class="js"`. No flash, and the canvas logo does not mismatch on hydration.
+2. `useFlavor()` owns the preference as `useState`, so SSR and client agree.
+   `FLAVOR_CYCLE` is `auto → latte → frappe → macchiato → mocha`.
+3. `plugins/flavor.client.ts` adopts the persisted value on startup and keeps
+   the attribute in sync afterwards.
+4. `uno.config.ts` maps each token to `rgb(var(--token))`.
+
+The `<alpha-value>` placeholder from wind3 must **not** appear in those colour
+definitions. `presetWind4` does opacity through `color-mix()` and never
+substitutes the placeholder, which yields invalid CSS and makes every colour
+utility silently fall back to the inherited colour.
+
+## Contrast rules
+
+Non-obvious and easy to regress, so it is written down.
+
+**The page background in the light flavour is `--crust`, not `--base`.** Accent
+text has to clear 4.5:1 against crust. That is why `themes.css` defines "ink"
+variants used for accent-coloured *text*:
+
+```css
+--peach-ink: var(--peach);   /* dark flavours: same colour */
+```
+
+with darker overrides in the latte block and in the
+`prefers-color-scheme: light` fallback. Swatch dots and borders keep the true
+bright accent; only text routes through `-ink`.
+
+**The code surface is pinned dark in all four flavours.** Highlighting uses one
+theme, `catppuccin-mocha`, whose tokens are tuned for a dark background and
+would wash out on a near-white one. `--code-bg`, `--code-bar`, `--code-fg`,
+`--code-muted` and `--code-hair` are therefore fixed values in `main.css :root`,
+consumed by `.prose pre`, `ProsePre.vue` and inline `.prose code`. Inline code is
+peach on that constant dark chip for the same reason.
+
+Those pinned values are Mocha's own: `--code-bg` is its `editor.background`
+(`#1e1e2e`) and `--code-fg` its `editor.foreground` (`#cdd6f4`), so the
+highlighter and the surface under it are one palette. Keep them in sync if the
+theme changes.
+
+Following the flavour instead would mean shipping all four Catppuccin themes.
+Shiki supports that via a theme object, but Content keys the variants off classes
+on `<html>` (`html.dark`) while this site uses `data-flavor`, so it would need
+its own CSS wiring, the code surface tokens would have to become flavour-aware
+again, and `catppuccin-latte`'s comment token is only 3.49:1 on its own base, so
+it would still need a contrast override. Tracked, not done.
+
+**Accepted tradeoff (Raz's call).** Muted mono micro-labels, the
+`overlay-1` / `subtext-0` kickers, eyebrows, nav items, status line, section
+markers and the table-of-contents counter, sit at 3.9-4.4:1 in the two light
+flavours. Latte's muted ramp is compressed after being darkened for AA, so no
+muted grey clears 4.5:1 on its crust background. These elements are decorative
+and are intentionally left as they are. Only functional contrast was fixed: code
+surfaces, and the latte accent CTA and badge, which take white text and a hover
+that darkens rather than lightening to lavender.
+
+**Verification gotcha.** `getComputedStyle` serializes these colours as
+`oklab(…)`, so JavaScript contrast probes misparse them and report nonsense
+ratios. Trust the token maths, or measure from a screenshot.
+
+## Styling system
+
+`uno.config.ts` holds the design tokens and the shortcut vocabulary:
+
+- **Type scale.** `--fs-*` custom properties in `main.css`, mirrored as UnoCSS
+  text sizes (`text-micro` through `text-mark`). Each entry must be a
+  `{ fontSize, lineHeight }` object: a bare string makes wind4 emit an
+  undefined `var(--text-*-fontSize)` and headings collapse to 16px.
+- **Shortcuts** are the design system. Prefer extending them over adding
+  bespoke classes, and keep per-instance colour inline (accent swatches, a
+  card's `--c`).
+- **Breakpoints** carry semantic names from the mockups: `dots`, `foot`, `caps`,
+  `nav`, `wide` (900px), `spot`. `wide` was originally called `grid`, which
+  collided with the `grid-*` utilities and silently wrapped every `grid-cols-…`
+  in a min-width media query. Do not name a breakpoint after a utility prefix.
+
+**UnoCSS is the default; scoped CSS needs a reason.** Hover choreography is not
+one of them: a root `group` plus `group-hover:` covers coordinated parent-hover
+across descendants, and `after:absolute after:inset-0` covers a stretched link,
+so cards carry no scoped CSS at all. The reasons that do qualify, and where they
+are used:
+
+| Reason | Where |
+| --- | --- |
+| `@keyframes` | `main.css`, the hero caret and status pulse in `index.vue` |
+| `:deep()` into markdown rendered by `ContentRenderer` | `.prose` in `main.css`, `blog/[slug].vue`, `index.vue` |
+| `:deep()` into an `<img>` slotted in by a caller | `MediaFrame.vue` |
+| Sticky/scrollspy rail geometry | the TOC in `blog/[slug].vue` |
+| `@font-face`, design tokens, base/reset rules | `main.css` |
+
+Two wind4 behaviours that will silently break animation if you assume otherwise:
+
+- **`-translate-y-*` and `scale-x-*` compile to the standalone `translate` and
+  `scale` properties, not to `transform`.** A transition naming `transform`
+  therefore never fires for them, and the change snaps instead of easing. Name
+  `translate` / `scale`, or use `transition-transform`, which wind4 expands to
+  cover all four (`transform, translate, scale, rotate`).
+- **Never point a theme entry at a CSS variable of the same name.**
+  `theme.ease.out = 'var(--ease-out)'` made wind4 emit `--ease-out:
+  var(--ease-out)`, a custom-property cycle that resolves to nothing. Any
+  `transition:` *shorthand* containing it then becomes invalid at computed-value
+  time and silently reverts to `all 0s`, which had killed the image zoom and
+  every card hover transition site-wide. `theme.ease` now holds literal
+  cubic-beziers, duplicated in `main.css` for hand-written CSS.
+
+Hand CSS in `main.css` is limited to what utilities cannot express: `@font-face`,
+tokens, the reset-adjacent base rules, keyframes and motion states, and `.prose`,
+where the markup comes from rendered markdown and cannot be given classes.
+
+Two behaviours of shortcuts that have bitten before:
+
+- UnoCSS drops a bare `group` marker from inside a shortcut. Put `group` on the
+  element itself (see `BackLink.vue`).
+- `display` includes `font-optical-sizing: auto`. Fraunces headings look subtly
+  wrong without it.
+
+## The reading measure
+
+Reading views use a centred breakout grid rather than one flat max-width. Text
+sits at a comfortable line length while media, code, tables and callouts break
+out to a wider frame:
+
+```
+--measure: 68ch        /* the text column, about 691px */
+--measure-wide: 900px  /* the frame media breaks out to */
+```
+
+The grid lives on `.prose > div`, not on `.prose`. `@nuxt/content` wraps all
+rendered output in a single `<div>`, so that wrapper is the real flow container:
+`.prose > *` only ever sees the wrapper and never the content. The same applies
+to vertical rhythm, which is why the spacing rules are `.prose > div > * `. Any
+rule written against `.prose > *` will appear to do nothing.
+
+`figure`, `pre`, `table`, `hr`, `.callout`, `.figbox`, `img` and anything marked
+`.wide` span the full frame; everything else stays in the text column. On mobile
+the breakout collapses to 100% with no overflow.
+
+## Motion
+
+- **Scroll reveals.** Add `data-reveal` to an element; `plugins/reveal.ts`
+  observes it and springs it in with motion-v on intersect. Stagger siblings
+  with `style="--rd:.08s"`. `motion-v` is imported dynamically and is not a
+  direct dependency of the reveal path; without JS or with reduced motion
+  preferred, elements resolve to their visible state immediately.
+- **Kinetic type.** `KineticText.vue` uses `@chenglou/pretext` to fill a
+  heading to its column width and cascade it per word. It is lazy: the import,
+  split and measure all happen behind the component's own IntersectionObserver,
+  so below-the-fold headings do no work until they approach the viewport.
+  Reduced motion gets `layout` mode, which scales without splitting.
+- **No layout shift.** The hero wordmark is pre-sized in CSS
+  (`#hero-title { font-size: min(24.3vw, calc(var(--maxw) * 0.243)) }`) with the
+  same width ratio the JavaScript will compute, so the correction that lands
+  after fonts load shifts nothing. Changing the wordmark text means recomputing
+  that ratio; the JS still fits it exactly either way.
+- **Route choreography.** `RouteWipe.vue`, mounted in `app.vue`, owns the
+  visible transition for full-motion users. The opacity-only `.page-*`
+  transition in `main.css` is the reduced-motion and no-JS fallback.
+- `will-change` on animated words is set inline for the duration of a cascade
+  and cleared afterwards, rather than living in CSS, so the page does not retain
+  a promoted layer per word.
+
+A global `prefers-reduced-motion` block neutralises animations and transitions
+and forces revealed elements visible.
+
+## SEO and metadata
+
+`app/app.vue` `useSeoMeta` is the **single source** for site-wide meta:
+description, Twitter card, OG tags, and a canonical plus `og:url` computed from
+the current route. Two rules learned the hard way:
+
+- Do not add an `app.head.meta` array in `nuxt.config.ts`. It emits OG tags as
+  `name=` (the protocol needs `property=`) and duplicates whatever `app.vue`
+  already declares.
+- OG and Twitter images must be absolute. Crawlers reject relative paths. Pages
+  that take an image from frontmatter absolutise it before handing it to
+  `useSeoMeta`.
+
+Per-page overrides call `useSeoMeta` in the page component. `projects/[slug].vue`
+additionally applies frontmatter `head` via `useHead(() => page.value?.head ?? {})`;
+note that `useContentHead` is not auto-imported in this setup. `useSeoMeta` runs
+after `useHead`, so it wins the meta dedupe for image tags.
+
+Generated at build time: `server/routes/sitemap.xml.ts` (singletons, projects,
+non-draft posts, tag pages, with `lastmod` from `date`),
+`server/routes/rss.xml.ts`, and `public/robots.txt`. Favicons and
+`site.webmanifest` are checked into `public/`.
+
+## Blog machinery
+
+The blog is fully built but currently has no posts, and hides itself
+accordingly.
+
+- `useHasPublishedPosts()` (`composables/useBlogVisibility.ts`) counts
+  non-draft posts with `.count()`, keeping the payload to a single integer. The
+  nav link, footer link and homepage Notes section all key off it.
+- Tag pages are prerendered. `scripts/content-tags.ts` reads post frontmatter
+  during config evaluation and feeds `nitro.prerender.routes`, because nothing
+  the crawler reaches links to a tag page before the page that links it has
+  itself been rendered. A new tag therefore requires a rebuild.
+- Search is `useSearchCollection('posts')` from `@nuxt/content`, client-side,
+  wired into `SearchField.vue` on the blog index.
+- Related posts are ranked by shared tags, with a recency fallback.
+
+## Build and deploy
+
+```bash
+devenv shell -- pnpm generate    # -> .output/public locally, 165 routes
+```
+
+The output directory is preset-dependent. Locally nitro uses the static preset
+and writes `.output/public`. On Cloudflare Pages it detects the environment,
+switches to the Pages preset, and writes `dist` plus `_headers` and
+`_redirects`. Same build command either way, so only the platform's configured
+output directory changes. The Pages project (`razwtf`) is git-connected on
+`main` and must set `NODE_VERSION` to 24 or higher and `PNPM_VERSION` to
+11.9.0: the build image defaults to Node 22, where `node:sqlite` is not yet
+stable, and its bundled pnpm cannot read a pnpm 11.9 lockfile.
+
+Four things make the static build work, all of which look removable and are
+not:
+
+1. **`content.experimental.sqliteConnector: 'native'`.** Node's built-in
+   `node:sqlite` replaces the native `better-sqlite3` addon, which renders fine
+   in a Node server build but fails during prerender on NixOS ("Module did not
+   self-register") and turns every content page into a 500.
+2. **Reka dialogs are wrapped in `<ClientOnly>`.** `DialogRoot` crashes static
+   prerender ("Cannot read `ce` of null"). Both the header's mobile menu, which
+   also has a static hamburger fallback, and the lightbox in
+   `layouts/default.vue` are wrapped.
+3. **`nitro.prerender.routes`** lists what the crawler cannot discover:
+   `/sitemap.xml`, `/rss.xml`, the legacy `/projects/gmk-retroguardia` redirect,
+   and every tag page.
+4. **`nitro.prerender.autoSubfolderIndex: false`**, from Nuxt's Cloudflare
+   deployment guide. It emits `about.html` instead of `about/index.html`, which
+   is what Pages' route matching expects. Without it Pages answers every
+   extension-less path with a 308 to its trailing-slash form, which both wastes
+   a hop and desyncs the canonical URL: `app.vue` derives canonical and `og:url`
+   from `route.path` (`/about`) while the served URL would be `/about/`. The
+   tradeoff is that a naive local static server (`python -m http.server`) will
+   404 on `/about`, since it only resolves directories; use a server that tries
+   `.html` when verifying a local build by hand.
+
+### No D1, despite what the Content docs say
+
+[Nuxt Content's Cloudflare Pages guide](https://content.nuxt.com/docs/deploy/cloudflare-pages)
+states that a D1 database bound as `DB` is **required**. That applies to the
+SSR path (`nuxt build --preset=cloudflare_pages`), where `queryCollection` runs
+at request time inside a Worker that cannot open a local SQLite file.
+
+This site takes the static path, so it needs no database and no binding. Every
+query runs at build time through `node:sqlite`, and the browser gets its own
+copy: `__nuxt_content/<collection>/sql_dump.txt` per collection plus
+`_nuxt/sqlite3.*.wasm`. The static build emits no `_worker.js` and no
+`functions/`, so there is nothing at runtime that could hold a binding, and the
+two server routes are prerendered into plain files rather than staying as
+handlers. Verified on a real Pages deployment: the dumps and the WASM are served
+(the latter as `application/wasm`, which matters for `instantiateStreaming`), and
+client-side navigation instantiates and queries the database with no console
+errors.
+
+Moving this site to SSR would make D1 mandatory and that guide's quick setup
+would apply verbatim.
+
+`routeRules` declare the feed content types and the
+`gmk-retroguardia → swg-retroguardia` 301, and they need a host-aware preset to
+become anything real. A local static build degrades the redirect to a
+meta-refresh stub (`projects/gmk-retroguardia/index.html` with an
+`http-equiv="refresh"`) and emits no `_headers` at all. The Pages build emits
+both files, so the redirect is a genuine 301 and the feed content types are
+served as declared.
+
+Content types are set through `routeRules` rather than `setResponseHeader`
+because `h3` auto-imports a version in this dependency tree that mismatches the
+one nitro uses, and throws at runtime.
+
+## Gotchas
+
+Failures that already cost a session each.
+
+1. **Restart the dev server** after adding a component under
+   `app/components/content/`, or after editing `content.config.ts`. SSR resolves
+   the new MDC component while the client renders `::note` as a raw `<note>`.
+2. **`nuxt generate` clobbers `.nuxt` dev types**, producing phantom
+   "Cannot find name `defineNuxtConfig` / `queryCollection`" errors in the
+   editor. `nuxt prepare` restores them.
+3. **`@nuxt/image`: pass `width` and `height`, never `sizes`.** In 2.0 a `sizes`
+   prop generated a 1-2px srcset (`s_2x2`) and broke every card image.
+4. **Never use `:is` with a string component name** for auto-registered Nuxt
+   components. `<component :is="'NuxtLink'">` renders an inert `<nuxtlink>`
+   element with no href. Use `resolveComponent('NuxtLink')`. This silently
+   killed the wordmark link.
+5. **`.prose > *` selectors do nothing.** See
+   [the reading measure](#the-reading-measure).
+6. **The homepage spotlight section is partly bespoke.** `app/pages/index.vue`
+   hardcodes case-study specifics for the current spotlight project (heading,
+   pullquote, palette chips). Moving `spotlight: true` elsewhere means rewriting
+   that block, not just editing frontmatter.
+7. **Lazy images render blank in instant full-page screenshots.** Force eager
+   loading when verifying visually.
+8. **Contrast-check any new highlight theme against the pinned surface**, not
+   against a flavour. This is how the previous theme (dracula) shipped a comment
+   token at 3.49:1 on `#1e1e2e`; `catppuccin-mocha`'s is 5.81:1.
+9. **In `server/routes/`, import `queryCollection` from `@nuxt/content/server`**
+   rather than relying on the auto-import. `.nuxt/types/nitro-routes.d.ts`
+   imports every server route to build the route-type map, which pulls those
+   files into the *app* TypeScript project, where the auto-import resolves to the
+   client's 1-argument form. Twenty phantom type errors came from that alone.
+10. **`pnpm typecheck` is the only thing that checks types.** `nuxt generate`
+    does not typecheck, so a build passing says nothing about types.

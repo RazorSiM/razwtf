@@ -2,6 +2,15 @@
 // sitemap.xml.ts's shape (a Nitro server route querying content directly);
 // prerendered explicitly via nitro.prerender.routes in nuxt.config.ts since
 // nothing links to it for the crawler to discover.
+
+// queryCollection is imported EXPLICITLY rather than left to the auto-import.
+// The nitro build injects the (event, collection) form, but .nuxt/types/
+// nitro-routes.d.ts imports every server route to build the route-type map,
+// which drags this file into the APP TypeScript project too - where the
+// auto-import resolves to the client's 1-argument form and the whole file fails
+// to type-check. Importing the nitro entry makes it correct in both projects.
+import { queryCollection } from '@nuxt/content/server'
+
 const SITE = 'https://raz.wtf'
 
 function escapeXml(value: string): string {

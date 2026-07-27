@@ -195,7 +195,7 @@ useSeoMeta({
           v-reveal
           class="mb-[clamp(2.25rem,4.5vw,3.5rem)]"
           n="01"
-          :label="site?.project.overview.label"
+          :label="site?.project.overview.label ?? ''"
           :note="site?.project.overview.note"
         />
 
@@ -218,7 +218,7 @@ useSeoMeta({
           v-reveal
           class="mb-[clamp(2.25rem,4.5vw,3.5rem)]"
           n="02"
-          :label="site?.project.gallery.label"
+          :label="site?.project.gallery.label ?? ''"
           :note="site?.project.gallery.note"
         />
 
@@ -235,7 +235,7 @@ useSeoMeta({
           v-reveal
           class="mb-[clamp(2.25rem,4.5vw,3.5rem)]"
           n="03"
-          :label="site?.project.details.label"
+          :label="site?.project.details.label ?? ''"
           :note="site?.project.details.note"
         />
 

@@ -6,10 +6,18 @@
 // <a> markup while splitting the text into words).
 const props = defineProps<{ id?: string }>()
 
-const { headings } = useRuntimeConfig().public.mdc as any
+// The shape we actually read out of the MDC runtime config. Narrow on purpose:
+// `as any` here hid the fact that anchorLinks is a boolean OR a per-level map.
+interface MdcHeadingsConfig {
+  headings?: {
+    anchorLinks?: boolean | Record<string, boolean>
+  }
+}
+
+const { headings } = useRuntimeConfig().public.mdc as MdcHeadingsConfig
 const generate = computed(() =>
   props.id && ((typeof headings?.anchorLinks === 'boolean' && headings.anchorLinks)
-    || (typeof headings?.anchorLinks === 'object' && headings?.anchorLinks?.h2)))
+    || (typeof headings?.anchorLinks === 'object' && headings.anchorLinks?.h2)))
 </script>
 
 <template>

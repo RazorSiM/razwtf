@@ -59,7 +59,7 @@ const groupOffsets = computed(() => {
           type="button"
           class="gallery__item relative block w-full m-0 p-0 cursor-zoom-in text-inherit text-left border border-[color:var(--hair)] rounded-md overflow-hidden bg-mantle aspect-[4/3]"
           :aria-label="`Open ${image.name || image.alt || 'image'} full size`"
-          @click="openLightbox(flatItems, groupOffsets[gi] + ii)"
+          @click="openLightbox(flatItems, (groupOffsets[gi] ?? 0) + ii)"
         >
           <NuxtImg
             :src="image.src"

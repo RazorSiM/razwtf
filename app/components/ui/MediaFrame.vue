@@ -57,6 +57,10 @@ const frameRadius = computed(() => RADII[props.rounded] ?? RADII.md)
    which collapses transition-duration to ~0 - matching the source frames. */
 .mf-zoom :deep(img) {
   transform: scale(var(--mf-zoom, 1));
-  transition: transform .8s var(--ease-out);
+  /* `filter` is in the transition even though this component never sets it:
+     callers add their own hover filter as a utility on the image they slot in
+     (WorkCard does), and this rule would otherwise out-specify a utility-level
+     transition and make that filter snap instead of ease. */
+  transition: transform .8s var(--ease-out), filter .6s var(--ease);
 }
 </style>

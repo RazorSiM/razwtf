@@ -64,9 +64,16 @@ export default defineConfig({
       lg: 'var(--radius-lg)',
       full: '9999px',
     },
+    // LITERALS, not var(--ease*) - presetWind4 emits a CSS variable per theme
+    // entry, so `out: 'var(--ease-out)'` emitted `--ease-out: var(--ease-out)`.
+    // That self-reference is a custom-property cycle, which makes --ease-out
+    // resolve to nothing, which in turn makes every `transition:` SHORTHAND
+    // containing it invalid at computed-value time and silently reverts it to
+    // `all 0s`. Keep these in sync with the --ease/--ease-out tokens in
+    // main.css, which hand-written CSS still reads.
     ease: {
-      DEFAULT: 'var(--ease)',
-      out: 'var(--ease-out)',
+      DEFAULT: 'cubic-bezier(.22, .61, .36, 1)',
+      out: 'cubic-bezier(.16, 1, .3, 1)',
     },
     // Keep the common defaults working AND add the mockup's semantic breakpoints.
     breakpoint: {

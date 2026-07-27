@@ -49,12 +49,12 @@ useSeoMeta({
         <KineticText as="h1" class="display text-h1">
           {{ heading }}
         </KineticText>
+        <!-- No v-else fallback on `page.description`: it is unreachable, since
+             this branch only runs when `page` is null, and TypeScript narrows it
+             to `never` there. -->
         <div v-if="page" v-reveal class="prose mt-6" :style="{ '--rd': '.06s' }">
           <ContentRenderer :value="page" />
         </div>
-        <p v-else-if="page?.description" v-reveal class="lead mt-6" :style="{ '--rd': '.06s' }">
-          {{ page?.description }}
-        </p>
       </div>
     </header>
 

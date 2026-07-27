@@ -230,25 +230,34 @@ useSeoMeta({
               v-for="(p, i) in related"
               :key="p.path"
               v-reveal
-              class="card--note"
+              class="group relative block overflow-hidden rounded-md bg-base border border-[color:var(--hair)] [transition:border-color_.4s_var(--ease),translate_.4s_var(--ease-out)] hover:border-[color:rgb(var(--accent)/0.8)] hover:-translate-y-[4px] motion-reduce:hover:translate-y-0"
               :to="p.path"
               :style="{ '--accent': `var(--${CARD_ACCENTS[i % CARD_ACCENTS.length]})`, '--rd': `${i * 0.06}s` }"
             >
-              <span class="card__accentbar" aria-hidden="true" />
-              <div class="card__body">
-                <span class="card__kicker">
-                  <span class="sw" aria-hidden="true" />
+              <!-- Accent bar wiping in from the left along the top edge. -->
+              <span
+                class="pointer-events-none absolute inset-x-0 top-0 z-2 h-[3px] origin-left scale-x-0 bg-[rgb(var(--accent))] transition-transform duration-500 ease-out group-hover:scale-x-100"
+                aria-hidden="true"
+              />
+              <div class="flex flex-col gap-[.7rem] min-h-full p-[clamp(1.25rem,2.6vw,1.7rem)]">
+                <span class="inline-flex flex-wrap items-center gap-[.6em] font-mono text-micro tracking-[.1em] text-subtext-0">
+                  <span class="swatch shrink-0 bg-[rgb(var(--accent))]" aria-hidden="true" />
                   {{ formatDate(new Date(p.date), 'yyyy · MM') }}<template v-if="p.tags?.length"> · {{ p.tags.map(t => `#${t}`).join(' ') }}</template>
                 </span>
-                <h3 class="card__title">
+                <h3 class="font-display font-[560] text-h3 leading-[1.06] tracking-[-.015em] [font-optical-sizing:auto] text-text transition-colors duration-300 ease group-hover:text-[rgb(var(--accent))]">
                   {{ p.title }}
                 </h3>
-                <p v-if="p.description" class="card__desc">
+                <p v-if="p.description" class="text-body text-subtext-1 leading-[1.6]">
                   {{ p.description }}
                 </p>
-                <div class="card__foot">
+                <!-- overlay-2, not overlay-1: at this size on bg-base overlay-1 is
+                     4.27:1 (below AA). Same reasoning as WorkCard's meta row. -->
+                <div class="mt-auto pt-[.4rem] flex items-center justify-between gap-4 font-mono text-micro tracking-[.14em] uppercase text-overlay-2">
                   <span>note</span>
-                  <span class="card__go" aria-hidden="true">read →</span>
+                  <span
+                    class="text-subtext-0 [transition:translate_.3s_var(--ease-out),color_.3s_var(--ease)] group-hover:translate-x-[4px] group-hover:text-[rgb(var(--accent))] motion-reduce:group-hover:translate-x-0"
+                    aria-hidden="true"
+                  >read →</span>
                 </div>
               </div>
             </NuxtLink>
@@ -310,46 +319,4 @@ useSeoMeta({
   padding: .05em .12em 0 0; margin-top: .02em;
 }
 .article-body :deep(.prose em) { color: rgb(var(--peach-ink)); }
-
-/* ---------- related posts (coordinated parent-hover, per-instance --accent) ---------- */
-.card--note {
-  --accent: var(--mauve);
-  position: relative; display: block; text-decoration: none;
-  background: rgb(var(--base)); border: 1px solid var(--hair);
-  border-radius: var(--radius-md); overflow: hidden;
-  transition: border-color .4s var(--ease), transform .4s var(--ease-out);
-}
-.card--note:hover { border-color: rgb(var(--accent) / .8); transform: translateY(-4px); }
-.card__accentbar {
-  position: absolute; left: 0; right: 0; top: 0; height: 3px; z-index: 2;
-  background: rgb(var(--accent)); transform: scaleX(0); transform-origin: left;
-  transition: transform .5s var(--ease-out);
-}
-.card--note:hover .card__accentbar { transform: scaleX(1); }
-.card__body { padding: clamp(1.25rem, 2.6vw, 1.7rem); display: flex; flex-direction: column; gap: .7rem; min-height: 100%; }
-.card__kicker {
-  display: inline-flex; align-items: center; gap: .6em; flex-wrap: wrap;
-  font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .1em;
-  color: rgb(var(--subtext0));
-}
-.card__kicker .sw { width: 9px; height: 9px; border-radius: 2px; background: rgb(var(--accent)); flex: none; }
-.card__title {
-  font-family: var(--font-display); font-optical-sizing: auto; font-weight: 560;
-  font-size: var(--fs-h3); letter-spacing: -.015em; line-height: 1.06;
-  color: rgb(var(--text)); transition: color .3s var(--ease);
-}
-.card--note:hover .card__title { color: rgb(var(--accent)); }
-.card__desc { font-size: var(--fs-body); color: rgb(var(--subtext1)); line-height: 1.6; }
-.card__foot {
-  margin-top: auto; padding-top: .4rem; display: flex; align-items: center;
-  justify-content: space-between; gap: 1rem; font-family: var(--font-mono);
-  font-size: var(--fs-micro); letter-spacing: .14em; text-transform: uppercase;
-  color: rgb(var(--overlay1));
-}
-.card__go { color: rgb(var(--subtext0)); transition: transform .3s var(--ease-out), color .3s var(--ease); }
-.card--note:hover .card__go { transform: translateX(4px); color: rgb(var(--accent)); }
-
-@media (prefers-reduced-motion: reduce) {
-  .card--note:hover { transform: none; }
-}
 </style>
