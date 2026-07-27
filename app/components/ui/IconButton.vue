@@ -7,19 +7,22 @@
 // size utility to match a specific source (e.g. "i-carbon-menu text-[1.35rem]").
 // `size` is a width/height utility string. `shape` toggles rounded ↔ pill.
 // `floating` layers the fixed bottom-right chrome from ScrollTopButton.
-withDefaults(defineProps<{
-  icon: string
-  label: string
-  shape?: 'square' | 'round'
-  size?: string
-  floating?: boolean
-  as?: 'button' | 'a'
-}>(), {
-  shape: 'square',
-  size: 'w-9 h-9',
-  floating: false,
-  as: 'button',
-})
+withDefaults(
+  defineProps<{
+    icon: string
+    label: string
+    shape?: 'square' | 'round'
+    size?: string
+    floating?: boolean
+    as?: 'button' | 'a'
+  }>(),
+  {
+    shape: 'square',
+    size: 'w-9 h-9',
+    floating: false,
+    as: 'button',
+  },
+)
 
 defineEmits<{ (e: 'click', event: MouseEvent): void }>()
 </script>
@@ -34,7 +37,7 @@ defineEmits<{ (e: 'click', event: MouseEvent): void }>()
       size,
       shape === 'round' ? 'rounded-full' : '',
       floating
-        ? 'fixed bottom-5 right-5 z-40 cursor-pointer bg-base text-subtext-0 shadow-lg hover:-translate-y-2px'
+        ? 'bg-base text-subtext-0 hover:-translate-y-2px fixed right-5 bottom-5 z-40 cursor-pointer shadow-lg'
         : '',
     ]"
     @click="$emit('click', $event)"

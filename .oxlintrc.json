@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "import", "promise", "node", "vue"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "env": {
+    "builtin": true,
+    "browser": true,
+    "es2024": true
+  },
+  "ignorePatterns": [".beads/**", "design-mockups/**"],
+  "rules": {
+    "promise/always-return": ["error", { "ignoreLastCallback": true }]
+  }
+}

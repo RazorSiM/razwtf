@@ -27,12 +27,12 @@ withDefaults(defineProps<Props>(), {
     segments = subtext-0 (links recolour to mauve on hover), leaf = plain overlay-1.
     The `:` only follows the prompt; every other separator is `/`.
   -->
-  <p class="inline-flex flex-wrap items-baseline gap-[.1em] font-mono text-cap tracking-[.02em] text-overlay-1">
+  <p class="text-cap text-overlay-1 inline-flex flex-wrap items-baseline gap-[.1em] font-mono tracking-[.02em]">
     <span v-if="prompt" class="text-[rgb(var(--accent,var(--mauve)))]">{{ prompt }}</span>
-    <template v-for="(seg, i) in segments" :key="i">
+    <template v-for="(seg, i) in segments" :key="seg.label">
       <span v-if="i > 0 || prompt" aria-hidden="true" class="text-surface-2">{{ i === 0 ? ':' : '/' }}</span>
       <NuxtLink v-if="seg.to" :to="seg.to" class="group text-subtext-0">
-        <span class="transition-colors duration-[250ms] ease group-hover:text-mauve">{{ seg.label }}</span>
+        <span class="ease group-hover:text-mauve transition-colors duration-[250ms]">{{ seg.label }}</span>
       </NuxtLink>
       <span v-else class="text-subtext-0">{{ seg.label }}</span>
     </template>

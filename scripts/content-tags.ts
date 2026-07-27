@@ -6,6 +6,7 @@
 // package is hoisted to the root node_modules under this pnpm setup).
 import { readdirSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+
 import { slugifyTag } from '../app/utils/tags'
 
 const BLOG_DIR = fileURLToPath(new URL('../content/blog', import.meta.url))
@@ -25,7 +26,7 @@ function parseFrontMatter(raw: string): FrontMatter {
   const tags = tagsMatch
     ? (tagsMatch[1] ?? '')
         .split(',')
-        .map(t => t.trim().replace(/^["']|["']$/g, ''))
+        .map((t) => t.trim().replace(/^["']|["']$/g, ''))
         .filter(Boolean)
     : []
 
@@ -41,9 +42,8 @@ function parseFrontMatter(raw: string): FrontMatter {
 export function getBlogTagRoutes(): string[] {
   let files: string[]
   try {
-    files = readdirSync(BLOG_DIR).filter(f => f.endsWith('.md'))
-  }
-  catch {
+    files = readdirSync(BLOG_DIR).filter((f) => f.endsWith('.md'))
+  } catch {
     return []
   }
 
@@ -51,10 +51,12 @@ export function getBlogTagRoutes(): string[] {
   for (const file of files) {
     const raw = readFileSync(`${BLOG_DIR}/${file}`, 'utf8')
     const { tags, draft } = parseFrontMatter(raw)
-    if (draft)
-      continue
+    if (draft) continue
     for (const tag of tags) slugs.add(slugifyTag(tag))
   }
 
-  return [...slugs].sort().map(slug => `/blog/tag/${slug}`)
+  // The spread is a Set->Array conversion, so this already sorts a throwaway
+  // copy and toSorted would just allocate a second one.
+  // oxlint-disable-next-line unicorn/no-array-sort
+  return [...slugs].sort().map((slug) => `/blog/tag/${slug}`)
 }

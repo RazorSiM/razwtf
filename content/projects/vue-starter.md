@@ -1,10 +1,10 @@
 ---
-title: "Vue Starter"
+title: 'Vue Starter'
 tags: ['Vue', 'Javascript', 'Typescript', 'Web Development']
 date: 2022-12-13
 hero: /vue-starter.png
-heroCaption: "Cover · Vite + Vue 3 starter template"
-type: "Vue starter template"
+heroCaption: 'Cover · Vite + Vue 3 starter template'
+type: 'Vue starter template'
 description: A minimalistic Vue 3 starter focused on development experience.
 excerpt: A minimalistic Vue 3 starter focused on development experience.
 head:
@@ -29,10 +29,11 @@ head:
       content: 'https://raz.wtf/projects/vue-starter'
 accent: blue
 year: 2024
-role: "Template"
-kicker: "Starter · Vue · Nuxt"
+role: 'Template'
+kicker: 'Starter · Vue · Nuxt'
 order: 4
 ---
+
 This is my personal take on a Vite + Vue 3 template. If you want to try it:
 
 ```bash
@@ -41,10 +42,11 @@ pnpm install
 ```
 
 ## Why?
+
 I've been using Vue since forever and I find booring to always start a new project from scratch. This template is my starting point for every new project or proof of concept. It's minimalistic, with only Vue-Router, Pinia and Vueuse installed.
 The styling is handled by UnoCSS with sane defaults and presets added.
 
-The only *opinionated* code you'll find in this template is how I handle the **layouting** system. It's very flexible and easy to use and modify for your needs.
+The only _opinionated_ code you'll find in this template is how I handle the **layouting** system. It's very flexible and easy to use and modify for your needs.
 
 On the DX side of the things, I've setup Eslint and Typescript to work out of the box with VSCode. I've also configured VScode to format and fix on save.
 
@@ -53,22 +55,25 @@ Tests are covered by Vitest and Cypress.
 Continue reading to know what's included in this template!
 
 ## What's included
+
 Here's a list of what's included in this template. Everything has been configured to work out of the box with Eslint, Typescript and VScode.
 
 ### Features
+
 - [Vue3](https://vuejs.org);
 - [Vue Router](https://router.vuejs.org/) to handle routes;
 - [Pinia](https://pinia.vuejs.org/) for state management;
 - [Vueuse](https://vueuse.org/) for useful composition API utilities;
 - UnoCSS for fast and super customizable styling configured with:
-    - [@unocss/reset](https://github.com/unocss/unocss#style-resetting) with Tailwind settings;
-    - [@unocss/preset-uno](https://github.com/unocss/unocss/tree/main/packages/preset-uno) as a base preset;
-    - [@unocss/preset-icons](https://github.com/unocss/unocss/tree/main/packages/preset-icons) to use icons from [Icones](https://icones.js.org/);
-    - [@unocss/preset-web-fonts](https://github.com/unocss/unocss/tree/main/packages/preset-typography) so you can grab your web fonts and set them up easily;
-    - [@unocss/transformer-variant-group](https://github.com/unocss/unocss/tree/main/packages/transformer-variant-group) to use the `group` variant; ex: `hover:(bg-blue-500 text-white font-bold)`;
+  - [@unocss/reset](https://github.com/unocss/unocss#style-resetting) with Tailwind settings;
+  - [@unocss/preset-uno](https://github.com/unocss/unocss/tree/main/packages/preset-uno) as a base preset;
+  - [@unocss/preset-icons](https://github.com/unocss/unocss/tree/main/packages/preset-icons) to use icons from [Icones](https://icones.js.org/);
+  - [@unocss/preset-web-fonts](https://github.com/unocss/unocss/tree/main/packages/preset-typography) so you can grab your web fonts and set them up easily;
+  - [@unocss/transformer-variant-group](https://github.com/unocss/unocss/tree/main/packages/transformer-variant-group) to use the `group` variant; ex: `hover:(bg-blue-500 text-white font-bold)`;
 - Scaffolded an example on how you could implement a multi-layout approach
 
 ### Development Experience
+
 - [Vite](https://vitejs.dev/) for development and production builds;
 - Typescript support for `.vue` files;
 - [Eslint](https://eslint.org/) with [antfu/eslint-config](https://github.com/antfu/eslint-config) for linting and formatting;
@@ -79,6 +84,7 @@ Here's a list of what's included in this template. Everything has been configure
 - Vscode will fix and format on save with Eslint;
 
 ### Testing
+
 - [Vitest](https://vitest.dev/) for unit testing;
 - [Cypress](https://www.cypress.io/) for e2e testing;
 
@@ -93,8 +99,8 @@ TypeScript cannot handle type information for `.vue` imports by default, so we r
 If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
 
 1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
+   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
+   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
 2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
 
 ## Customize configuration

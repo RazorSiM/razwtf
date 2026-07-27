@@ -9,12 +9,12 @@ const { flavor } = useFlavor()
 const hasPublishedPosts = await useHasPublishedPosts()
 
 // Footer copy + link list (content/site.yml).
-const { data: site } = await useAsyncData('site-chrome-footer', () =>
-  queryCollection('site').first())
+const { data: site } = await useAsyncData('site-chrome-footer', () => queryCollection('site').first())
 
 // A link is shown unless it is gated on there being published posts.
 const footerLinks = computed(() =>
-  (site.value?.footer.links ?? []).filter(l => !l.requiresPosts || hasPublishedPosts.value))
+  (site.value?.footer.links ?? []).filter((l) => !l.requiresPosts || hasPublishedPosts.value),
+)
 
 const clock = ref('--:--:--')
 let clockTimer: ReturnType<typeof setInterval> | undefined
@@ -33,24 +33,23 @@ onMounted(() => {
   clockTimer = setInterval(updateClock, 1000)
 })
 onBeforeUnmount(() => {
-  if (clockTimer)
-    clearInterval(clockTimer)
+  if (clockTimer) clearInterval(clockTimer)
 })
 </script>
 
 <template>
-  <footer class="border-t border-surface-0/90 bg-mantle">
+  <footer class="border-surface-0/90 bg-mantle border-t">
     <div class="wrap">
-      <div class="grid grid-cols-1 gap-8 pt-[clamp(3rem,6vw,5rem)] pb-9 foot:grid-cols-[1.5fr_1fr_1fr]">
+      <div class="foot:grid-cols-[1.5fr_1fr_1fr] grid grid-cols-1 gap-8 pt-[clamp(3rem,6vw,5rem)] pb-9">
         <div>
           <BrandWordmark to="/" size-class="text-[1.35rem]" />
-          <p class="mt-4 max-w-[30ch] text-body text-subtext-1">
+          <p class="text-body text-subtext-1 mt-4 max-w-[30ch]">
             {{ site?.footer.blurb }}
           </p>
         </div>
 
         <div>
-          <h2 class="mb-4 font-mono text-micro font-600 uppercase tracking-[.2em] text-overlay-1">
+          <h2 class="text-micro font-600 text-overlay-1 mb-4 font-mono tracking-[.2em] uppercase">
             {{ site?.footer.elsewhereHeading }}
           </h2>
           <ul class="flex flex-col gap-[.65rem]">
@@ -60,24 +59,21 @@ onBeforeUnmount(() => {
                 :target="isExternal(s.url) ? '_blank' : undefined"
                 :rel="isExternal(s.url) ? 'noopener' : undefined"
                 class="link-footer"
-              >{{ s.label }}</a>
+                >{{ s.label }}</a
+              >
             </li>
           </ul>
         </div>
 
         <div>
-          <h2 class="mb-4 font-mono text-micro font-600 uppercase tracking-[.2em] text-overlay-1">
+          <h2 class="text-micro font-600 text-overlay-1 mb-4 font-mono tracking-[.2em] uppercase">
             {{ site?.footer.siteHeading }}
           </h2>
           <ul class="flex flex-col gap-[.65rem]">
             <li v-for="link in footerLinks" :key="link.to">
-              <a
-                v-if="isExternal(link.to)"
-                :href="link.to"
-                target="_blank"
-                rel="noopener"
-                class="link-footer"
-              >{{ link.label }}</a>
+              <a v-if="isExternal(link.to)" :href="link.to" target="_blank" rel="noopener" class="link-footer">{{
+                link.label
+              }}</a>
               <NuxtLink v-else :to="link.to" class="link-footer">
                 {{ link.label }}
               </NuxtLink>
@@ -88,13 +84,19 @@ onBeforeUnmount(() => {
 
       <div
         aria-hidden="true"
-        class="footer-mark select-none pt-[clamp(1.5rem,4vw,2.75rem)] pb-[clamp(1.2rem,3vw,2rem)]"
+        class="footer-mark pt-[clamp(1.5rem,4vw,2.75rem)] pb-[clamp(1.2rem,3vw,2rem)] select-none"
       >
         raz<span class="dot">.</span>wtf
       </div>
 
-      <div class="flex flex-wrap items-stretch overflow-hidden border border-surface-0/90 rounded bg-crust font-mono text-micro tracking-[.06em]" role="group" aria-label="Status line">
-        <span class="status-seg bg-mauve font-700 uppercase tracking-[.1em] text-crust">{{ site?.footer.statusLine.mode }}</span>
+      <div
+        class="border-surface-0/90 bg-crust text-micro flex flex-wrap items-stretch overflow-hidden rounded border font-mono tracking-[.06em]"
+        role="group"
+        aria-label="Status line"
+      >
+        <span class="status-seg bg-mauve font-700 text-crust tracking-[.1em] uppercase">{{
+          site?.footer.statusLine.mode
+        }}</span>
         <span class="status-seg bg-surface-0/80 text-subtext-1">
           <span class="text-green" aria-hidden="true">✔</span> {{ site?.footer.statusLine.branch }}
         </span>
@@ -102,24 +104,26 @@ onBeforeUnmount(() => {
         <span class="min-w-0 flex-1" aria-hidden="true" />
         <ClientOnly>
           <span class="status-seg text-subtext-0">
-            {{ site?.footer.statusLine.flavorLabel }}&nbsp;<b class="font-600 capitalize text-mauve">{{ flavor }}</b>
+            {{ site?.footer.statusLine.flavorLabel }}&nbsp;<b class="font-600 text-mauve capitalize">{{ flavor }}</b>
           </span>
           <template #fallback>
             <span class="status-seg text-subtext-0">
-              {{ site?.footer.statusLine.flavorLabel }}&nbsp;<b class="font-600 capitalize text-mauve">----</b>
+              {{ site?.footer.statusLine.flavorLabel }}&nbsp;<b class="font-600 text-mauve capitalize">----</b>
             </span>
           </template>
         </ClientOnly>
         <span class="status-seg text-overlay-1">{{ site?.footer.statusLine.coords }}</span>
         <ClientOnly>
-          <span class="status-seg ml-auto tabular-nums text-subtext-0">{{ clock }}</span>
+          <span class="status-seg text-subtext-0 ml-auto tabular-nums">{{ clock }}</span>
           <template #fallback>
-            <span class="status-seg ml-auto tabular-nums text-subtext-0">--:--:--</span>
+            <span class="status-seg text-subtext-0 ml-auto tabular-nums">--:--:--</span>
           </template>
         </ClientOnly>
       </div>
 
-      <div class="flex flex-wrap justify-between gap-x-8 gap-y-[.7rem] pt-6 pb-[2.4rem] font-mono text-micro tracking-[.06em] text-overlay-1">
+      <div
+        class="text-micro text-overlay-1 flex flex-wrap justify-between gap-x-8 gap-y-[.7rem] pt-6 pb-[2.4rem] font-mono tracking-[.06em]"
+      >
         <span>{{ site?.footer.colophon.left }}</span>
         <span>{{ site?.footer.colophon.right }}</span>
       </div>
@@ -135,10 +139,10 @@ onBeforeUnmount(() => {
   font-optical-sizing: auto;
   font-weight: 600;
   font-size: var(--fs-mark);
-  line-height: .82;
-  letter-spacing: -.03em;
+  line-height: 0.82;
+  letter-spacing: -0.03em;
   color: transparent;
-  -webkit-text-stroke: 1px rgb(var(--overlay0) / .5);
+  -webkit-text-stroke: 1px rgb(var(--overlay0) / 0.5);
 }
 
 .footer-mark .dot {

@@ -5,13 +5,10 @@ definePageMeta({ layout: 'default' })
 // Editorial masthead (monogram + name + role + socials) then the Q&A "story"
 // rendered from content/about.md via <ContentRenderer>. Every string on the
 // page comes from that file's frontmatter or body (raz-edg).
-const { data: page } = await useAsyncData('about', () =>
-  queryCollection('about').first())
-const { data: site } = await useAsyncData('site-chrome-about', () =>
-  queryCollection('site').first())
+const { data: page } = await useAsyncData('about', () => queryCollection('about').first())
+const { data: site } = await useAsyncData('site-chrome-about', () => queryCollection('site').first())
 
-if (!page.value)
-  throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
+if (!page.value) throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
 
 useSeoMeta({
   title: () => page.value?.seo?.title ?? page.value?.title,
@@ -29,14 +26,16 @@ useSeoMeta({
         <!-- eyebrow gains a leading accent bar (base shortcut has none): a real
              decorative <span> replaces the former .eyebrow-bar::before. -->
         <span class="eyebrow">
-          <span class="w-[26px] h-px bg-mauve" aria-hidden="true" />
+          <span class="bg-mauve h-px w-[26px]" aria-hidden="true" />
           {{ page.eyebrow }}
         </span>
 
         <!-- masthead: monogram avatar beside the name/role cluster -->
-        <div class="grid grid-cols-[1fr] items-center gap-[clamp(1rem,3vw,1.6rem)] mt-[clamp(1.1rem,3vw,1.6rem)] dots:grid-cols-[auto_1fr]">
+        <div
+          class="dots:grid-cols-[auto_1fr] mt-[clamp(1.1rem,3vw,1.6rem)] grid grid-cols-[1fr] items-center gap-[clamp(1rem,3vw,1.6rem)]"
+        >
           <div
-            class="grid place-items-center select-none w-[clamp(64px,11vw,88px)] aspect-square border border-[var(--hair)] rounded-md bg-mantle font-display [font-optical-sizing:auto] italic font-500 leading-[1] text-[clamp(2.1rem,5vw,3rem)] text-mauve"
+            class="bg-mantle font-display font-500 text-mauve grid aspect-square w-[clamp(64px,11vw,88px)] place-items-center rounded-md border border-[var(--hair)] text-[clamp(2.1rem,5vw,3rem)] leading-[1] italic select-none [font-optical-sizing:auto]"
             aria-hidden="true"
           >
             {{ site?.author.monogram }}
@@ -46,21 +45,22 @@ useSeoMeta({
               id="about-title"
               as="h1"
               :balanced="false"
-              class="font-display font-[560] tracking-[-.018em] text-balance [font-optical-sizing:auto] text-[clamp(1.9rem,1.15rem+3vw,3.15rem)] leading-[1.04]"
+              class="font-display text-[clamp(1.9rem,1.15rem+3vw,3.15rem)] leading-[1.04] font-[560] tracking-[-.018em] text-balance [font-optical-sizing:auto]"
             >
-              {{ page.nameBefore }}<em class="italic font-500 text-mauve">{{ page.nameEm }}</em>{{ page.nameAfter }}
+              {{ page.nameBefore }}<em class="font-500 text-mauve italic">{{ page.nameEm }}</em
+              >{{ page.nameAfter }}
             </KineticText>
-            <p class="mt-[.6rem] font-mono text-sm tracking-[.02em] text-subtext-0">
-              {{ page.roleBefore }}<em class="italic text-[rgb(var(--peach-ink))]">{{ page.roleEm }}</em>
+            <p class="text-subtext-0 mt-[.6rem] font-mono text-sm tracking-[.02em]">
+              {{ page.roleBefore }}<em class="text-[rgb(var(--peach-ink))] italic">{{ page.roleEm }}</em>
             </p>
           </div>
         </div>
 
-        <p class="mt-[clamp(1.3rem,3vw,1.8rem)] max-w-[56ch] text-lead leading-[1.55] text-subtext-1">
+        <p class="text-lead text-subtext-1 mt-[clamp(1.3rem,3vw,1.8rem)] max-w-[56ch] leading-[1.55]">
           {{ page.lead }}
         </p>
 
-        <div class="flex flex-wrap gap-[.6rem] mt-[clamp(1.4rem,3vw,1.9rem)]" :aria-label="page.socialsLabel">
+        <div class="mt-[clamp(1.4rem,3vw,1.9rem)] flex flex-wrap gap-[.6rem]" :aria-label="page.socialsLabel">
           <a
             v-for="s in ABOUT_SOCIALS"
             :key="s.key"
@@ -68,7 +68,8 @@ useSeoMeta({
             :href="s.url"
             :target="isExternal(s.url) ? '_blank' : undefined"
             :rel="isExternal(s.url) ? 'noopener noreferrer' : undefined"
-          >{{ s.label }}</a>
+            >{{ s.label }}</a
+          >
         </div>
       </div>
     </section>
@@ -92,8 +93,12 @@ useSeoMeta({
         <ProseDocument :value="page" />
 
         <div class="wrap-read">
-          <div class="flex items-baseline justify-between gap-[1rem] flex-wrap mt-[clamp(2.5rem,6vw,4rem)] pt-[clamp(1.6rem,4vw,2.4rem)] border-t border-[var(--hair)]">
-            <span class="font-mono text-micro tracking-[.16em] uppercase text-overlay-1">{{ page.contact.prompt }}</span>
+          <div
+            class="mt-[clamp(2.5rem,6vw,4rem)] flex flex-wrap items-baseline justify-between gap-[1rem] border-t border-[var(--hair)] pt-[clamp(1.6rem,4vw,2.4rem)]"
+          >
+            <span class="text-micro text-overlay-1 font-mono tracking-[.16em] uppercase">{{
+              page.contact.prompt
+            }}</span>
             <a :href="EMAIL_URL" class="link-cta group">
               {{ page.contact.cta }} <span class="arw" aria-hidden="true">→</span>
             </a>

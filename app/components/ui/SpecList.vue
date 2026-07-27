@@ -14,14 +14,14 @@ defineProps<{
 </script>
 
 <template>
-  <dl class="border border-[color:var(--hair)] rounded-md overflow-hidden">
+  <dl class="overflow-hidden rounded-md border border-[color:var(--hair)]">
     <div
       v-for="(row, i) in rows"
       :key="row.label"
-      class="grid grid-cols-[9rem_1fr] gap-4 items-baseline px-[1.15rem] py-[.85rem] font-mono text-sm leading-[1.55]"
+      class="grid grid-cols-[9rem_1fr] items-baseline gap-4 px-[1.15rem] py-[.85rem] font-mono text-sm leading-[1.55]"
       :class="{ 'border-t border-[color:var(--hair-soft)]': i > 0 }"
     >
-      <dt class="text-micro uppercase tracking-[.12em] text-overlay-1">
+      <dt class="text-micro text-overlay-1 tracking-[.12em] uppercase">
         {{ row.label }}
       </dt>
       <dd class="text-subtext-1">

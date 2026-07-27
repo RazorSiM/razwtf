@@ -17,9 +17,7 @@ export function useFlavor() {
   const systemLight = useMediaQuery('(prefers-color-scheme: light)')
 
   const flavor = computed<Flavor>(() =>
-    preference.value === 'auto'
-      ? (systemLight.value ? 'latte' : 'mocha')
-      : preference.value,
+    preference.value === 'auto' ? (systemLight.value ? 'latte' : 'mocha') : preference.value,
   )
   const isAuto = computed(() => preference.value === 'auto')
 
@@ -28,8 +26,7 @@ export function useFlavor() {
     if (import.meta.client) {
       try {
         localStorage.setItem('flavor', pref)
-      }
-      catch {}
+      } catch {}
     }
   }
 

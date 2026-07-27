@@ -16,33 +16,39 @@ const SITE = 'https://raz.wtf'
 function escapeXml(value: string): string {
   return value.replace(/[<>&'"]/g, (char) => {
     switch (char) {
-      case '<': return '&lt;'
-      case '>': return '&gt;'
-      case '&': return '&amp;'
-      case '\'': return '&apos;'
-      default: return '&quot;'
+      case '<':
+        return '&lt;'
+      case '>':
+        return '&gt;'
+      case '&':
+        return '&amp;'
+      case "'":
+        return '&apos;'
+      default:
+        return '&quot;'
     }
   })
 }
 
 export default defineEventHandler(async (event) => {
-  const posts = await queryCollection(event, 'posts')
-    .where('draft', '=', false)
-    .order('date', 'DESC')
-    .all()
+  const posts = await queryCollection(event, 'posts').where('draft', '=', false).order('date', 'DESC').all()
 
-  const items = posts.map((post) => {
-    const link = `${SITE}${post.path}`
-    return [
-      '    <item>',
-      `      <title>${escapeXml(post.title)}</title>`,
-      `      <link>${link}</link>`,
-      `      <guid isPermaLink="true">${link}</guid>`,
-      post.description ? `      <description>${escapeXml(post.description)}</description>` : '',
-      `      <pubDate>${new Date(post.date).toUTCString()}</pubDate>`,
-      '    </item>',
-    ].filter(Boolean).join('\n')
-  }).join('\n')
+  const items = posts
+    .map((post) => {
+      const link = `${SITE}${post.path}`
+      return [
+        '    <item>',
+        `      <title>${escapeXml(post.title)}</title>`,
+        `      <link>${link}</link>`,
+        `      <guid isPermaLink="true">${link}</guid>`,
+        post.description ? `      <description>${escapeXml(post.description)}</description>` : '',
+        `      <pubDate>${new Date(post.date).toUTCString()}</pubDate>`,
+        '    </item>',
+      ]
+        .filter(Boolean)
+        .join('\n')
+    })
+    .join('\n')
 
   const lastBuildDate = posts[0] ? new Date(posts[0].date).toUTCString() : new Date().toUTCString()
 
@@ -59,7 +65,9 @@ export default defineEventHandler(async (event) => {
     items,
     '  </channel>',
     '</rss>',
-  ].filter(Boolean).join('\n')
+  ]
+    .filter(Boolean)
+    .join('\n')
 
   // Content-type is applied via nitro routeRules in nuxt.config (see there).
   return xml

@@ -1,17 +1,21 @@
 {
   "name": "raz.wtf",
-  "type": "module",
   "private": true,
-  "packageManager": "pnpm@11.9.0",
+  "type": "module",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "prepare": "lefthook install || true",
     "typecheck": "nuxt typecheck",
-    "lint:check": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint": "oxlint && vize lint app",
+    "lint:check": "oxlint && vize lint app",
+    "lint:fix": "oxlint --fix && vize lint --fix app",
+    "lint:strict": "oxlint --max-warnings 0 && vize lint --max-warnings 0 app",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check"
   },
   "dependencies": {
     "@chenglou/pretext": "^0.0.8",
@@ -23,7 +27,6 @@
     "unocss": "^66.7.5"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^9.1.0",
     "@iconify/json": "^2.2.503",
     "@nuxt/content": "^3.15.0",
     "@nuxt/fonts": "^0.14.0",
@@ -31,11 +34,15 @@
     "@unocss/nuxt": "66.7.5",
     "@vueuse/core": "^14.3.0",
     "@vueuse/nuxt": "^14.3.0",
-    "eslint": "^9.39.5",
+    "lefthook": "^2.1.10",
     "nuxt": "4.5.0",
+    "oxfmt": "^0.60.0",
+    "oxlint": "^1.75.0",
     "sitemap": "^9.0.1",
     "typescript": "^5.9.3",
     "unocss-preset-scrollbar": "^4.0.0",
+    "vize": "0.291.0",
     "vue-tsc": "^3.3.8"
-  }
+  },
+  "packageManager": "pnpm@11.9.0"
 }

@@ -20,13 +20,14 @@ contact:
   prompt: Got a question?
   cta: Say hello
 ---
-No much to say, really. I'm Simone from Italy (better known online as **Raz**) and I am a **web designer** & developer: I don't like the abuse of the category **full-stack dev** but yeah, I do know how the web stack works. I have a strong passion for tech in general and I am an *old* gamer (by the actual standards 🧓) - I love the **rogue like** genre, **arcade**, **hack'n'slash** (Diablo, anyone?) and obviously the goods olds **FPS** like CS, Quake, Doom, COD (yeah, COD is getting better).
+
+No much to say, really. I'm Simone from Italy (better known online as **Raz**) and I am a **web designer** & developer: I don't like the abuse of the category **full-stack dev** but yeah, I do know how the web stack works. I have a strong passion for tech in general and I am an _old_ gamer (by the actual standards 🧓) - I love the **rogue like** genre, **arcade**, **hack'n'slash** (Diablo, anyone?) and obviously the goods olds **FPS** like CS, Quake, Doom, COD (yeah, COD is getting better).
 
 Let's jump to the question I'll eventually have to answer:
 
 > Why Raz?
 
-It's a nickname, I've been using it since I was a kid. It's a shortening of *Razor*, and it's a reference to the [Razor](https://dragonlance.fandom.com/wiki/Razor) from the [Dragonlance](https://en.wikipedia.org/wiki/Dragonlance) universe. I've been using it for years!
+It's a nickname, I've been using it since I was a kid. It's a shortening of _Razor_, and it's a reference to the [Razor](https://dragonlance.fandom.com/wiki/Razor) from the [Dragonlance](https://en.wikipedia.org/wiki/Dragonlance) universe. I've been using it for years!
 
 > What you do for a living?
 
@@ -46,9 +47,11 @@ One of my first encounters with a **mechanical keyboard** was circa 1995, when m
 
 ::img-lightbox
 ---
+
 alt: Filco
 src: /filco-majestouch.webp
 ---
+
 ::
 
 Plus, one of my hobbies is **photography** but I had nothing to shoot for during the 2020 March lockdown; that's why I started learning [Blender](https://www.blender.org/). The next thing I remember, I was modeling GMK caps and working on my first keyset [GMK Avanguardia](https://raz.wtf/projects/gmk-avanguardia). You can expect me to sometimes update the website with my new keyboard related projects but if you want to get more involved or chit chat during the day, I am part of [Clicky Clack Club](https://discord.gg/H9HCJ4k).

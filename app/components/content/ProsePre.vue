@@ -34,8 +34,10 @@ const showBar = computed(() => !!props.filename || showLang.value)
 
 <template>
   <figure v-if="showBar" class="codeblock overflow-hidden rounded-md">
-    <figcaption class="codeblock__bar flex gap-4 items-center justify-between py-[.55rem] px-[.95rem] font-mono text-micro tracking-[.08em]">
-      <span v-if="filename" class="codeblock__name inline-flex gap-[.5em] items-center">{{ filename }}</span>
+    <figcaption
+      class="codeblock__bar text-micro flex items-center justify-between gap-4 px-[.95rem] py-[.55rem] font-mono tracking-[.08em]"
+    >
+      <span v-if="filename" class="codeblock__name inline-flex items-center gap-[.5em]">{{ filename }}</span>
       <span v-if="showLang" class="codeblock__lang uppercase">{{ language }}</span>
     </figcaption>
     <pre :class="$props.class"><slot /></pre>
@@ -58,16 +60,21 @@ const showBar = computed(() => !!props.filename || showLang.value)
   border: 1px solid var(--code-hair);
 }
 .codeblock__bar {
-  margin: 0; text-align: left;
+  margin: 0;
+  text-align: left;
   background: rgb(var(--code-bar));
   border-bottom: 1px solid var(--code-hair);
   color: rgb(var(--code-muted));
 }
-.codeblock__name { color: rgb(var(--code-muted)); }
-.codeblock__lang { color: rgb(var(--code-muted)); }
+.codeblock__name {
+  color: rgb(var(--code-muted));
+}
+.codeblock__lang {
+  color: rgb(var(--code-muted));
+}
 
 .codeblock__name::before {
-  content: "";
+  content: '';
   width: 8px;
   height: 8px;
   background: rgb(var(--mauve));

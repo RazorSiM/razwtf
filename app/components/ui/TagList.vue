@@ -15,26 +15,20 @@ const { tags, variant = 'inline', accent } = defineProps<Props>()
 
 <template>
   <ul
-    :class="variant === 'chip'
-      ? 'flex flex-wrap gap-[.55rem] list-none'
-      : 'flex flex-wrap gap-[.7em] list-none text-mauve'"
+    :class="
+      variant === 'chip' ? 'flex list-none flex-wrap gap-[.55rem]' : 'text-mauve flex list-none flex-wrap gap-[.7em]'
+    "
   >
     <template v-if="variant === 'chip'">
       <li v-for="(tag, i) in tags" :key="tag">
-        <span
-          v-if="i === 0 && accent"
-          class="chip"
-          :style="{ '--accent': `var(--${accent})` }"
-        >
+        <span v-if="i === 0 && accent" class="chip" :style="{ '--accent': `var(--${accent})` }">
           <i class="swatch bg-[rgb(var(--accent))]" aria-hidden="true" /> {{ tag }}
         </span>
         <span v-else class="chip">{{ tag }}</span>
       </li>
     </template>
     <template v-else>
-      <li v-for="tag in tags" :key="tag">
-        #{{ tag }}
-      </li>
+      <li v-for="tag in tags" :key="tag">#{{ tag }}</li>
     </template>
   </ul>
 </template>

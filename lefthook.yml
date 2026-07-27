@@ -1,0 +1,49 @@
+# Git hooks. Installed by `lefthook install`, which the postinstall script runs
+# after `nuxt prepare`, so a plain `pnpm install` is enough to get them.
+#
+# Set LEFTHOOK=0 to disable for one command, or pass --no-verify to git.
+
+# Formatting is the only thing here that rewrites files, so pre-commit runs
+# sequentially: oxfmt must finish before the linters read the same paths.
+pre-commit:
+  # Nothing here is useful mid-rebase or on a merge commit, and a failure there
+  # is disproportionately annoying to recover from.
+  skip:
+    - merge
+    - rebase
+  jobs:
+    - name: oxfmt
+      glob: '*.{ts,js,mjs,cjs,vue,md,json,jsonc,yaml,yml,css}'
+      run: pnpm exec oxfmt {staged_files}
+      # Re-stage what oxfmt rewrote, so the commit contains formatted files
+      # rather than failing and making you run `pnpm fmt` by hand.
+      stage_fixed: true
+
+    - name: oxlint
+      glob: '*.{ts,js,mjs,cjs,vue}'
+      run: pnpm exec oxlint {staged_files}
+
+    # Whole-directory rather than {staged_files}: vize lints all 52 SFCs in
+    # ~5ms, and template diagnostics can be triggered by a component the commit
+    # does not touch.
+    - name: vize
+      glob: '*.vue'
+      run: pnpm exec vize lint app
+
+# Read-only and independent, so these overlap. typecheck dominates at ~5s;
+# lint and fmt:check add ~1s between them.
+pre-push:
+  parallel: true
+  jobs:
+    - name: typecheck
+      run: pnpm typecheck
+
+    # Full-repo and --max-warnings 0, unlike pre-commit. Both linters exit 0 on
+    # warnings, so pre-commit only ever blocks on errors and you can commit
+    # work-in-progress freely; what leaves the machine has to be clean. The
+    # ruleset was curated down to zero warnings, so any hit here is new.
+    - name: lint
+      run: pnpm lint:strict
+
+    - name: fmt
+      run: pnpm fmt:check

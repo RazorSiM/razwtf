@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/vize/schemas/vize.config.schema.json",
+  "linter": {
+    "preset": "nuxt",
+    "rules": {
+      "vue/no-inline-style": "off",
+      "vue/warn-custom-directive": "off",
+      "vue/multi-word-component-names": "off",
+      "vue/no-unsafe-url": "off",
+      "vue/no-root-v-if": "off",
+      "vue/use-unique-element-ids": "off",
+      "vue/v-on-handler-style": "off",
+      "css/prefer-nested-selectors": "off",
+      "css/prefer-logical-properties": "off",
+      "css/no-hardcoded-values": "off",
+      "css/prefer-slotted": "off"
+    }
+  },
+  "lsp": {
+    "formatting": false
+  }
+}

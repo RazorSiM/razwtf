@@ -35,9 +35,7 @@ export default defineConfig({
       scale: 1.2,
     }),
   ],
-  rules: [
-    ['text-xxs', { 'font-size': '0.6rem' }],
-  ],
+  rules: [['text-xxs', { 'font-size': '0.6rem' }]],
   theme: {
     font: {
       sans: MONO,
@@ -123,7 +121,10 @@ export default defineConfig({
     ['section-y', 'py-[var(--section-y)]'],
 
     // Eyebrow + section markers -------------------------------------------
-    ['eyebrow', 'inline-flex items-center gap-[.7em] font-mono text-micro tracking-[.26em] uppercase text-subtext-0 font-600'],
+    [
+      'eyebrow',
+      'inline-flex items-center gap-[.7em] font-mono text-micro tracking-[.26em] uppercase text-subtext-0 font-600',
+    ],
     ['secmark', 'flex items-baseline gap-[1.1rem] flex-wrap'],
     ['secmark-n', 'font-mono font-600 text-sm tracking-[.12em] text-mauve tabular-nums'],
     ['secmark-label', 'font-mono text-cap tracking-[.22em] uppercase text-subtext-1 font-600'],
@@ -136,15 +137,24 @@ export default defineConfig({
     ['display', 'font-display font-[560] leading-[1.02] tracking-[-.018em] text-balance [font-optical-sizing:auto]'],
 
     // Buttons --------------------------------------------------------------
-    ['btn', 'inline-flex items-center gap-[.6em] font-mono text-cap tracking-[.1em] uppercase font-600 px-[1.35rem] py-[.85rem] rounded transition-all duration-300 ease'],
+    [
+      'btn',
+      'inline-flex items-center gap-[.6em] font-mono text-cap tracking-[.1em] uppercase font-600 px-[1.35rem] py-[.85rem] rounded transition-all duration-300 ease',
+    ],
     ['btn-primary', 'btn bg-mauve text-crust hover:bg-lavender hover:-translate-y-2px'],
     ['btn-ghost', 'btn border border-surface-1/90 text-text hover:border-mauve hover:text-mauve'],
 
     // Inline CTA link with animated underline -----------------------------
-    ['link-cta', 'group relative inline-flex items-baseline gap-[.55em] font-mono text-cap tracking-[.1em] uppercase font-600 text-text pb-[3px]'],
+    [
+      'link-cta',
+      'group relative inline-flex items-baseline gap-[.55em] font-mono text-cap tracking-[.1em] uppercase font-600 text-text pb-[3px]',
+    ],
 
     // Chip -----------------------------------------------------------------
-    ['chip', 'inline-flex items-center gap-[.5em] font-mono text-micro tracking-[.12em] uppercase px-[.75rem] py-[.4rem] rounded-full text-subtext-1 border border-surface-1/90 transition-colors duration-300'],
+    [
+      'chip',
+      'inline-flex items-center gap-[.5em] font-mono text-micro tracking-[.12em] uppercase px-[.75rem] py-[.4rem] rounded-full text-subtext-1 border border-surface-1/90 transition-colors duration-300',
+    ],
 
     // Lead paragraph -------------------------------------------------------
     ['lead', 'text-lead text-subtext-1 leading-[1.55] max-w-[52ch]'],
@@ -162,13 +172,22 @@ export default defineConfig({
     ['link-footer', 'text-body text-subtext-1 transition-colors duration-300 ease hover:text-mauve'],
     ['chip-link', 'chip transition-colors hover:text-text hover:border-mauve/80'],
     // Icon button chrome (header / scroll-top / lightbox). size + shape as modifiers.
-    ['icon-btn', 'grid place-items-center border border-surface-1/90 rounded text-text transition-all duration-300 ease hover:border-mauve hover:text-mauve active:scale-[.94]'],
+    [
+      'icon-btn',
+      'grid place-items-center border border-surface-1/90 rounded text-text transition-all duration-300 ease hover:border-mauve hover:text-mauve active:scale-[.94]',
+    ],
     // Back link with hover-sliding arrow (mono uppercase "← All X").
     // NOTE: `group` is NOT included here - UnoCSS drops the bare `group` marker
     // from inside a shortcut. Add `group` directly on the element (see BackLink).
-    ['backlink', 'inline-flex items-center gap-[.55em] font-mono text-micro tracking-[.16em] uppercase text-subtext-0 transition-colors duration-300 ease hover:text-text'],
+    [
+      'backlink',
+      'inline-flex items-center gap-[.55em] font-mono text-micro tracking-[.16em] uppercase text-subtext-0 transition-colors duration-300 ease hover:text-text',
+    ],
     // BUG FIX: `arw` is referenced on 4+ CTAs/links but was never defined, so
     // every arrow's hover-slide silently did nothing. Reduced-motion safe.
-    ['arw', 'inline-block transition-transform duration-[350ms] ease-out group-hover:translate-x-[4px] motion-reduce:group-hover:translate-x-0'],
+    [
+      'arw',
+      'inline-block transition-transform duration-[350ms] ease-out group-hover:translate-x-[4px] motion-reduce:group-hover:translate-x-0',
+    ],
   ],
 })
