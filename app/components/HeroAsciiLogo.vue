@@ -167,7 +167,7 @@ onMounted(() => {
   const N = FROWS * COLS
 
   /* flatten to fast typed arrays - real rows centred in a field of static */
-  const CHAR: string[] = new Array(N)
+  const CHAR: string[] = Array.from({ length: N }, () => '')
   const TIER = new Uint8Array(N)
   const RAND = new Float32Array(N) // per-cell shimmer phase
   const SPD = new Float32Array(N) // per-cell shimmer speed
@@ -255,7 +255,7 @@ onMounted(() => {
   let dpr = 1
   let cssW = 640
   let cssH = 640
-  const FONTS: string[] = new Array(NBUCKETS) // one font string per size bucket
+  const FONTS: string[] = Array.from({ length: NBUCKETS }, () => '') // one font string per size bucket
   function measure() {
     dpr = Math.min(window.devicePixelRatio || 1, 2)
     cssW = Math.max(160, el.clientWidth || 640)

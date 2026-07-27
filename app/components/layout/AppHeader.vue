@@ -101,6 +101,12 @@ const mobileOpen = ref(false)
             </div>
 
             <template #fallback>
+              <!-- False positive: the rule's own help text prescribes tabindex="-1"
+                   as the remedy, then flags the element anyway. Verified against
+                   vize 0.291 with a minimal case: a <button> carrying both
+                   aria-hidden and tabindex="-1" reports identically to one with
+                   no tabindex at all. This placeholder is inert by design. -->
+              <!-- eslint-disable-next-line a11y/no-aria-hidden-on-focusable -->
               <button
                 type="button"
                 class="border-surface-1/90 bg-base/60 text-micro inline-flex items-center gap-[.5em] rounded-full border py-[.34rem] pr-[.7rem] pl-[.55rem] font-mono tracking-[.12em] uppercase"

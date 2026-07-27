@@ -54,7 +54,7 @@ export function splitLetters(root: HTMLElement): HTMLElement[] {
         const value = (child as Text).nodeValue ?? ''
         if (!value) continue
         const frag = document.createDocumentFragment()
-        for (const ch of [...value]) {
+        for (const ch of value) {
           if (/^\s$/.test(ch)) {
             frag.appendChild(document.createTextNode(ch))
             continue
