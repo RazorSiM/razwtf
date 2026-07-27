@@ -471,9 +471,15 @@ ranges.
 
 **Why rules are disabled.** The `nuxt` preset reports 225 diagnostics here.
 Everything actionable was fixed; what stays off in `vize.config.json` is either
-inapplicable to a prerendered content site or fights a deliberate choice. None of
-it is autofixable - `vize lint --fix` is currently inert even for rules the docs
-mark fixable.
+inapplicable to a prerendered content site or fights a deliberate choice.
+
+Do not count on `vize lint --fix` for any of it. Only 18 of the 238 rules claim
+to be fixable, and against vize 0.291 roughly a third of those actually emit
+edits: `vue/v-bind-style`, `vue/v-on-style` and `vue/no-multi-spaces` apply,
+while `vue/prefer-props-shorthand`, `vue/html-self-closing`, `vue/html-quotes`,
+`vue/attribute-hyphenation`, `vue/no-boolean-attr-value`, `vue/v-slot-style` and
+`a11y/no-redundant-roles` are all marked fixable and do nothing. Check before
+assuming a rule will fix itself.
 
 - `vue/no-inline-style` (31) - `:style="{ '--accent': accent }"` _is_ the
   per-card accent mechanism. See [styling system](#styling-system).
