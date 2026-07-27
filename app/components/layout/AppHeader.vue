@@ -152,7 +152,12 @@ const mobileOpen = ref(false)
                   </DialogClose>
                 </div>
 
-                <nav class="mt-6 flex flex-col gap-1" aria-label="Primary">
+                <!-- Labelled "Mobile", not "Primary": the desktop nav above carries
+                     that name. The two are mutually exclusive at any viewport (the
+                     desktop one is display:none below the `nav:` breakpoint, so it
+                     leaves the a11y tree), but distinct landmark names stay
+                     unambiguous even if the responsive CSS never applies. -->
+                <nav class="mt-6 flex flex-col gap-1" aria-label="Mobile">
                   <NuxtLink
                     v-for="link in links"
                     :key="link.to"

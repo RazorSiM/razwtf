@@ -7,9 +7,16 @@ withDefaults(
     placeholder?: string
     /** id of the live region / list this field controls, for screen readers. */
     ariaControls?: string
+    /**
+     * Accessible name. A placeholder is not a label: it is announced
+     * inconsistently and disappears once the user types, so the field is
+     * labelled independently of it.
+     */
+    label?: string
   }>(),
   {
     placeholder: 'Search…',
+    label: 'Search',
   },
 )
 
@@ -25,6 +32,7 @@ const model = defineModel<string>({ default: '' })
       v-model="model"
       type="search"
       :placeholder="placeholder"
+      :aria-label="label"
       class="text-body text-text placeholder:text-overlay-1 w-full min-w-0 bg-transparent font-mono focus:outline-none"
       :aria-controls="ariaControls"
       autocomplete="off"

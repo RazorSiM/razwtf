@@ -55,5 +55,8 @@ export function getBlogTagRoutes(): string[] {
     for (const tag of tags) slugs.add(slugifyTag(tag))
   }
 
+  // The spread is a Set->Array conversion, so this already sorts a throwaway
+  // copy and toSorted would just allocate a second one.
+  // oxlint-disable-next-line unicorn/no-array-sort
   return [...slugs].sort().map((slug) => `/blog/tag/${slug}`)
 }

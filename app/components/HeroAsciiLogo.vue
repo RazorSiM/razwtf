@@ -122,6 +122,23 @@ const GRID: [string, string][] = [
   ],
 ]
 
+/** Read an "R G B" (or legacy "R, G, B") custom property off :root. */
+function triplet(name: string): number[] {
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+  // Tokens are now SPACE-separated "R G B" (also tolerate legacy commas).
+  const p = v
+    .split(/[\s,]+/)
+    .filter(Boolean)
+    .map((s) => Number.parseInt(s, 10))
+  return p.length === 3 && p.every((n) => !Number.isNaN(n)) ? p : [128, 128, 128]
+}
+
+function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * t
+}
+
+const TAU = Math.PI * 2
+
 const host = ref<HTMLDivElement | null>(null)
 const { flavor } = useFlavor()
 
@@ -225,15 +242,6 @@ onMounted(() => {
   let ACCENT = [203, 166, 247]
   let ACCENT2 = [180, 190, 254]
   let BRIGHT = [198, 208, 245]
-  function triplet(name: string): number[] {
-    const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim()
-    // Tokens are now SPACE-separated "R G B" (also tolerate legacy commas).
-    const p = v
-      .split(/[\s,]+/)
-      .filter(Boolean)
-      .map((s) => Number.parseInt(s, 10))
-    return p.length === 3 && p.every((n) => !Number.isNaN(n)) ? p : [128, 128, 128]
-  }
   function readColors() {
     COL[0] = triplet('--base')
     COL[1] = triplet('--mantle')
@@ -333,11 +341,6 @@ onMounted(() => {
     canvas.addEventListener('pointermove', onPointerMove)
     canvas.addEventListener('pointerenter', onPointerEnter)
     canvas.addEventListener('pointerleave', onPointerLeave)
-  }
-
-  const TAU = Math.PI * 2
-  function lerp(a: number, b: number, t: number) {
-    return a + (b - a) * t
   }
 
   /* ---------- draw one animated frame ---------- */

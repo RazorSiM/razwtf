@@ -51,7 +51,7 @@ withDefaults(
         :is="as"
         class="font-display text-h3 leading-[1.08] font-[540] tracking-[-.01em] [font-optical-sizing:auto]"
       >
-        <NuxtLink :to="to" class="row-link text-text group-hover:text-mauve">
+        <NuxtLink :to class="row-link text-text group-hover:text-mauve">
           {{ title }}
         </NuxtLink>
       </component>

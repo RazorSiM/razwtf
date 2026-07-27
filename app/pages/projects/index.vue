@@ -8,7 +8,7 @@ const { data: page } = await useAsyncData('projects-index', () => queryCollectio
 const { data: projectData } = await useAsyncData('projects-list', () => queryCollection('projects').all())
 
 const list = computed(() =>
-  [...(projectData.value ?? [])].sort(
+  (projectData.value ?? []).toSorted(
     (a, b) => (a.order ?? 99) - (b.order ?? 99) || +new Date(b.date) - +new Date(a.date),
   ),
 )

@@ -14,6 +14,9 @@
    ========================================================================== */
 const curtain = ref<HTMLElement | null>(null)
 
+/** Read live, not cached: the OS preference can change mid-session. */
+const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
 if (import.meta.client) {
   const router = useRouter()
   const nuxtApp = useNuxtApp()
@@ -24,8 +27,6 @@ if (import.meta.client) {
   let watchdog: ReturnType<typeof setTimeout> | null = null
   let animateFn: (typeof import('motion-v'))['animate'] | null = null
   let current: any = null
-
-  const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   async function ensureAnimate() {
     if (!animateFn) animateFn = (await import('motion-v')).animate

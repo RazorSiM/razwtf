@@ -14,7 +14,7 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <NuxtLink :to="to" class="backlink group">
+  <NuxtLink :to class="backlink group">
     <!-- Leading arrow: mono accent, slides left on hover (reduced-motion safe). -->
     <span
       v-if="direction === 'left'"

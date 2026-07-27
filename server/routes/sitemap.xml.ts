@@ -49,6 +49,9 @@ export default defineEventHandler(async (event) => {
   for (const post of posts) {
     for (const tag of post.tags ?? []) tagSlugs.add(slugifyTag(tag))
   }
+  // The spread is a Set->Array conversion, so this already sorts a throwaway
+  // copy and toSorted would just allocate a second one.
+  // oxlint-disable-next-line unicorn/no-array-sort
   for (const slug of [...tagSlugs].sort()) sitemap.write({ url: `/blog/tag/${slug}`, changefreq: 'weekly' })
 
   sitemap.end()

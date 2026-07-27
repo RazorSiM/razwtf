@@ -31,7 +31,7 @@ function accentVar(p?: { accent?: string } | null) {
 }
 
 // Breadcrumb leaf (~/ work / <slug>).
-const slug = computed(() => route.path.split('/').filter(Boolean).pop() ?? '')
+const slug = computed(() => route.path.split('/').findLast(Boolean) ?? '')
 
 // Reading estimate from the rendered body - only surfaced when the body has
 // real text and the estimate is a sane, finite number of minutes (≥ 1).
@@ -243,7 +243,7 @@ useSeoMeta({
     </section>
 
     <!-- ================= PREV / NEXT ================= -->
-    <PrevNextNav :prev="prev" :next="next" />
+    <PrevNextNav :prev :next />
   </div>
 </template>
 

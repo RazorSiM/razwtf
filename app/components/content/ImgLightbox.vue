@@ -24,7 +24,7 @@ function open() {
 
 <template>
   <button type="button" class="figbox" :aria-label="`Open ${alt} full size`" @click="open">
-    <NuxtImg :src="src" :alt="alt" :width="width" :height="height" :quality="quality" format="webp" />
+    <NuxtImg :src :alt :width :height :quality format="webp" />
     <span class="zoom" aria-hidden="true">⤢</span>
   </button>
 </template>

@@ -12,5 +12,7 @@
     "es2024": true
   },
   "ignorePatterns": [".beads/**", "design-mockups/**"],
-  "rules": {}
+  "rules": {
+    "promise/always-return": ["error", { "ignoreLastCallback": true }]
+  }
 }

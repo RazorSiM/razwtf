@@ -31,7 +31,7 @@ const related = computed(() => {
       post: p,
       shared: (p.tags ?? []).filter((t) => currentTags.has(t)).length,
     }))
-    .sort((a, b) => b.shared - a.shared || +new Date(b.post.date) - +new Date(a.post.date))
+    .toSorted((a, b) => b.shared - a.shared || +new Date(b.post.date) - +new Date(a.post.date))
     .slice(0, 3)
     .map((s) => s.post)
 })
@@ -44,7 +44,7 @@ const tocLinks = computed<TocLink[]>(() => {
 
 // Breadcrumb leaf + a stable ISO date for the <time datetime> attribute
 // (UTC-normalised so server and client agree - no hydration mismatch).
-const slug = computed(() => route.path.split('/').filter(Boolean).pop() ?? '')
+const slug = computed(() => route.path.split('/').findLast(Boolean) ?? '')
 const isoDate = computed(() => {
   const d = new Date(page.value!.date)
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`

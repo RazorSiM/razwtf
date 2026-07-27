@@ -3,7 +3,7 @@ defineProps<{ title?: string }>()
 </script>
 
 <template>
-  <Callout type="tip" :title="title">
+  <Callout type="tip" :title>
     <slot />
   </Callout>
 </template>

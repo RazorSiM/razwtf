@@ -42,7 +42,13 @@ const groupOffsets = computed(() => {
 
 <template>
   <div class="project-gallery">
-    <div v-for="(group, gi) in groups" :key="gi" v-reveal class="ggroup" :style="{ '--rd': `${gi * 0.06}s` }">
+    <div
+      v-for="(group, gi) in groups"
+      :key="group.description ?? `group-${gi}`"
+      v-reveal
+      class="ggroup"
+      :style="{ '--rd': `${gi * 0.06}s` }"
+    >
       <div v-if="group.description" class="mb-[clamp(.85rem,2vw,1.25rem)] flex items-center gap-4">
         <span class="text-micro text-overlay-1 font-mono tracking-[.18em] uppercase">{{ group.description }}</span>
         <span

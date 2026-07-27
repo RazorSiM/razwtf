@@ -19,7 +19,7 @@ const { data: projectData } = await useAsyncData('home-projects', () => queryCol
 const { data: postData } = await useAsyncData('home-notes', () => queryCollection('posts').order('date', 'DESC').all())
 
 const projects = computed(() =>
-  [...(projectData.value ?? [])].sort(
+  (projectData.value ?? []).toSorted(
     (a, b) => (a.order ?? 99) - (b.order ?? 99) || +new Date(b.date) - +new Date(a.date),
   ),
 )
