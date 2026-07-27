@@ -5,7 +5,8 @@
 // the query/payload tiny - just an integer, not the posts themselves.
 export async function useHasPublishedPosts() {
   const { data } = await useAsyncData('published-posts-count', () =>
-    queryCollection('posts').where('draft', '=', false).count())
+    queryCollection('posts').where('draft', '=', false).count(),
+  )
 
   return computed(() => (data.value ?? 0) > 0)
 }

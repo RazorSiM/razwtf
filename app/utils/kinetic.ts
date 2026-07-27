@@ -16,22 +16,18 @@ export function splitWords(root: HTMLElement): HTMLElement[] {
 
   function walk(node: Node) {
     for (const child of Array.from(node.childNodes)) {
-      if (child.nodeType === Node.TEXT_NODE)
-        replaceText(child as Text, node, false)
-      else if (child.nodeType === Node.ELEMENT_NODE)
-        walk(child)
+      if (child.nodeType === Node.TEXT_NODE) replaceText(child as Text, node, false)
+      else if (child.nodeType === Node.ELEMENT_NODE) walk(child)
     }
   }
 
   function replaceText(textNode: Text, parent: Node, byChar: boolean) {
     const value = textNode.nodeValue ?? ''
-    if (!value)
-      return
+    if (!value) return
     const frag = document.createDocumentFragment()
     const parts = byChar ? [...value] : value.split(/(\s+)/)
     for (const part of parts) {
-      if (part === '')
-        continue
+      if (part === '') continue
       if (/^\s+$/.test(part)) {
         frag.appendChild(document.createTextNode(part))
         continue
@@ -56,8 +52,7 @@ export function splitLetters(root: HTMLElement): HTMLElement[] {
     for (const child of Array.from(node.childNodes)) {
       if (child.nodeType === Node.TEXT_NODE) {
         const value = (child as Text).nodeValue ?? ''
-        if (!value)
-          continue
+        if (!value) continue
         const frag = document.createDocumentFragment()
         for (const ch of [...value]) {
           if (/^\s$/.test(ch)) {
@@ -71,8 +66,7 @@ export function splitLetters(root: HTMLElement): HTMLElement[] {
           spans.push(span)
         }
         node.replaceChild(frag, child)
-      }
-      else if (child.nodeType === Node.ELEMENT_NODE) {
+      } else if (child.nodeType === Node.ELEMENT_NODE) {
         walk(child)
       }
     }

@@ -17,28 +17,31 @@
    ========================================================================== */
 import { cascade, primeHidden, showInstant, splitLetters, splitWords } from '~/utils/kinetic'
 
-const props = withDefaults(defineProps<{
-  as?: string
-  mode?: 'words' | 'letters'
-  fill?: boolean
-  balanced?: boolean
-  stagger?: number
-  rise?: number
-  stiffness?: number
-  damping?: number
-  /** Scale cascade intensity down for smaller type (keeps body headings calm). */
-  scaleBySize?: boolean
-}>(), {
-  as: 'span',
-  mode: 'words',
-  fill: false,
-  balanced: true,
-  stagger: 42,
-  rise: 26,
-  stiffness: 130,
-  damping: 21,
-  scaleBySize: true,
-})
+const props = withDefaults(
+  defineProps<{
+    as?: string
+    mode?: 'words' | 'letters'
+    fill?: boolean
+    balanced?: boolean
+    stagger?: number
+    rise?: number
+    stiffness?: number
+    damping?: number
+    /** Scale cascade intensity down for smaller type (keeps body headings calm). */
+    scaleBySize?: boolean
+  }>(),
+  {
+    as: 'span',
+    mode: 'words',
+    fill: false,
+    balanced: true,
+    stagger: 42,
+    rise: 26,
+    stiffness: 130,
+    damping: 21,
+    scaleBySize: true,
+  },
+)
 
 const { loadPretext, fontsReady, fontStringOf, balancedWidth, naturalWidth } = usePretext()
 
@@ -53,8 +56,7 @@ let ro: ResizeObserver | null = null
 let played = false
 
 function intensity(): number {
-  if (!props.scaleBySize || !root.value)
-    return 1
+  if (!props.scaleBySize || !root.value) return 1
   const fs = Number.parseFloat(getComputedStyle(root.value).fontSize)
   return Math.min(1, Math.max(0.4, fs / 48))
 }
@@ -62,8 +64,7 @@ function intensity(): number {
 // Recompute layout-only bits (fill scale + balanced width). No re-split.
 function relayout() {
   const el = root.value
-  if (!el || !pt)
-    return
+  if (!el || !pt) return
   if (props.fill) {
     el.style.fontSize = ''
     const base = Number.parseFloat(getComputedStyle(el).fontSize)
@@ -75,22 +76,18 @@ function relayout() {
       // spans (e.g. a coloured wordmark dot), so the first estimate can over- or
       // undershoot. Measure the real rendered box and rescale once to fit exactly.
       const actual = el.getBoundingClientRect().width
-      if (actual > 0)
-        el.style.fontSize = `${Number.parseFloat(el.style.fontSize) * (cw / actual)}px`
+      if (actual > 0) el.style.fontSize = `${Number.parseFloat(el.style.fontSize) * (cw / actual)}px`
     }
-  }
-  else if (props.balanced && props.mode === 'words') {
+  } else if (props.balanced && props.mode === 'words') {
     el.style.maxWidth = ''
     const cw = el.clientWidth
     const bw = balancedWidth(pt, text, fontStringOf(el), cw)
-    if (bw < cw)
-      el.style.maxWidth = `${bw}px`
+    if (bw < cw) el.style.maxWidth = `${bw}px`
   }
 }
 
 function play() {
-  if (played)
-    return
+  if (played) return
   played = true
   cascade(spans, {
     distance: props.rise,
@@ -110,15 +107,13 @@ let enhanced = false
 // mode 'layout' does the fill/balance scaling only (reduced-motion): no split.
 async function enhance(mode: 'layout' | 'instant' | 'play') {
   const el = root.value
-  if (enhanced || !el)
-    return
+  if (enhanced || !el) return
   enhanced = true
 
   try {
     pt = await loadPretext()
     await fontsReady()
-  }
-  catch {
+  } catch {
     revealed.value = true
     return
   }
@@ -133,8 +128,7 @@ async function enhance(mode: 'layout' | 'instant' | 'play') {
 
     let rt: ReturnType<typeof setTimeout> | null = null
     ro = new ResizeObserver(() => {
-      if (rt)
-        clearTimeout(rt)
+      if (rt) clearTimeout(rt)
       rt = setTimeout(relayout, 120)
     })
     ro.observe(el.parentElement ?? el)
@@ -148,23 +142,18 @@ async function enhance(mode: 'layout' | 'instant' | 'play') {
     primeHidden(spans, props.rise, intensity())
     revealed.value = true
 
-    if (mode === 'play')
-      play()
-    else
-      showInstant(spans)
-  }
-  catch {
+    if (mode === 'play') play()
+    else showInstant(spans)
+  } catch {
     // Never leave the heading hidden: reveal it and show any split words.
     revealed.value = true
-    if (spans.length)
-      showInstant(spans)
+    if (spans.length) showInstant(spans)
   }
 }
 
 onMounted(() => {
   const el = root.value
-  if (!el)
-    return
+  if (!el) return
   text = (el.textContent ?? '').replace(/\s+/g, ' ').trim()
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -176,17 +165,18 @@ onMounted(() => {
   }
 
   if ('IntersectionObserver' in window) {
-    io = new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (!e.isIntersecting)
-          continue
-        io!.unobserve(e.target)
-        enhance('play')
-      }
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 })
+    io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue
+          io!.unobserve(e.target)
+          enhance('play')
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.1 },
+    )
     io.observe(el)
-  }
-  else {
+  } else {
     enhance('instant')
   }
 })

@@ -9,18 +9,14 @@ const props = defineProps<{ error: NuxtError }>()
 // Copy comes from content/site.yml like every other surface. Verified to work
 // here: Nuxt renders error.vue through the same Suspense boundary as a page, so
 // the awaited query resolves before the branded page is sent.
-const { data: site } = await useAsyncData('site-chrome-error', () =>
-  queryCollection('site').first())
+const { data: site } = await useAsyncData('site-chrome-error', () => queryCollection('site').first())
 const copy = computed(() => site.value?.error)
 
 const code = computed(() => props.error?.statusCode ?? 500)
 const isNotFound = computed(() => code.value === 404)
-const heading = computed(() =>
-  isNotFound.value ? copy.value?.notFoundHeading : copy.value?.genericHeading)
+const heading = computed(() => (isNotFound.value ? copy.value?.notFoundHeading : copy.value?.genericHeading))
 const detail = computed(() =>
-  isNotFound.value
-    ? copy.value?.notFoundDetail
-    : props.error?.statusMessage || copy.value?.genericDetail,
+  isNotFound.value ? copy.value?.notFoundDetail : props.error?.statusMessage || copy.value?.genericDetail,
 )
 
 useSeoMeta({
@@ -34,15 +30,13 @@ function goHome() {
 </script>
 
 <template>
-  <main class="min-h-screen grid place-items-center px-[var(--pad-x)] py-[clamp(3rem,8vw,6rem)]">
+  <main class="grid min-h-screen place-items-center px-[var(--pad-x)] py-[clamp(3rem,8vw,6rem)]">
     <div class="w-full max-w-[46rem] text-center">
       <BrandWordmark to="/" size-class="text-[1.05rem]" class="mb-[clamp(2.5rem,6vw,4rem)]" @click="goHome" />
 
-      <p class="kicker justify-center mb-6">
-        <span aria-hidden="true">→</span> {{ copy?.kicker }} · {{ code }}
-      </p>
+      <p class="kicker mb-6 justify-center"><span aria-hidden="true">→</span> {{ copy?.kicker }} · {{ code }}</p>
 
-      <p class="display font-700 leading-[.9] text-[clamp(5rem,26vw,13rem)] text-mauve">
+      <p class="display font-700 text-mauve text-[clamp(5rem,26vw,13rem)] leading-[.9]">
         {{ code }}
       </p>
 
@@ -50,7 +44,7 @@ function goHome() {
         {{ heading }}
       </h1>
 
-      <p class="lead mx-auto mt-5 max-w-[42ch] text-subtext-1">
+      <p class="lead text-subtext-1 mx-auto mt-5 max-w-[42ch]">
         {{ detail }}
       </p>
 

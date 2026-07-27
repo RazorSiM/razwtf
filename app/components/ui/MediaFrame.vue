@@ -3,20 +3,23 @@
 // mantle backdrop that clips a slotted <NuxtImg>/<img> to `object-fit: cover`.
 // Composed by WorkCard, PrevNextNav, spotlight/about/hero media, etc. Keep the
 // API stable: <MediaFrame ratio="720/495" interactive><NuxtImg .../></MediaFrame>.
-const props = withDefaults(defineProps<{
-  /** Aspect ratio of the frame box, e.g. '720/495' or '16/11'. Fed to an inline
-   *  --frame-ratio var and consumed by aspect-[var(--frame-ratio)]. */
-  ratio?: string
-  /** When true, the slotted image scales up slightly while an ancestor `.group`
-   *  is hovered (standard group-hover choreography). */
-  interactive?: boolean
-  /** Corner radius: 'sm' (4px) · 'md' (10px) · 'lg' (16px) · 'full'. */
-  rounded?: 'sm' | 'md' | 'lg' | 'full'
-}>(), {
-  ratio: '16/11',
-  interactive: false,
-  rounded: 'md',
-})
+const props = withDefaults(
+  defineProps<{
+    /** Aspect ratio of the frame box, e.g. '720/495' or '16/11'. Fed to an inline
+     *  --frame-ratio var and consumed by aspect-[var(--frame-ratio)]. */
+    ratio?: string
+    /** When true, the slotted image scales up slightly while an ancestor `.group`
+     *  is hovered (standard group-hover choreography). */
+    interactive?: boolean
+    /** Corner radius: 'sm' (4px) · 'md' (10px) · 'lg' (16px) · 'full'. */
+    rounded?: 'sm' | 'md' | 'lg' | 'full'
+  }>(),
+  {
+    ratio: '16/11',
+    interactive: false,
+    rounded: 'md',
+  },
+)
 
 // Radius token → CSS value. Maps onto the same --radius* tokens the source
 // frames used (thumbs = --radius, hero/about = --radius-md, project = --radius-lg).
@@ -31,7 +34,7 @@ const frameRadius = computed(() => RADII[props.rounded] ?? RADII.md)
 
 <template>
   <div
-    class="relative block overflow-hidden bg-mantle border border-[color:var(--hair)] aspect-[var(--frame-ratio)] rounded-[var(--frame-radius)]"
+    class="bg-mantle relative block aspect-[var(--frame-ratio)] overflow-hidden rounded-[var(--frame-radius)] border border-[color:var(--hair)]"
     :class="interactive && 'mf-zoom group-hover:[--mf-zoom:1.05]'"
     :style="{ '--frame-ratio': ratio, '--frame-radius': frameRadius }"
   >
@@ -61,6 +64,8 @@ const frameRadius = computed(() => RADII[props.rounded] ?? RADII.md)
      callers add their own hover filter as a utility on the image they slot in
      (WorkCard does), and this rule would otherwise out-specify a utility-level
      transition and make that filter snap instead of ease. */
-  transition: transform .8s var(--ease-out), filter .6s var(--ease);
+  transition:
+    transform 0.8s var(--ease-out),
+    filter 0.6s var(--ease);
 }
 </style>

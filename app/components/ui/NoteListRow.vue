@@ -1,39 +1,44 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
-  /** Path the whole row links to (via the stretched-link overlay). */
-  to: string
-  /** Note title, rendered inside the heading. */
-  title: string
-  /** Optional excerpt shown beneath the title. */
-  description?: string
-  /** Raw ISO date string; displayed as `yyyy · MM`. */
-  date?: string
-  /** Tag slugs, rendered as `#tag`. */
-  tags?: string[]
-  /** Reading estimate in minutes; shown as a chip when present. */
-  readMin?: number
-  /** Heading element: `h2` on the dedicated notes list, `h3` when nested. */
-  as?: string
-}>(), {
-  as: 'h2',
-})
+withDefaults(
+  defineProps<{
+    /** Path the whole row links to (via the stretched-link overlay). */
+    to: string
+    /** Note title, rendered inside the heading. */
+    title: string
+    /** Optional excerpt shown beneath the title. */
+    description?: string
+    /** Raw ISO date string; displayed as `yyyy · MM`. */
+    date?: string
+    /** Tag slugs, rendered as `#tag`. */
+    tags?: string[]
+    /** Reading estimate in minutes; shown as a chip when present. */
+    readMin?: number
+    /** Heading element: `h2` on the dedicated notes list, `h3` when nested. */
+    as?: string
+  }>(),
+  {
+    as: 'h2',
+  },
+)
 </script>
 
 <template>
-  <article class="group relative grid grid-cols-1 gap-x-8 gap-y-2 border-b border-[color:var(--hair)] py-[clamp(1.4rem,3vw,2.1rem)] transition-[padding] duration-400 ease-out caps:grid-cols-[190px_1fr] caps:items-baseline caps:hover:pl-3">
-    <div class="font-mono text-micro text-overlay-1 tracking-[.06em]">
+  <article
+    class="group caps:grid-cols-[190px_1fr] caps:items-baseline caps:hover:pl-3 relative grid grid-cols-1 gap-x-8 gap-y-2 border-b border-[color:var(--hair)] py-[clamp(1.4rem,3vw,2.1rem)] transition-[padding] duration-400 ease-out"
+  >
+    <div class="text-micro text-overlay-1 font-mono tracking-[.06em]">
       <span v-if="date" class="tabular-nums">{{ formatDate(date, 'yyyy · MM') }}</span>
       <div v-if="tags?.length || readMin" class="mt-3 flex flex-wrap items-center gap-2">
         <!-- relative z-1 lifts these above the row's stretched-link overlay
              (.row-link::after, position:absolute + inset:0 on the article's
              positioning context) so each tag is its own click target rather
              than being swallowed by the "open this note" overlay. -->
-        <span v-if="tags?.length" class="flex flex-wrap gap-[.7em] text-mauve">
+        <span v-if="tags?.length" class="text-mauve flex flex-wrap gap-[.7em]">
           <NuxtLink
             v-for="t in tags"
             :key="t"
             :to="`/blog/tag/${slugifyTag(t)}`"
-            class="relative z-1 transition-colors duration-300 ease hover:text-lavender hover:underline"
+            class="ease hover:text-lavender relative z-1 transition-colors duration-300 hover:underline"
           >
             #{{ t }}
           </NuxtLink>
@@ -42,12 +47,15 @@ withDefaults(defineProps<{
       </div>
     </div>
     <div>
-      <component :is="as" class="font-display text-h3 font-[540] leading-[1.08] tracking-[-.01em] [font-optical-sizing:auto]">
+      <component
+        :is="as"
+        class="font-display text-h3 leading-[1.08] font-[540] tracking-[-.01em] [font-optical-sizing:auto]"
+      >
         <NuxtLink :to="to" class="row-link text-text group-hover:text-mauve">
           {{ title }}
         </NuxtLink>
       </component>
-      <p v-if="description" class="mt-[.6rem] max-w-[60ch] text-body text-subtext-1">
+      <p v-if="description" class="text-body text-subtext-1 mt-[.6rem] max-w-[60ch]">
         {{ description }}
       </p>
     </div>
@@ -59,7 +67,7 @@ withDefaults(defineProps<{
    policy: this ::after (content + absolute inset-0) is functional, not
    decorative. The article's `relative` is its positioning context. */
 .row-link::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
 }

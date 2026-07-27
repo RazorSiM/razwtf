@@ -28,20 +28,22 @@ if (import.meta.client) {
   const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   async function ensureAnimate() {
-    if (!animateFn)
-      animateFn = (await import('motion-v')).animate
+    if (!animateFn) animateFn = (await import('motion-v')).animate
     return animateFn
   }
 
   async function cover() {
     const el = curtain.value
-    if (!el)
-      return
+    if (!el) return
     const animate = await ensureAnimate()
     current?.stop?.()
     el.style.willChange = 'transform'
     // in from the left, accelerating
-    current = animate(el, { transform: ['translateX(-101%)', 'translateX(0%)'] }, { duration: 0.26, ease: [0.5, 0, 0.7, 0] })
+    current = animate(
+      el,
+      { transform: ['translateX(-101%)', 'translateX(0%)'] },
+      { duration: 0.26, ease: [0.5, 0, 0.7, 0] },
+    )
     current.finished?.then(() => {
       coverDone = true
       maybeReveal()
@@ -50,12 +52,15 @@ if (import.meta.client) {
 
   async function reveal() {
     const el = curtain.value
-    if (!el)
-      return
+    if (!el) return
     const animate = await ensureAnimate()
     current?.stop?.()
     // continue off to the right, decelerating - new page revealed behind it
-    current = animate(el, { transform: ['translateX(0%)', 'translateX(101%)'] }, { duration: 0.36, ease: [0.16, 1, 0.3, 1] })
+    current = animate(
+      el,
+      { transform: ['translateX(0%)', 'translateX(101%)'] },
+      { duration: 0.36, ease: [0.16, 1, 0.3, 1] },
+    )
     current.finished?.then(() => {
       active = false
       el.style.willChange = ''
@@ -66,21 +71,18 @@ if (import.meta.client) {
 
   function maybeReveal() {
     if (active && coverDone && pageReady) {
-      if (watchdog)
-        clearTimeout(watchdog)
+      if (watchdog) clearTimeout(watchdog)
       reveal()
     }
   }
 
   router.beforeEach((to, from) => {
-    if (reduce() || from.matched.length === 0 || to.path === from.path)
-      return
+    if (reduce() || from.matched.length === 0 || to.path === from.path) return
     active = true
     coverDone = false
     pageReady = false
     cover()
-    if (watchdog)
-      clearTimeout(watchdog)
+    if (watchdog) clearTimeout(watchdog)
     // never let the curtain stick if the incoming page never resolves
     watchdog = setTimeout(() => {
       if (active) {
@@ -114,7 +116,7 @@ if (import.meta.client) {
 }
 /* bright leading edge reads like a terminal cursor sweeping across */
 .route-wipe::after {
-  content: "";
+  content: '';
   position: absolute;
   inset-block: 0;
   right: 0;

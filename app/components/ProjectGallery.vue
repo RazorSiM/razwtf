@@ -18,12 +18,14 @@ const { openLightbox } = injectLightbox()
 // One flattened list across every group so a single lightbox spans the whole
 // gallery. caption falls back name -> alt -> group description.
 const flatItems = computed(() =>
-  props.groups.flatMap(g =>
-    (g.images ?? []).map(img => ({
+  props.groups.flatMap((g) =>
+    (g.images ?? []).map((img) => ({
       src: img.src,
       alt: img.alt,
       caption: img.name || img.alt || g.description,
-    }))))
+    })),
+  ),
+)
 
 // Running offset per group → maps a group-local index to its global index in
 // flatItems, so clicking any tile opens the lightbox at the right position.
@@ -40,24 +42,21 @@ const groupOffsets = computed(() => {
 
 <template>
   <div class="project-gallery">
-    <div
-      v-for="(group, gi) in groups"
-      :key="gi"
-      v-reveal
-      class="ggroup"
-      :style="{ '--rd': `${gi * 0.06}s` }"
-    >
-      <div v-if="group.description" class="flex items-center gap-4 mb-[clamp(.85rem,2vw,1.25rem)]">
-        <span class="font-mono text-micro tracking-[.18em] uppercase text-overlay-1">{{ group.description }}</span>
-        <span class="flex-1 min-w-[1.5rem] h-px bg-gradient-to-r from-[var(--hair-strong)] to-transparent" aria-hidden="true" />
+    <div v-for="(group, gi) in groups" :key="gi" v-reveal class="ggroup" :style="{ '--rd': `${gi * 0.06}s` }">
+      <div v-if="group.description" class="mb-[clamp(.85rem,2vw,1.25rem)] flex items-center gap-4">
+        <span class="text-micro text-overlay-1 font-mono tracking-[.18em] uppercase">{{ group.description }}</span>
+        <span
+          class="h-px min-w-[1.5rem] flex-1 bg-gradient-to-r from-[var(--hair-strong)] to-transparent"
+          aria-hidden="true"
+        />
       </div>
 
-      <div class="grid grid-cols-2 gap-[clamp(.7rem,1.6vw,1.1rem)] nav:grid-cols-3">
+      <div class="nav:grid-cols-3 grid grid-cols-2 gap-[clamp(.7rem,1.6vw,1.1rem)]">
         <button
           v-for="(image, ii) in group.images"
           :key="image.src"
           type="button"
-          class="gallery__item relative block w-full m-0 p-0 cursor-zoom-in text-inherit text-left border border-[color:var(--hair)] rounded-md overflow-hidden bg-mantle aspect-[4/3]"
+          class="gallery__item bg-mantle relative m-0 block aspect-[4/3] w-full cursor-zoom-in overflow-hidden rounded-md border border-[color:var(--hair)] p-0 text-left text-inherit"
           :aria-label="`Open ${image.name || image.alt || 'image'} full size`"
           @click="openLightbox(flatItems, (groupOffsets[gi] ?? 0) + ii)"
         >
@@ -91,21 +90,27 @@ const groupOffsets = computed(() => {
    .gallery__cap vertical gradient. Tile static styling is inlined above; the
    820px 3-col step maps to the `nav:` breakpoint. */
 
-.ggroup + .ggroup { margin-top: clamp(1.6rem, 4vw, 2.6rem); }
+.ggroup + .ggroup {
+  margin-top: clamp(1.6rem, 4vw, 2.6rem);
+}
 
 .gallery__item {
   font: inherit;
-  transition: border-color .35s var(--ease), transform .4s var(--ease-out);
+  transition:
+    border-color 0.35s var(--ease),
+    transform 0.4s var(--ease-out);
 }
 .gallery__item :deep(img) {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform .7s var(--ease-out), filter .5s var(--ease);
+  transition:
+    transform 0.7s var(--ease-out),
+    filter 0.5s var(--ease);
 }
 .gallery__item:hover,
 .gallery__item:focus-visible {
-  border-color: rgb(var(--accent, var(--green)) / .8);
+  border-color: rgb(var(--accent, var(--green)) / 0.8);
   transform: translateY(-3px);
 }
 .gallery__item:hover :deep(img),
@@ -116,20 +121,22 @@ const groupOffsets = computed(() => {
 
 .zoom {
   position: absolute;
-  top: .6rem;
-  right: .6rem;
+  top: 0.6rem;
+  right: 0.6rem;
   display: grid;
   place-items: center;
   width: 1.9rem;
   height: 1.9rem;
   border-radius: var(--radius);
-  background: rgb(var(--crust) / .72);
+  background: rgb(var(--crust) / 0.72);
   color: rgb(var(--text));
   font-family: var(--font-mono);
-  font-size: .8rem;
+  font-size: 0.8rem;
   opacity: 0;
-  transform: scale(.85);
-  transition: opacity .3s var(--ease), transform .3s var(--ease-out);
+  transform: scale(0.85);
+  transition:
+    opacity 0.3s var(--ease),
+    transform 0.3s var(--ease-out);
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }
@@ -144,15 +151,15 @@ const groupOffsets = computed(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: .85rem .9rem .6rem;
+  padding: 0.85rem 0.9rem 0.6rem;
   font-family: var(--font-mono);
   font-size: var(--fs-micro);
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
   color: rgb(var(--text));
   text-align: left;
-  background: linear-gradient(transparent, rgb(var(--crust) / .82));
+  background: linear-gradient(transparent, rgb(var(--crust) / 0.82));
   opacity: 0;
-  transition: opacity .35s var(--ease);
+  transition: opacity 0.35s var(--ease);
 }
 .gallery__item:hover .gallery__cap,
 .gallery__item:focus-visible .gallery__cap {

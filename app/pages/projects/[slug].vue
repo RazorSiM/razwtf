@@ -5,20 +5,20 @@ const route = useRoute()
 
 // Resolve one project case study by its route path.
 const { data: page } = await useAsyncData(`project-${route.path}`, () =>
-  queryCollection('projects').path(route.path).first())
+  queryCollection('projects').path(route.path).first(),
+)
 
 // Shared case-study furniture labels (content/site.yml).
-const { data: site } = await useAsyncData('site-chrome-project', () =>
-  queryCollection('site').first())
+const { data: site } = await useAsyncData('site-chrome-project', () => queryCollection('site').first())
 
-if (!page.value)
-  throw createError({ statusCode: 404, statusMessage: 'Project not found', fatal: true })
+if (!page.value) throw createError({ statusCode: 404, statusMessage: 'Project not found', fatal: true })
 
 // Previous / next project for the case-study footer nav.
 const { data: surround } = await useAsyncData(`project-surround-${route.path}`, () =>
   queryCollectionItemSurroundings('projects', route.path, {
     fields: ['title', 'path', 'hero', 'accent'],
-  }))
+  }),
+)
 
 const prev = computed(() => surround.value?.[0] ?? null)
 const next = computed(() => surround.value?.[1] ?? null)
@@ -37,8 +37,7 @@ const slug = computed(() => route.path.split('/').filter(Boolean).pop() ?? '')
 // real text and the estimate is a sane, finite number of minutes (≥ 1).
 const readMinutes = computed(() => {
   const text = extractText(page.value?.body).trim()
-  if (!text)
-    return null
+  if (!text) return null
   const mins = readingTime(text)
   return Number.isFinite(mins) && mins >= 1 ? mins : null
 })
@@ -46,28 +45,21 @@ const readMinutes = computed(() => {
 // The Details block only renders when at least one row (or a link) has data.
 const hasDetails = computed(() => {
   const p = page.value
-  if (!p)
-    return false
+  if (!p) return false
   return Boolean(p.date || p.role || p.type || p.collab || p.tech?.length || p.links?.length)
 })
 
 // Spec rows for <SpecList> - the same conditional fields the old <dl> rendered,
 // collapsed to a typed array so only present rows appear.
-const specRows = computed<{ label: string, value: string }[]>(() => {
+const specRows = computed<{ label: string; value: string }[]>(() => {
   const p = page.value
-  if (!p)
-    return []
-  const rows: { label: string, value: string }[] = []
-  if (p.date)
-    rows.push({ label: 'Released', value: formatDate(new Date(p.date)) })
-  if (p.role)
-    rows.push({ label: 'Role', value: p.role })
-  if (p.type)
-    rows.push({ label: 'Type', value: p.type })
-  if (p.collab)
-    rows.push({ label: 'Collab', value: p.collab })
-  if (p.tech?.length)
-    rows.push({ label: 'Stack', value: p.tech.join(' · ') })
+  if (!p) return []
+  const rows: { label: string; value: string }[] = []
+  if (p.date) rows.push({ label: 'Released', value: formatDate(new Date(p.date)) })
+  if (p.role) rows.push({ label: 'Role', value: p.role })
+  if (p.type) rows.push({ label: 'Type', value: p.type })
+  if (p.collab) rows.push({ label: 'Collab', value: p.collab })
+  if (p.tech?.length) rows.push({ label: 'Stack', value: p.tech.join(' · ') })
   return rows
 })
 
@@ -96,14 +88,15 @@ useSeoMeta({
     <!-- ================= PROJECT HERO ================= -->
     <article class="pt-[clamp(2rem,5vw,3.5rem)] pb-0" aria-labelledby="p-title">
       <div class="wrap">
-        <div class="flex items-center justify-between gap-4 flex-wrap mb-[clamp(2rem,5vw,3.25rem)]">
+        <div class="mb-[clamp(2rem,5vw,3.25rem)] flex flex-wrap items-center justify-between gap-4">
           <BackLink to="/projects" :label="site?.project.backLabel ?? ''" />
           <!-- Terminal breadcrumb kept bespoke: TerminalPath emits a `:` after the
                prompt (raz@wtf:~/…) and inverts the segment/leaf colours; this page's
                `~/work/<slug>` uses `/` throughout with the leaf brighter than the
                ancestor, so the exact roles are reproduced inline instead. -->
-          <span class="font-mono text-cap tracking-[.02em] text-overlay-1">
-            <span class="text-[rgb(var(--accent))]">~/</span>work<span class="text-surface-2">/</span><span class="text-subtext-0">{{ slug }}</span>
+          <span class="text-cap text-overlay-1 font-mono tracking-[.02em]">
+            <span class="text-[rgb(var(--accent))]">~/</span>work<span class="text-surface-2">/</span
+            ><span class="text-subtext-0">{{ slug }}</span>
           </span>
         </div>
 
@@ -113,43 +106,36 @@ useSeoMeta({
           {{ page.title }}
         </KineticText>
 
-        <p v-if="page.description" class="text-lead text-subtext-1 leading-[1.5] max-w-[54ch] mt-[clamp(1.1rem,3vw,1.6rem)]">
+        <p
+          v-if="page.description"
+          class="text-lead text-subtext-1 mt-[clamp(1.1rem,3vw,1.6rem)] max-w-[54ch] leading-[1.5]"
+        >
           {{ page.description }}
         </p>
 
         <dl
-          class="flex flex-wrap gap-0 border-y border-[color:var(--hair)] mt-[clamp(1.8rem,4vw,2.5rem)]"
+          class="mt-[clamp(1.8rem,4vw,2.5rem)] flex flex-wrap gap-0 border-y border-[color:var(--hair)]"
           aria-label="Project metadata"
         >
-          <div v-if="page.date" class="metabar__i flex flex-col gap-[.4rem] py-4 pl-0 pr-[clamp(1rem,2.4vw,1.6rem)]">
-            <dt class="font-mono text-micro tracking-[.2em] uppercase text-overlay-1">
-              Released
-            </dt>
-            <dd class="font-mono text-sm text-subtext-1 tabular-nums">
+          <div v-if="page.date" class="metabar__i flex flex-col gap-[.4rem] py-4 pr-[clamp(1rem,2.4vw,1.6rem)] pl-0">
+            <dt class="text-micro text-overlay-1 font-mono tracking-[.2em] uppercase">Released</dt>
+            <dd class="text-subtext-1 font-mono text-sm tabular-nums">
               {{ formatDate(new Date(page.date)) }}
             </dd>
           </div>
-          <div v-if="readMinutes" class="metabar__i flex flex-col gap-[.4rem] py-4 pl-0 pr-[clamp(1rem,2.4vw,1.6rem)]">
-            <dt class="font-mono text-micro tracking-[.2em] uppercase text-overlay-1">
-              Read
-            </dt>
-            <dd class="font-mono text-sm text-subtext-1 tabular-nums">
-              {{ readMinutes }} min
-            </dd>
+          <div v-if="readMinutes" class="metabar__i flex flex-col gap-[.4rem] py-4 pr-[clamp(1rem,2.4vw,1.6rem)] pl-0">
+            <dt class="text-micro text-overlay-1 font-mono tracking-[.2em] uppercase">Read</dt>
+            <dd class="text-subtext-1 font-mono text-sm tabular-nums">{{ readMinutes }} min</dd>
           </div>
-          <div v-if="page.role" class="metabar__i flex flex-col gap-[.4rem] py-4 pl-0 pr-[clamp(1rem,2.4vw,1.6rem)]">
-            <dt class="font-mono text-micro tracking-[.2em] uppercase text-overlay-1">
-              Role
-            </dt>
-            <dd class="font-mono text-sm text-subtext-1 tabular-nums">
+          <div v-if="page.role" class="metabar__i flex flex-col gap-[.4rem] py-4 pr-[clamp(1rem,2.4vw,1.6rem)] pl-0">
+            <dt class="text-micro text-overlay-1 font-mono tracking-[.2em] uppercase">Role</dt>
+            <dd class="text-subtext-1 font-mono text-sm tabular-nums">
               {{ page.role }}
             </dd>
           </div>
-          <div v-if="page.type" class="metabar__i flex flex-col gap-[.4rem] py-4 pl-0 pr-[clamp(1rem,2.4vw,1.6rem)]">
-            <dt class="font-mono text-micro tracking-[.2em] uppercase text-overlay-1">
-              Type
-            </dt>
-            <dd class="font-mono text-sm text-subtext-1 tabular-nums">
+          <div v-if="page.type" class="metabar__i flex flex-col gap-[.4rem] py-4 pr-[clamp(1rem,2.4vw,1.6rem)] pl-0">
+            <dt class="text-micro text-overlay-1 font-mono tracking-[.2em] uppercase">Type</dt>
+            <dd class="text-subtext-1 font-mono text-sm tabular-nums">
               {{ page.type }}
             </dd>
           </div>
@@ -164,12 +150,10 @@ useSeoMeta({
           aria-label="Tags"
         />
 
-        <figure
-          v-if="page.hero ?? page.cover ?? page.image"
-          v-reveal
-          class="mt-[clamp(2.4rem,5vw,3.5rem)]"
-        >
-          <span class="phero__media relative block border border-[color:var(--hair)] rounded-lg overflow-hidden bg-mantle">
+        <figure v-if="page.hero ?? page.cover ?? page.image" v-reveal class="mt-[clamp(2.4rem,5vw,3.5rem)]">
+          <span
+            class="phero__media bg-mantle relative block overflow-hidden rounded-lg border border-[color:var(--hair)]"
+          >
             <NuxtImg
               :src="page.hero ?? page.cover ?? page.image"
               :alt="page.heroCaption ?? page.title"
@@ -179,9 +163,9 @@ useSeoMeta({
             />
             <span class="corner c-tl" aria-hidden="true" />
             <span class="corner c-br" aria-hidden="true" />
-            <span class="absolute left-0 right-0 bottom-0 h-[3px] bg-[rgb(var(--accent))]" aria-hidden="true" />
+            <span class="absolute right-0 bottom-0 left-0 h-[3px] bg-[rgb(var(--accent))]" aria-hidden="true" />
           </span>
-          <figcaption class="font-mono text-micro text-overlay-1 mt-[.9rem] tracking-[.02em]">
+          <figcaption class="text-micro text-overlay-1 mt-[.9rem] font-mono tracking-[.02em]">
             {{ page.heroCaption ?? page.title }}
           </figcaption>
         </figure>
@@ -203,7 +187,7 @@ useSeoMeta({
              the section's .wrap, so ProseDocument's wrap-read px-[var(--pad-x)] would
              double-pad and narrow the 760px prose column. Here it's max-width + auto
              margins only, exactly like the old .read. -->
-        <div v-reveal class="max-w-[var(--measure-wide)] mx-auto">
+        <div v-reveal class="mx-auto max-w-[var(--measure-wide)]">
           <div class="prose max-w-none">
             <ContentRenderer :value="page" />
           </div>
@@ -239,10 +223,10 @@ useSeoMeta({
           :note="site?.project.details.note"
         />
 
-        <div v-reveal class="max-w-[var(--measure-wide)] mx-auto">
+        <div v-reveal class="mx-auto max-w-[var(--measure-wide)]">
           <SpecList :rows="specRows" class="mt-[clamp(1.6rem,3.5vw,2.2rem)]" />
 
-          <div v-if="page.links?.length" class="flex flex-wrap gap-4 mt-[clamp(1.8rem,4vw,2.4rem)]">
+          <div v-if="page.links?.length" class="mt-[clamp(1.8rem,4vw,2.4rem)] flex flex-wrap gap-4">
             <a
               v-for="link in page.links"
               :key="link.url"
@@ -278,7 +262,7 @@ useSeoMeta({
 /* Content-bearing pseudo-element: the accent tick before the case-study eyebrow
    (first flex child, spaced by the eyebrow shortcut's gap). */
 .eyebrow-accent::before {
-  content: "";
+  content: '';
   width: 26px;
   height: 1px;
   background: rgb(var(--accent));
@@ -287,8 +271,30 @@ useSeoMeta({
 /* Bespoke hero frame chrome (kept per workstream). :deep reaches the NuxtImg-
    generated <img> for the cover crop; the corner brackets are absolutely
    positioned decorations reading the project --accent. */
-.phero__media :deep(img) { width: 100%; height: auto; display: block; aspect-ratio: 16 / 9; object-fit: cover; }
-.phero__media .corner { position: absolute; width: 22px; height: 22px; border: 1.5px solid rgb(var(--accent)); pointer-events: none; }
-.phero__media .c-tl { top: 14px; left: 14px; border-right: 0; border-bottom: 0; }
-.phero__media .c-br { bottom: 14px; right: 14px; border-left: 0; border-top: 0; }
+.phero__media :deep(img) {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.phero__media .corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid rgb(var(--accent));
+  pointer-events: none;
+}
+.phero__media .c-tl {
+  top: 14px;
+  left: 14px;
+  border-right: 0;
+  border-bottom: 0;
+}
+.phero__media .c-br {
+  bottom: 14px;
+  right: 14px;
+  border-left: 0;
+  border-top: 0;
+}
 </style>

@@ -1,16 +1,19 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
-  src: string
-  alt?: string
-  width?: number
-  height?: number
-  quality?: number
-}>(), {
-  alt: 'image',
-  width: 1200,
-  height: 800,
-  quality: 70,
-})
+const props = withDefaults(
+  defineProps<{
+    src: string
+    alt?: string
+    width?: number
+    height?: number
+    quality?: number
+  }>(),
+  {
+    alt: 'image',
+    width: 1200,
+    height: 800,
+    quality: 70,
+  },
+)
 
 const { openLightbox } = injectLightbox()
 
@@ -44,11 +47,11 @@ function open() {
   border-radius: var(--radius-md);
   overflow: hidden;
   background: rgb(var(--base));
-  transition: border-color .35s var(--ease);
+  transition: border-color 0.35s var(--ease);
 }
 .figbox:hover,
 .figbox:focus-visible {
-  border-color: rgb(var(--accent, var(--green)) / .7);
+  border-color: rgb(var(--accent, var(--green)) / 0.7);
 }
 .figbox :deep(img) {
   display: block;
@@ -58,20 +61,22 @@ function open() {
 
 .zoom {
   position: absolute;
-  top: .6rem;
-  right: .6rem;
+  top: 0.6rem;
+  right: 0.6rem;
   display: grid;
   place-items: center;
   width: 1.9rem;
   height: 1.9rem;
   border-radius: var(--radius);
-  background: rgb(var(--crust) / .72);
+  background: rgb(var(--crust) / 0.72);
   color: rgb(var(--text));
   font-family: var(--font-mono);
-  font-size: .8rem;
+  font-size: 0.8rem;
   opacity: 0;
-  transform: scale(.85);
-  transition: opacity .3s var(--ease), transform .3s var(--ease-out);
+  transform: scale(0.85);
+  transition:
+    opacity 0.3s var(--ease),
+    transform 0.3s var(--ease-out);
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }

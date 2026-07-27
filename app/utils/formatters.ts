@@ -15,16 +15,12 @@ export function formatDate(date: Date | number | string, formatStr: string = 'MM
 // plugin. Defensive about node shape: text nodes carry { type:'text', value },
 // element nodes nest under `children`, the root nests its nodes under `value`.
 export function extractText(node: unknown): string {
-  if (node == null)
-    return ''
-  if (typeof node === 'string')
-    return node
-  if (Array.isArray(node))
-    return node.map(extractText).join(' ')
+  if (node == null) return ''
+  if (typeof node === 'string') return node
+  if (Array.isArray(node)) return node.map(extractText).join(' ')
   if (typeof node === 'object') {
     const n = node as Record<string, unknown>
-    if (n.type === 'text' && typeof n.value === 'string')
-      return n.value
+    if (n.type === 'text' && typeof n.value === 'string') return n.value
     return extractText(n.children ?? n.value)
   }
   return ''

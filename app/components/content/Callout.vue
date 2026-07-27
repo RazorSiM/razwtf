@@ -41,13 +41,20 @@ const resolvedIcon = computed(() => props.icon ?? ICON[props.type])
 
 <template>
   <div
-    class="callout grid grid-cols-[auto_1fr] gap-x-[1.05rem] gap-y-[.35rem] items-start border border-[color:var(--hair)] border-l-3 border-l-[color:rgb(var(--c))] rounded-md bg-[rgb(var(--c)/.07)] py-[clamp(1.1rem,2.6vw,1.5rem)] px-[clamp(1.2rem,3vw,1.7rem)]"
+    class="callout grid grid-cols-[auto_1fr] items-start gap-x-[1.05rem] gap-y-[.35rem] rounded-md border border-l-3 border-[color:var(--hair)] border-l-[color:rgb(var(--c))] bg-[rgb(var(--c)/.07)] px-[clamp(1.2rem,3vw,1.7rem)] py-[clamp(1.1rem,2.6vw,1.5rem)]"
     role="note"
     :style="{ '--c': colorVar }"
   >
-    <span class="row-[1/span_2] w-8 h-8 grid place-items-center rounded-full bg-[rgb(var(--c)/.18)] text-[rgb(var(--c))] font-mono font-700 text-[1rem]" aria-hidden="true">{{ resolvedIcon }}</span>
-    <span class="col-start-2 self-center font-mono text-micro tracking-[.2em] uppercase text-[rgb(var(--c))] font-700">{{ resolvedTitle }}</span>
-    <div class="callout__b col-start-2 text-subtext-1 text-body leading-[1.65]">
+    <span
+      class="font-700 row-[1/span_2] grid h-8 w-8 place-items-center rounded-full bg-[rgb(var(--c)/.18)] font-mono text-[1rem] text-[rgb(var(--c))]"
+      aria-hidden="true"
+      >{{ resolvedIcon }}</span
+    >
+    <span
+      class="text-micro font-700 col-start-2 self-center font-mono tracking-[.2em] text-[rgb(var(--c))] uppercase"
+      >{{ resolvedTitle }}</span
+    >
+    <div class="callout__b text-subtext-1 text-body col-start-2 leading-[1.65]">
       <slot />
     </div>
   </div>
@@ -56,11 +63,17 @@ const resolvedIcon = computed(() => props.icon ?? ICON[props.type])
 <style scoped>
 /* margin-block must out-specify `.prose > * + *` (both single-class); kept in
    scoped CSS so the [data-v] attribute wins the top-margin tie. */
-.callout { margin-block: 2em; }
+.callout {
+  margin-block: 2em;
+}
 
 /* Nested MDC markdown: tame Prose spacing, then tint links + strong. */
-.callout__b :deep(p) { margin: 0; }
-.callout__b :deep(p + p) { margin-top: .8em; }
+.callout__b :deep(p) {
+  margin: 0;
+}
+.callout__b :deep(p + p) {
+  margin-top: 0.8em;
+}
 .callout__b :deep(a) {
   color: rgb(var(--text));
   border-bottom: 0;
@@ -68,8 +81,13 @@ const resolvedIcon = computed(() => props.icon ?? ICON[props.type])
   background-size: 100% 1px;
   background-repeat: no-repeat;
   background-position: 0 1.15em;
-  transition: color .25s var(--ease);
+  transition: color 0.25s var(--ease);
 }
-.callout__b :deep(a:hover) { color: rgb(var(--c)); }
-.callout__b :deep(strong) { color: rgb(var(--text)); font-weight: 700; }
+.callout__b :deep(a:hover) {
+  color: rgb(var(--c));
+}
+.callout__b :deep(strong) {
+  color: rgb(var(--text));
+  font-weight: 700;
+}
 </style>

@@ -55,12 +55,14 @@ export default defineContentConfig({
           blurb: z.string(),
           elsewhereHeading: z.string(),
           siteHeading: z.string(),
-          links: z.array(z.object({
-            label: z.string(),
-            to: z.string(),
-            // Notes only appears once a post is published (raz-je5).
-            requiresPosts: z.boolean().default(false),
-          })),
+          links: z.array(
+            z.object({
+              label: z.string(),
+              to: z.string(),
+              // Notes only appears once a post is published (raz-je5).
+              requiresPosts: z.boolean().default(false),
+            }),
+          ),
           // The vim-style status bar. Decorative, but still words.
           statusLine: z.object({
             mode: z.string(),
@@ -171,10 +173,12 @@ export default defineContentConfig({
           secondaryCta: z.object({ label: z.string(), to: z.string() }),
           status: z.string(),
         }),
-        capabilities: z.array(z.object({
-          label: z.string(),
-          body: z.string(),
-        })),
+        capabilities: z.array(
+          z.object({
+            label: z.string(),
+            body: z.string(),
+          }),
+        ),
         work: z.object({
           marker: z.string(),
           note: z.string(),
@@ -246,16 +250,24 @@ export default defineContentConfig({
             pullquoteCite: z.string(),
             // Markdown; rendered inline so it can carry emphasis and links.
             body: z.string(),
-            palette: z.array(z.object({
-              // Catppuccin CSS custom-property name, e.g. "green".
-              token: z.string(),
-              label: z.string(),
-            })).default([]),
+            palette: z
+              .array(
+                z.object({
+                  // Catppuccin CSS custom-property name, e.g. "green".
+                  token: z.string(),
+                  label: z.string(),
+                }),
+              )
+              .default([]),
             // Extra spec rows. Year and Role are derived from the fields above.
-            specs: z.array(z.object({
-              label: z.string(),
-              value: z.string(),
-            })).default([]),
+            specs: z
+              .array(
+                z.object({
+                  label: z.string(),
+                  value: z.string(),
+                }),
+              )
+              .default([]),
           })
           .optional(),
         // Per-project signature accent (Catppuccin token name, e.g. "green").

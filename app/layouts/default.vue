@@ -6,10 +6,10 @@
 </script>
 
 <template>
-  <div class="flex min-h-[100svh] flex-col bg-crust font-mono text-text">
+  <div class="bg-crust text-text flex min-h-[100svh] flex-col font-mono">
     <a
       href="#main"
-      class="absolute left-3 top-[-4rem] z-100 border border-surface-1/90 rounded bg-base px-[.9rem] py-[.55rem] text-sm text-text transition-all duration-200 ease focus:top-3"
+      class="border-surface-1/90 bg-base text-text ease absolute top-[-4rem] left-3 z-100 rounded border px-[.9rem] py-[.55rem] text-sm transition-all duration-200 focus:top-3"
     >
       Skip to content
     </a>

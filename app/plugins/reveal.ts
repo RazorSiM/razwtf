@@ -11,23 +11,25 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     if (!reduce && 'IntersectionObserver' in window) {
       // Load motion only on the client, only when we'll actually animate.
       const { animate } = await import('motion-v')
-      io = new IntersectionObserver((entries) => {
-        for (const e of entries) {
-          if (!e.isIntersecting)
-            continue
-          const el = e.target as HTMLElement
-          io!.unobserve(el)
-          // Per-element stagger, authored as --rd (seconds).
-          const rd = Number.parseFloat(getComputedStyle(el).getPropertyValue('--rd')) || 0
-          animate(
-            el,
-            { opacity: [0, 1], transform: ['translateY(22px)', 'translateY(0px)'] },
-            { type: 'spring', stiffness: 130, damping: 21, delay: rd },
-          )
-          // Mark revealed for any state/consumers; motion owns the inline styles.
-          el.classList.add('is-in')
-        }
-      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 })
+      io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue
+            const el = e.target as HTMLElement
+            io!.unobserve(el)
+            // Per-element stagger, authored as --rd (seconds).
+            const rd = Number.parseFloat(getComputedStyle(el).getPropertyValue('--rd')) || 0
+            animate(
+              el,
+              { opacity: [0, 1], transform: ['translateY(22px)', 'translateY(0px)'] },
+              { type: 'spring', stiffness: 130, damping: 21, delay: rd },
+            )
+            // Mark revealed for any state/consumers; motion owns the inline styles.
+            el.classList.add('is-in')
+          }
+        },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+      )
     }
   }
 
@@ -35,10 +37,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     getSSRProps: () => ({ 'data-reveal': '' }),
     mounted(el: HTMLElement) {
       el.setAttribute('data-reveal', '')
-      if (io)
-        io.observe(el)
-      else
-        el.classList.add('is-in')
+      if (io) io.observe(el)
+      else el.classList.add('is-in')
     },
     beforeUnmount(el: HTMLElement) {
       io?.unobserve(el)

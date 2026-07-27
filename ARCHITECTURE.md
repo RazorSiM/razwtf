@@ -43,15 +43,15 @@ Three ideas carry most of the design:
 
 `app/` is the Nuxt 4 app directory. Within it:
 
-| Directory | Holds | Naming |
-| --- | --- | --- |
-| `components/ui/` | design-system primitives reused across pages | **bare-named** (`<WorkCard>`, `<TagList>`, `<SectionMarker>`) via `pathPrefix: false` in `nuxt.config.ts` |
-| `components/layout/` | header, footer, scroll-to-top | prefixed (`<LayoutAppHeader>`) |
-| `components/content/` | MDC block components and Prose overrides, callable from markdown | prefixed in Vue, kebab-case in markdown (`::img-lightbox`) |
-| `composables/` | shared reactive state and behaviour | `useX()` |
-| `utils/` | pure helpers, no reactivity | plain functions |
-| `plugins/` | flavour sync, the `v-reveal` scroll-reveal directive | `.client.ts` where client-only |
-| `assets/css/` | `main.css` (tokens, base, prose, motion) importing `themes.css` (the four palettes) | |
+| Directory             | Holds                                                                               | Naming                                                                                                    |
+| --------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `components/ui/`      | design-system primitives reused across pages                                        | **bare-named** (`<WorkCard>`, `<TagList>`, `<SectionMarker>`) via `pathPrefix: false` in `nuxt.config.ts` |
+| `components/layout/`  | header, footer, scroll-to-top                                                       | prefixed (`<LayoutAppHeader>`)                                                                            |
+| `components/content/` | MDC block components and Prose overrides, callable from markdown                    | prefixed in Vue, kebab-case in markdown (`::img-lightbox`)                                                |
+| `composables/`        | shared reactive state and behaviour                                                 | `useX()`                                                                                                  |
+| `utils/`              | pure helpers, no reactivity                                                         | plain functions                                                                                           |
+| `plugins/`            | flavour sync, the `v-reveal` scroll-reveal directive                                | `.client.ts` where client-only                                                                            |
+| `assets/css/`         | `main.css` (tokens, base, prose, motion) importing `themes.css` (the four palettes) |                                                                                                           |
 
 Root-level: `content.config.ts` is the frontmatter contract, `uno.config.ts` is
 the design tokens, `scripts/` holds build-time helpers that run during config
@@ -67,17 +67,17 @@ Each singleton page owns its own richly-typed collection rather than sharing one
 catch-all `pages` collection. That way the homepage schema can require
 `hero.eyebrow` without every other page inheriting the field.
 
-| Collection | Source | Route | Rendered by |
-| --- | --- | --- | --- |
-| `home` | `content/index.md` | `/` | `app/pages/index.vue` |
-| `about` | `content/about.md` | `/about` | `app/pages/about.vue` |
-| `projectsIndex` | `content/projects/index.md` | `/projects` | `app/pages/projects/index.vue` |
-| `projects` | `content/projects/*.md` (minus `index.md`) | `/projects/<slug>` | `app/pages/projects/[slug].vue` |
-| `blogIndex` | `content/blog.md` | `/blog` | `app/pages/blog/index.vue` |
-| `posts` | `content/blog/**/*.md` | `/blog/<slug>` | `app/pages/blog/[slug].vue` |
-| (derived from `posts`) | frontmatter `tags` | `/blog/tag/<tag>` | `app/pages/blog/tag/[tag].vue` |
-| `site` | `content/site.yml` | none (`data` collection) | global chrome |
-| `pages` | any other `content/*.md` | `/<slug>` | `app/pages/[...slug].vue` |
+| Collection             | Source                                     | Route                    | Rendered by                     |
+| ---------------------- | ------------------------------------------ | ------------------------ | ------------------------------- |
+| `home`                 | `content/index.md`                         | `/`                      | `app/pages/index.vue`           |
+| `about`                | `content/about.md`                         | `/about`                 | `app/pages/about.vue`           |
+| `projectsIndex`        | `content/projects/index.md`                | `/projects`              | `app/pages/projects/index.vue`  |
+| `projects`             | `content/projects/*.md` (minus `index.md`) | `/projects/<slug>`       | `app/pages/projects/[slug].vue` |
+| `blogIndex`            | `content/blog.md`                          | `/blog`                  | `app/pages/blog/index.vue`      |
+| `posts`                | `content/blog/**/*.md`                     | `/blog/<slug>`           | `app/pages/blog/[slug].vue`     |
+| (derived from `posts`) | frontmatter `tags`                         | `/blog/tag/<tag>`        | `app/pages/blog/tag/[tag].vue`  |
+| `site`                 | `content/site.yml`                         | none (`data` collection) | global chrome                   |
+| `pages`                | any other `content/*.md`                   | `/<slug>`                | `app/pages/[...slug].vue`       |
 
 Two consequences worth remembering:
 
@@ -98,24 +98,24 @@ points: `docs/templates/project.md`, `docs/templates/post.md`.
 
 ### Projects
 
-| Field | Required | Purpose |
-| --- | --- | --- |
-| `title` | yes | h1, card title, `<title>` |
-| `description` | yes | lead paragraph, meta description, card excerpt fallback |
-| `date` | yes | ordering fallback and `<lastmod>` |
-| `hero` (or `cover` / `image`) | no | hero render and card image |
-| `heroCaption` | no | caption under the hero; falls back to the title |
-| `type` | no | hero metabar label ("SWG keycap set", "Vue template") |
-| `year`, `role`, `collab`, `kicker` | no | card and metabar editorial bits |
-| `tags`, `tech` | no | tag chips; `tech` doubles as the Details stack line |
-| `accent` | no | per-project signature colour, one of the nine Catppuccin accent names |
-| `featured` | no | large card in the work grid (default `false`) |
-| `spotlight` | no | drives homepage section 02 (default `false`) |
-| `spotlightCopy` | no | that section's heading, pullquote, body, palette chips, extra spec rows |
-| `order` | no | homepage ordering, lower first; falls back to `date` |
-| `gallery` | no | ordered groups of `{ description, images[] }`, rendered as the labelled gallery, all images sharing one lightbox |
-| `links`, `url` | no | outbound links (repo, IC thread, Discord) |
-| `head` | no | raw `<head>` passthrough for bespoke OG or Twitter tags |
+| Field                              | Required | Purpose                                                                                                          |
+| ---------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
+| `title`                            | yes      | h1, card title, `<title>`                                                                                        |
+| `description`                      | yes      | lead paragraph, meta description, card excerpt fallback                                                          |
+| `date`                             | yes      | ordering fallback and `<lastmod>`                                                                                |
+| `hero` (or `cover` / `image`)      | no       | hero render and card image                                                                                       |
+| `heroCaption`                      | no       | caption under the hero; falls back to the title                                                                  |
+| `type`                             | no       | hero metabar label ("SWG keycap set", "Vue template")                                                            |
+| `year`, `role`, `collab`, `kicker` | no       | card and metabar editorial bits                                                                                  |
+| `tags`, `tech`                     | no       | tag chips; `tech` doubles as the Details stack line                                                              |
+| `accent`                           | no       | per-project signature colour, one of the nine Catppuccin accent names                                            |
+| `featured`                         | no       | large card in the work grid (default `false`)                                                                    |
+| `spotlight`                        | no       | drives homepage section 02 (default `false`)                                                                     |
+| `spotlightCopy`                    | no       | that section's heading, pullquote, body, palette chips, extra spec rows                                          |
+| `order`                            | no       | homepage ordering, lower first; falls back to `date`                                                             |
+| `gallery`                          | no       | ordered groups of `{ description, images[] }`, rendered as the labelled gallery, all images sharing one lightbox |
+| `links`, `url`                     | no       | outbound links (repo, IC thread, Discord)                                                                        |
+| `head`                             | no       | raw `<head>` passthrough for bespoke OG or Twitter tags                                                          |
 
 Body convention: **do not start the markdown with an `# H1`.** The page template
 renders the title from frontmatter, so a leading H1 in the body produces two.
@@ -127,14 +127,14 @@ set's prose stranded on the homepage. One caveat is recorded in
 
 ### Posts
 
-| Field | Required | Purpose |
-| --- | --- | --- |
-| `title` | yes | h1, card title |
-| `date` | yes | byline, ordering, RSS `pubDate` |
-| `description` | no | standfirst and meta description |
-| `tags` | no | accent-cycled chips, and the tag pages they generate |
-| `draft` | no | `true` hides it everywhere including RSS and the sitemap (default `false`) |
-| `cover` | no | list and article image |
+| Field         | Required | Purpose                                                                    |
+| ------------- | -------- | -------------------------------------------------------------------------- |
+| `title`       | yes      | h1, card title                                                             |
+| `date`        | yes      | byline, ordering, RSS `pubDate`                                            |
+| `description` | no       | standfirst and meta description                                            |
+| `tags`        | no       | accent-cycled chips, and the tag pages they generate                       |
+| `draft`       | no       | `true` hides it everywhere including RSS and the sitemap (default `false`) |
+| `cover`       | no       | list and article image                                                     |
 
 The article template reads `body.toc.links` for its sticky table of contents and
 falls back to a single-column layout when a post has no headings.
@@ -161,7 +161,9 @@ Every colour is a **space-separated `R G B` triple** in
 `app/assets/css/themes.css`:
 
 ```css
-:root[data-flavor='mocha'] { --mauve: 203 166 247; }
+:root[data-flavor='mocha'] {
+  --mauve: 203 166 247;
+}
 ```
 
 That format composes with modern alpha syntax, `rgb(var(--mauve) / .5)`, which
@@ -190,10 +192,10 @@ Non-obvious and easy to regress, so it is written down.
 
 **The page background in the light flavour is `--crust`, not `--base`.** Accent
 text has to clear 4.5:1 against crust. That is why `themes.css` defines "ink"
-variants used for accent-coloured *text*:
+variants used for accent-coloured _text_:
 
 ```css
---peach-ink: var(--peach);   /* dark flavours: same colour */
+--peach-ink: var(--peach); /* dark flavours: same colour */
 ```
 
 with darker overrides in the latte block and in the
@@ -254,13 +256,13 @@ across descendants, and `after:absolute after:inset-0` covers a stretched link,
 so cards carry no scoped CSS at all. The reasons that do qualify, and where they
 are used:
 
-| Reason | Where |
-| --- | --- |
-| `@keyframes` | `main.css`, the hero caret and status pulse in `index.vue` |
-| `:deep()` into markdown rendered by `ContentRenderer` | `.prose` in `main.css`, `blog/[slug].vue`, `index.vue` |
-| `:deep()` into an `<img>` slotted in by a caller | `MediaFrame.vue` |
-| Sticky/scrollspy rail geometry | the TOC in `blog/[slug].vue` |
-| `@font-face`, design tokens, base/reset rules | `main.css` |
+| Reason                                                | Where                                                      |
+| ----------------------------------------------------- | ---------------------------------------------------------- |
+| `@keyframes`                                          | `main.css`, the hero caret and status pulse in `index.vue` |
+| `:deep()` into markdown rendered by `ContentRenderer` | `.prose` in `main.css`, `blog/[slug].vue`, `index.vue`     |
+| `:deep()` into an `<img>` slotted in by a caller      | `MediaFrame.vue`                                           |
+| Sticky/scrollspy rail geometry                        | the TOC in `blog/[slug].vue`                               |
+| `@font-face`, design tokens, base/reset rules         | `main.css`                                                 |
 
 Two wind4 behaviours that will silently break animation if you assume otherwise:
 
@@ -271,8 +273,8 @@ Two wind4 behaviours that will silently break animation if you assume otherwise:
   cover all four (`transform, translate, scale, rotate`).
 - **Never point a theme entry at a CSS variable of the same name.**
   `theme.ease.out = 'var(--ease-out)'` made wind4 emit `--ease-out:
-  var(--ease-out)`, a custom-property cycle that resolves to nothing. Any
-  `transition:` *shorthand* containing it then becomes invalid at computed-value
+var(--ease-out)`, a custom-property cycle that resolves to nothing. Any
+  `transition:` _shorthand_ containing it then becomes invalid at computed-value
   time and silently reverts to `all 0s`, which had killed the image zoom and
   every card hover transition site-wide. `theme.ease` now holds literal
   cubic-beziers, duplicated in `main.css` for hand-written CSS.
@@ -451,11 +453,11 @@ one nitro uses, and throws at runtime.
 
 Three Rust tools replaced ESLint and `@antfu/eslint-config`:
 
-| Tool | Owns | Config |
-| --- | --- | --- |
-| `oxfmt` | formatting: TS, Vue (template *and* script), Markdown, YAML, JSON, CSS | `.oxfmtrc.json` |
-| `oxlint` | linting: JS/TS and SFC `<script>` blocks | `.oxlintrc.json` |
-| `vize lint` | linting: Vue templates, a11y, SFC `<style>`, SSR | `vize.config.json` |
+| Tool        | Owns                                                                   | Config             |
+| ----------- | ---------------------------------------------------------------------- | ------------------ |
+| `oxfmt`     | formatting: TS, Vue (template _and_ script), Markdown, YAML, JSON, CSS | `.oxfmtrc.json`    |
+| `oxlint`    | linting: JS/TS and SFC `<script>` blocks                               | `.oxlintrc.json`   |
+| `vize lint` | linting: Vue templates, a11y, SFC `<style>`, SSR                       | `vize.config.json` |
 
 **Why two linters.** Oxlint ships 46 `vue/*` rules and every one of them is a
 `<script>` rule; it has no Vue template parser, and the upstream position is
@@ -471,7 +473,7 @@ ranges.
 here, 148 of them from rules that fight deliberate choices in this codebase, and
 none of the four is fixable or configurable:
 
-- `vue/no-inline-style` (31) - `:style="{ '--accent': accent }"` *is* the
+- `vue/no-inline-style` (31) - `:style="{ '--accent': accent }"` _is_ the
   per-card accent mechanism. See [styling system](#styling-system).
 - `vue/warn-custom-directive` (44) - `v-reveal` is a real directive, registered
   in `app/plugins/reveal.ts`.
@@ -520,7 +522,7 @@ Failures that already cost a session each.
 9. **In `server/routes/`, import `queryCollection` from `@nuxt/content/server`**
    rather than relying on the auto-import. `.nuxt/types/nitro-routes.d.ts`
    imports every server route to build the route-type map, which pulls those
-   files into the *app* TypeScript project, where the auto-import resolves to the
+   files into the _app_ TypeScript project, where the auto-import resolves to the
    client's 1-argument form. Twenty phantom type errors came from that alone.
 10. **`pnpm typecheck` is the only thing that checks types.** `nuxt generate`
     does not typecheck, so a build passing says nothing about types.

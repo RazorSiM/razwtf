@@ -21,8 +21,7 @@ export function useLightbox() {
 
   function gotoImage(i: number): void {
     const len = state.items.length
-    if (len === 0)
-      return
+    if (len === 0) return
     // Wrap around at both ends.
     state.index = ((i % len) + len) % len
   }
@@ -58,7 +57,6 @@ export function provideLightbox() {
 
 export function injectLightbox() {
   const lightbox = inject(LightboxKey)
-  if (!lightbox)
-    throw new Error('No lightbox provided')
+  if (!lightbox) throw new Error('No lightbox provided')
   return lightbox
 }

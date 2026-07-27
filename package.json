@@ -1,8 +1,7 @@
 {
   "name": "raz.wtf",
-  "type": "module",
   "private": true,
-  "packageManager": "pnpm@11.9.0",
+  "type": "module",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -41,5 +40,6 @@
     "unocss-preset-scrollbar": "^4.0.0",
     "vize": "0.291.0",
     "vue-tsc": "^3.3.8"
-  }
+  },
+  "packageManager": "pnpm@11.9.0"
 }

@@ -15,8 +15,7 @@ let fontsPromise: Promise<void> | null = null
 
 /** Lazy-load the pretext module once, client-only. Resolves null on the server. */
 export function loadPretext(): Promise<Pretext | null> {
-  if (!import.meta.client)
-    return Promise.resolve(null)
+  if (!import.meta.client) return Promise.resolve(null)
   ptPromise ??= import('@chenglou/pretext')
   return ptPromise
 }
@@ -26,14 +25,12 @@ export function loadPretext(): Promise<Pretext | null> {
  * matches rendered metrics. Measuring before this yields fallback-font numbers.
  */
 export function fontsReady(faces: string[] = ['600 100px Fraunces', 'italic 460 100px Fraunces']): Promise<void> {
-  if (!import.meta.client || !document.fonts?.load)
-    return Promise.resolve()
+  if (!import.meta.client || !document.fonts?.load) return Promise.resolve()
   fontsPromise ??= (async () => {
     try {
-      await Promise.all(faces.map(f => document.fonts.load(f)))
+      await Promise.all(faces.map((f) => document.fonts.load(f)))
       await document.fonts.ready
-    }
-    catch {}
+    } catch {}
   })()
   return fontsPromise
 }
@@ -63,14 +60,12 @@ export function usePretext(): PretextTools {
   function balancedWidth(pt: Pretext, text: string, font: string, containerW: number): number {
     const prepared = pt.prepareWithSegments(text, font)
     const target = pt.measureLineStats(prepared, containerW).lineCount
-    if (target <= 1)
-      return containerW
+    if (target <= 1) return containerW
     let lo = 0
     let hi = containerW
     for (let i = 0; i < 22; i++) {
       const mid = (lo + hi) / 2
-      if (pt.measureLineStats(prepared, mid).lineCount <= target)
-        hi = mid
+      if (pt.measureLineStats(prepared, mid).lineCount <= target) hi = mid
       else lo = mid
     }
     // nudge past the boundary so the last fitting width isn't a hair short

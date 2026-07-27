@@ -4,21 +4,12 @@ import { getBlogTagRoutes } from './scripts/content-tags'
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
-  modules: [
-    '@unocss/nuxt',
-    '@nuxt/content',
-    '@nuxt/image',
-    '@nuxt/fonts',
-    '@vueuse/nuxt',
-  ],
+  modules: ['@unocss/nuxt', '@nuxt/content', '@nuxt/image', '@nuxt/fonts', '@vueuse/nuxt'],
 
   // UI-kit primitives are bare-named (<WorkCard>, <TagList>, <SectionMarker>…)
   // for ergonomics since they're reused across every page; everything else
   // keeps Nuxt's default directory prefix (<LayoutAppHeader>, etc.).
-  components: [
-    { path: '~/components/ui', pathPrefix: false },
-    '~/components',
-  ],
+  components: [{ path: '~/components/ui', pathPrefix: false }, '~/components'],
 
   // Fraunces is fetched & self-hosted at build (CLS-safe fallback metrics).
   // Victor Mono is declared via @font-face in main.css and is left untouched.
@@ -40,14 +31,7 @@ export default defineNuxtConfig({
           // four flavours (see ARCHITECTURE.md). This also fixes the comment
           // token, which was 3.49:1 under dracula and is 5.81:1 here.
           theme: 'catppuccin-mocha',
-          langs: [
-            'bash',
-            'css',
-            'javascript',
-            'typescript',
-            'vue',
-            'markdown',
-          ],
+          langs: ['bash', 'css', 'javascript', 'typescript', 'vue', 'markdown'],
         },
       },
     },
@@ -111,7 +95,8 @@ export default defineNuxtConfig({
       // canvas logo + switcher from mismatching on hydration.
       script: [
         {
-          innerHTML: ';(function(){try{var d=document.documentElement;d.classList.add("js");var p=localStorage.getItem("flavor")||"auto";var f=p==="auto"?(window.matchMedia("(prefers-color-scheme: light)").matches?"latte":"mocha"):p;d.setAttribute("data-flavor",f);}catch(e){document.documentElement.setAttribute("data-flavor","mocha");}})();',
+          innerHTML:
+            ';(function(){try{var d=document.documentElement;d.classList.add("js");var p=localStorage.getItem("flavor")||"auto";var f=p==="auto"?(window.matchMedia("(prefers-color-scheme: light)").matches?"latte":"mocha"):p;d.setAttribute("data-flavor",f);}catch(e){document.documentElement.setAttribute("data-flavor","mocha");}})();',
           tagPosition: 'head',
           tagPriority: 'critical',
         },

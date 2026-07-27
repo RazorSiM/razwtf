@@ -10,15 +10,15 @@ For how it is put together and why, read [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ## Stack
 
-| Piece | What it does here |
-| --- | --- |
-| [Nuxt 4](https://nuxt.com) | app framework, `app/` directory layout, prerendered to static HTML |
-| [@nuxt/content 3](https://content.nuxt.com) | typed collections with zod schemas, WASM SQLite in the browser |
-| [UnoCSS](https://unocss.dev) (`presetWind4`) | the design system, expressed as theme tokens plus named shortcuts |
-| [Reka UI](https://reka-ui.com) | accessible dialog primitives (mobile menu, lightbox) |
-| [motion-v](https://motion.dev) | scroll reveals and route choreography |
-| [@chenglou/pretext](https://github.com/chenglou/pretext) | kinetic type: fill-to-width headings, per-word cascade |
-| `@nuxt/image`, `@nuxt/fonts`, `@vueuse/nuxt` | images, Fraunces provisioning, composables |
+| Piece                                                    | What it does here                                                  |
+| -------------------------------------------------------- | ------------------------------------------------------------------ |
+| [Nuxt 4](https://nuxt.com)                               | app framework, `app/` directory layout, prerendered to static HTML |
+| [@nuxt/content 3](https://content.nuxt.com)              | typed collections with zod schemas, WASM SQLite in the browser     |
+| [UnoCSS](https://unocss.dev) (`presetWind4`)             | the design system, expressed as theme tokens plus named shortcuts  |
+| [Reka UI](https://reka-ui.com)                           | accessible dialog primitives (mobile menu, lightbox)               |
+| [motion-v](https://motion.dev)                           | scroll reveals and route choreography                              |
+| [@chenglou/pretext](https://github.com/chenglou/pretext) | kinetic type: fill-to-width headings, per-word cascade             |
+| `@nuxt/image`, `@nuxt/fonts`, `@vueuse/nuxt`             | images, Fraunces provisioning, composables                         |
 
 Type is Victor Mono (self-hosted, the dominant voice) and Fraunces (display
 headings). Colour is Catppuccin in latte, frappe, macchiato and mocha.
@@ -66,15 +66,15 @@ image is older than this needs. See [Deploy](#deploy).
 
 ## Commands
 
-| Command | Does |
-| --- | --- |
-| `pnpm dev` | dev server on http://localhost:3000 |
-| `pnpm generate` | static build to `.output/public` (Cloudflare writes `dist`; see Deploy) |
-| `pnpm build` | server build, for a Node host |
-| `pnpm preview` | serve the last build |
+| Command                       | Does                                                                                |
+| ----------------------------- | ----------------------------------------------------------------------------------- |
+| `pnpm dev`                    | dev server on http://localhost:3000                                                 |
+| `pnpm generate`               | static build to `.output/public` (Cloudflare writes `dist`; see Deploy)             |
+| `pnpm build`                  | server build, for a Node host                                                       |
+| `pnpm preview`                | serve the last build                                                                |
 | `pnpm lint` / `pnpm lint:fix` | `oxlint` (JS/TS + SFC `<script>`) then `vize lint` (Vue templates, a11y, `<style>`) |
-| `pnpm fmt` / `pnpm fmt:check` | `oxfmt` - formats TS, Vue, Markdown, YAML, JSON and CSS |
-| `pnpm typecheck` | `vue-tsc` via `nuxt typecheck`; the build does **not** check types |
+| `pnpm fmt` / `pnpm fmt:check` | `oxfmt` - formats TS, Vue, Markdown, YAML, JSON and CSS                             |
+| `pnpm typecheck`              | `vue-tsc` via `nuxt typecheck`; the build does **not** check types                  |
 
 `nuxt prepare` runs on install. Note that `nuxt generate` overwrites the
 generated dev types in `.nuxt`, which makes editors report phantom
@@ -155,13 +155,13 @@ nothing to run by hand.
 These live in the Cloudflare dashboard, not in this repo, under **Workers &
 Pages → razwtf → Settings**:
 
-| Setting | Value | Where |
-| --- | --- | --- |
-| Build command | `pnpm run generate` | Build configuration |
-| Output directory | `dist` | Build configuration |
-| Production branch | `main` | Build configuration |
-| `NODE_VERSION` | `26` | Environment variables (production **and** preview) |
-| `PNPM_VERSION` | `11.9.0` | Environment variables (production **and** preview) |
+| Setting           | Value               | Where                                              |
+| ----------------- | ------------------- | -------------------------------------------------- |
+| Build command     | `pnpm run generate` | Build configuration                                |
+| Output directory  | `dist`              | Build configuration                                |
+| Production branch | `main`              | Build configuration                                |
+| `NODE_VERSION`    | `26`                | Environment variables (production **and** preview) |
+| `PNPM_VERSION`    | `11.9.0`            | Environment variables (production **and** preview) |
 
 Both are pinned because the v3 build image defaults to **Node 22.16.0 and pnpm
 10.11.1** ([Cloudflare's build image
@@ -183,7 +183,7 @@ because both variables were set before the first build ever ran.
 Set them per environment. A variable added only to production does not apply to
 preview builds, so branch previews would fail on their own.
 
-The Node version is *also* pinned in-repo by `.node-version`, which Cloudflare
+The Node version is _also_ pinned in-repo by `.node-version`, which Cloudflare
 reads as an alternative to `NODE_VERSION` (`.nvmrc` works too). That keeps the
 requirement visible to anyone reading the repo instead of living only in a
 dashboard. pnpm has no equivalent file, so `PNPM_VERSION` has to stay a

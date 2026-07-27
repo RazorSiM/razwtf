@@ -2,23 +2,22 @@
 definePageMeta({ layout: 'default' })
 
 // The projects listing intro doc; copy in frontmatter, prose in the body.
-const { data: page } = await useAsyncData('projects-index', () =>
-  queryCollection('projectsIndex').first())
+const { data: page } = await useAsyncData('projects-index', () => queryCollection('projectsIndex').first())
 
 // Full project list; sorted in a computed by order then date DESC (like home).
-const { data: projectData } = await useAsyncData('projects-list', () =>
-  queryCollection('projects').all())
+const { data: projectData } = await useAsyncData('projects-list', () => queryCollection('projects').all())
 
 const list = computed(() =>
-  [...(projectData.value ?? [])].sort((a, b) =>
-    (a.order ?? 99) - (b.order ?? 99)
-    || +new Date(b.date) - +new Date(a.date)))
+  [...(projectData.value ?? [])].sort(
+    (a, b) => (a.order ?? 99) - (b.order ?? 99) || +new Date(b.date) - +new Date(a.date),
+  ),
+)
 
 // Featured: explicitly flagged, else the first in order. The rest keep order.
-const featured = computed(() => list.value.find(p => p.featured) ?? list.value[0])
+const featured = computed(() => list.value.find((p) => p.featured) ?? list.value[0])
 const rest = computed(() => {
   const feat = featured.value
-  return feat ? list.value.filter(p => p.path !== feat.path) : list.value
+  return feat ? list.value.filter((p) => p.path !== feat.path) : list.value
 })
 
 const heading = computed(() => page.value?.heading ?? page.value?.title ?? '')
@@ -59,19 +58,12 @@ useSeoMeta({
     </header>
 
     <!-- ================= FEATURED ================= -->
-    <WorkCard
-      v-if="featured"
-      v-reveal
-      featured
-      as="h2"
-      :project="featured"
-      :style="accentVar(featured)"
-    />
+    <WorkCard v-if="featured" v-reveal featured as="h2" :project="featured" :style="accentVar(featured)" />
 
     <!-- ================= REST ================= -->
     <div
       v-if="rest.length"
-      class="grid grid-cols-[1fr] gap-[clamp(1.1rem,2vw,1.6rem)] wide:grid-cols-[1fr_1fr] mt-[clamp(1.1rem,2vw,1.6rem)]"
+      class="wide:grid-cols-[1fr_1fr] mt-[clamp(1.1rem,2vw,1.6rem)] grid grid-cols-[1fr] gap-[clamp(1.1rem,2vw,1.6rem)]"
     >
       <WorkCard
         v-for="(p, i) in rest"

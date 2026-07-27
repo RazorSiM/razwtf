@@ -20,13 +20,10 @@ withDefaults(defineProps<Props>(), {
       v-if="direction === 'left'"
       aria-hidden="true"
       class="arw text-[rgb(var(--accent,var(--mauve)))] group-hover:-translate-x-[3px] motion-reduce:group-hover:translate-x-0"
-    >←</span>
+      >←</span
+    >
     {{ label }}
     <!-- Trailing arrow: mono accent, slides right on hover (arw default). -->
-    <span
-      v-if="direction === 'right'"
-      aria-hidden="true"
-      class="arw text-[rgb(var(--accent,var(--mauve)))]"
-    >→</span>
+    <span v-if="direction === 'right'" aria-hidden="true" class="arw text-[rgb(var(--accent,var(--mauve)))]">→</span>
   </NuxtLink>
 </template>

@@ -15,9 +15,12 @@ interface MdcHeadingsConfig {
 }
 
 const { headings } = useRuntimeConfig().public.mdc as MdcHeadingsConfig
-const generate = computed(() =>
-  props.id && ((typeof headings?.anchorLinks === 'boolean' && headings.anchorLinks)
-    || (typeof headings?.anchorLinks === 'object' && headings.anchorLinks?.h2)))
+const generate = computed(
+  () =>
+    props.id &&
+    ((typeof headings?.anchorLinks === 'boolean' && headings.anchorLinks) ||
+      (typeof headings?.anchorLinks === 'object' && headings.anchorLinks?.h2)),
+)
 </script>
 
 <template>

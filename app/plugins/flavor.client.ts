@@ -6,10 +6,8 @@ export default defineNuxtPlugin(() => {
 
   try {
     const stored = localStorage.getItem('flavor') as FlavorPref | null
-    if (stored)
-      preference.value = stored
-  }
-  catch {}
+    if (stored) preference.value = stored
+  } catch {}
 
   const apply = () => document.documentElement.setAttribute('data-flavor', flavor.value)
   apply()
