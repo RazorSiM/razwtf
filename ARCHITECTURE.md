@@ -472,23 +472,33 @@ Cloudflare reads as an alternative to the variable (`.nvmrc` works too), keeping
 the requirement visible to anyone reading the repo instead of living only in a
 dashboard.
 
-**pnpm needs no variable**, because `packageManager` in `package.json` is the
-pin. pnpm honours that field itself through its default
-`manage-package-manager-versions` setting: whatever pnpm the build image ships
-downloads the pinned version and hands off to it. Verified locally, where
-`pnpm@11.9.0` is the pinned value: a `pnpm-10.34.5` binary run in this repo
-fetched 11.9.0 into `~/.local/share/pnpm/.tools/pnpm/11.9.0` and reported itself
-as 11.9.0, while the same binary with `manage-package-manager-versions=false`
-reported 10.34.5. It downloaded rather than reusing the pnpm 11 already on
-`PATH`, which is the situation on Pages.
+**pnpm needs no variable**, because `packageManager` in `package.json` is the pin
+and the build image reads it. Verified on preview deployment `fa62533e`
+(2026-07-28), the first build with no `PNPM_VERSION` set in either environment:
 
-That handoff is unverified on Pages itself. If it ever fails there the install
-fails loudly rather than silently, and setting `PNPM_VERSION` to match
-`packageManager` restores the previous arrangement. The lockfile is not a
-constraint either way: `pnpm-lock.yaml` is `lockfileVersion: '9.0'`, which pnpm
-10 also reads. Cloudflare does **not** read `package.json` `engines` and does not
-infer pnpm from the lockfile, so `packageManager` plus the handoff is the only
-way to keep this pin in the repo.
+```
+Detected the following tools from environment: nodejs@26.5.0, pnpm@11.9.0
+Preparing pnpm@11.9.0 for immediate activation...
+Done in 16.9s using pnpm v11.9.0
+```
+
+So Pages resolves the tools from the repo before pnpm runs at all, taking
+`pnpm@11.9.0` from `packageManager` and Node from the pinned `26` up to 26.5.0.
+It is not pnpm's own `manage-package-manager-versions` handoff doing the work
+here.
+
+That handoff is a second and independent net, and it does work: locally a
+`pnpm-10.34.5` binary run in this repo fetched 11.9.0 into
+`~/.local/share/pnpm/.tools/pnpm/11.9.0` and reported itself as 11.9.0, while the
+same binary with `manage-package-manager-versions=false` reported 10.34.5. It
+downloaded rather than reusing the pnpm 11 already on `PATH`.
+
+If either mechanism ever stops applying, the install fails loudly rather than
+silently, and setting `PNPM_VERSION` back to match `packageManager` restores the
+previous arrangement. The lockfile is not a constraint either way:
+`pnpm-lock.yaml` is `lockfileVersion: '9.0'`, which pnpm 10 also reads. Cloudflare
+does **not** read `package.json` `engines` and does not infer pnpm from the
+lockfile, so `packageManager` is the only way to keep this pin in the repo.
 
 One consequence to know if the handoff does fail. `pnpm-workspace.yaml` declares
 its build allowlist as `allowBuilds`, which is pnpm 11 spelling; the pnpm 10
