@@ -11,7 +11,6 @@
     "prepare": "lefthook install || true",
     "typecheck": "nuxt typecheck",
     "lint": "oxlint && vize lint app",
-    "lint:check": "oxlint && vize lint app",
     "lint:fix": "oxlint --fix && vize lint --fix app",
     "lint:strict": "oxlint --max-warnings 0 && vize lint --max-warnings 0 app",
     "fmt": "oxfmt",
