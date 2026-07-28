@@ -452,32 +452,48 @@ These settings live in the Cloudflare dashboard, not in this repo, under
 | Output directory  | `dist`              | Build configuration                                |
 | Production branch | `main`              | Build configuration                                |
 | `NODE_VERSION`    | `26`                | Environment variables (production **and** preview) |
-| `PNPM_VERSION`    | `11.9.0`            | Environment variables (production **and** preview) |
 
-Set them per environment. A variable added only to production does not apply to
+Set it per environment. A variable added only to production does not apply to
 preview builds, so branch previews would fail on their own.
 
-Both are pinned because the v3 build image defaults to **Node 22.16.0 and pnpm
-10.11.1** ([Cloudflare's build image
+The v3 build image defaults to **Node 22.16.0 and pnpm 10.11.1**
+([Cloudflare's build image
 reference](https://developers.cloudflare.com/pages/configuration/build-image/#supported-languages-and-tools)),
-neither of which matches what this project is developed against.
+neither of which matches what this project is developed against. Only the Node
+half needs a dashboard variable.
 
-`NODE_VERSION` is the one that matters: Node 22 predates unflagged
-`node:sqlite`, which the content build depends on. It is _also_ pinned in-repo by
-`.node-version`, which Cloudflare reads as an alternative to the variable
-(`.nvmrc` works too), keeping the requirement visible to anyone reading the repo
-instead of living only in a dashboard.
+`NODE_VERSION` is set because Node 22 predates unflagged `node:sqlite`, which the
+content build depends on. It is _also_ pinned in-repo by `.node-version`, which
+Cloudflare reads as an alternative to the variable (`.nvmrc` works too), keeping
+the requirement visible to anyone reading the repo instead of living only in a
+dashboard.
 
-`PNPM_VERSION` is a reproducibility pin matching `packageManager` in
-`package.json`, and is **not** known to be required: `pnpm-lock.yaml` is
-`lockfileVersion: '9.0'`, which pnpm 10 reads without trouble. The real risk of
-falling back to pnpm 10 is `pnpm-workspace.yaml`, which uses pnpm 11 settings
-(`shellEmulator`, `allowBuilds`); an older pnpm ignoring `allowBuilds` would try
-to compile `better-sqlite3` again. Neither default has been tested on Pages,
-because both variables were set before the first build ever ran. pnpm has no
-equivalent to `.node-version`, so this one has to stay a dashboard variable.
-Cloudflare does **not** read `package.json` `engines`, and does not infer pnpm
-from the lockfile, so neither of those is an option.
+**pnpm needs no variable**, because `packageManager` in `package.json` is the
+pin. pnpm honours that field itself through its default
+`manage-package-manager-versions` setting: whatever pnpm the build image ships
+downloads the pinned version and hands off to it. Verified locally, where
+`pnpm@11.9.0` is the pinned value: a `pnpm-10.34.5` binary run in this repo
+fetched 11.9.0 into `~/.local/share/pnpm/.tools/pnpm/11.9.0` and reported itself
+as 11.9.0, while the same binary with `manage-package-manager-versions=false`
+reported 10.34.5. It downloaded rather than reusing the pnpm 11 already on
+`PATH`, which is the situation on Pages.
+
+That handoff is unverified on Pages itself. If it ever fails there the install
+fails loudly rather than silently, and setting `PNPM_VERSION` to match
+`packageManager` restores the previous arrangement. The lockfile is not a
+constraint either way: `pnpm-lock.yaml` is `lockfileVersion: '9.0'`, which pnpm
+10 also reads. Cloudflare does **not** read `package.json` `engines` and does not
+infer pnpm from the lockfile, so `packageManager` plus the handoff is the only
+way to keep this pin in the repo.
+
+One consequence to know if the handoff does fail. `pnpm-workspace.yaml` declares
+its build allowlist as `allowBuilds`, which is pnpm 11 spelling; the pnpm 10
+equivalent is `onlyBuiltDependencies`, and carrying both invites the two lists to
+drift, so only `allowBuilds` is kept. A pnpm 10 fallback therefore recognises no
+allowlist at all, and since pnpm 10 blocks build scripts by default,
+`better-sqlite3` still stays uncompiled; what `allowBuilds` does permit (`sharp`,
+`esbuild`, `@parcel/watcher`, `vue-demi`) would be skipped too, which breaks the
+build visibly instead of reintroducing the ABI failure.
 
 DNS lives in the same Cloudflare account: `raz.wtf` and `www.raz.wtf` are CNAMEs
 to `razwtf.pages.dev`, attached to the project as custom domains.
