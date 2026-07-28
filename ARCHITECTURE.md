@@ -1,7 +1,8 @@
 # Architecture
 
 How raz.wtf is built, and the reasoning behind the parts that are not obvious
-from reading the code. Setup and commands are in [README.md](./README.md).
+from reading the code. Setup and commands are in [README.md](./README.md);
+working instructions for coding agents are in [AGENTS.md](./AGENTS.md).
 
 - [Shape of the site](#shape-of-the-site)
 - [Directory conventions](#directory-conventions)
@@ -387,10 +388,7 @@ The output directory is preset-dependent. Locally nitro uses the static preset
 and writes `.output/public`. On Cloudflare Pages it detects the environment,
 switches to the Pages preset, and writes `dist` plus `_headers` and
 `_redirects`. Same build command either way, so only the platform's configured
-output directory changes. The Pages project (`razwtf`) is git-connected on
-`main` and must set `NODE_VERSION` to 24 or higher and `PNPM_VERSION` to
-11.9.0: the build image defaults to Node 22, where `node:sqlite` is not yet
-stable, and its bundled pnpm cannot read a pnpm 11.9 lockfile.
+output directory changes.
 
 Four things make the static build work, all of which look removable and are
 not:
@@ -415,6 +413,74 @@ not:
    tradeoff is that a naive local static server (`python -m http.server`) will
    404 on `/about`, since it only resolves directories; use a server that tries
    `.html` when verifying a local build by hand.
+
+### Why the Node version decides whether the build works
+
+Worth understanding before trying to build on an older runtime, because the
+failure is total rather than a warning.
+
+`@nuxt/content` keeps parsed markdown in a SQLite database that it builds during
+`nuxt generate`, so the build needs a SQLite driver. There are two:
+
+- **`better-sqlite3`**, a native C++ addon that has to be compiled against the
+  exact Node ABI it will run under. The `Module did not self-register` failure
+  above is that ABI going wrong: a mismatch between the Node that compiled the
+  addon and the Node that loaded it.
+- **`node:sqlite`**, built into Node itself, nothing to compile. This is what
+  `sqliteConnector: 'native'` selects.
+
+Because the driver is a Node built-in, **the Node version decides whether the
+build works at all**. `node:sqlite` is a recent
+addition, currently "release candidate" in Node's own stability index, and older
+releases either lack it or hide it behind `--experimental-sqlite`. That is why
+the Node version is pinned in three places: `.node-version` in the repo,
+`languages.javascript.package = pkgs.nodejs_26` in `devenv.nix`, and
+`NODE_VERSION` on Cloudflare Pages.
+
+### Cloudflare Pages configuration
+
+[raz.wtf](https://raz.wtf) is served by Cloudflare Pages from the git-connected
+project `razwtf`. Pushing to `main` builds and deploys production; any other
+branch gets a preview build and its own URL. Nothing is run by hand.
+
+These settings live in the Cloudflare dashboard, not in this repo, under
+**Workers & Pages → razwtf → Settings**:
+
+| Setting           | Value               | Where                                              |
+| ----------------- | ------------------- | -------------------------------------------------- |
+| Build command     | `pnpm run generate` | Build configuration                                |
+| Output directory  | `dist`              | Build configuration                                |
+| Production branch | `main`              | Build configuration                                |
+| `NODE_VERSION`    | `26`                | Environment variables (production **and** preview) |
+| `PNPM_VERSION`    | `11.9.0`            | Environment variables (production **and** preview) |
+
+Set them per environment. A variable added only to production does not apply to
+preview builds, so branch previews would fail on their own.
+
+Both are pinned because the v3 build image defaults to **Node 22.16.0 and pnpm
+10.11.1** ([Cloudflare's build image
+reference](https://developers.cloudflare.com/pages/configuration/build-image/#supported-languages-and-tools)),
+neither of which matches what this project is developed against.
+
+`NODE_VERSION` is the one that matters: Node 22 predates unflagged
+`node:sqlite`, which the content build depends on. It is _also_ pinned in-repo by
+`.node-version`, which Cloudflare reads as an alternative to the variable
+(`.nvmrc` works too), keeping the requirement visible to anyone reading the repo
+instead of living only in a dashboard.
+
+`PNPM_VERSION` is a reproducibility pin matching `packageManager` in
+`package.json`, and is **not** known to be required: `pnpm-lock.yaml` is
+`lockfileVersion: '9.0'`, which pnpm 10 reads without trouble. The real risk of
+falling back to pnpm 10 is `pnpm-workspace.yaml`, which uses pnpm 11 settings
+(`shellEmulator`, `allowBuilds`); an older pnpm ignoring `allowBuilds` would try
+to compile `better-sqlite3` again. Neither default has been tested on Pages,
+because both variables were set before the first build ever ran. pnpm has no
+equivalent to `.node-version`, so this one has to stay a dashboard variable.
+Cloudflare does **not** read `package.json` `engines`, and does not infer pnpm
+from the lockfile, so neither of those is an option.
+
+DNS lives in the same Cloudflare account: `raz.wtf` and `www.raz.wtf` are CNAMEs
+to `razwtf.pages.dev`, attached to the project as custom domains.
 
 ### No D1, despite what the Content docs say
 
