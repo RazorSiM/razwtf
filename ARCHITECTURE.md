@@ -394,9 +394,13 @@ Four things make the static build work, all of which look removable and are
 not:
 
 1. **`content.experimental.sqliteConnector: 'native'`.** Node's built-in
-   `node:sqlite` replaces the native `better-sqlite3` addon, which renders fine
-   in a Node server build but fails during prerender on NixOS ("Module did not
-   self-register") and turns every content page into a 500.
+   `node:sqlite` replaces the native `better-sqlite3` addon, which rendered fine
+   in a Node server build but failed during prerender on NixOS ("Module did not
+   self-register") and turned every content page into a 500. That failure no
+   longer reproduces: checked on 2026-07-28, better-sqlite3 12.11.1 builds and
+   loads cleanly under Node 26. The setting stays because taking a native addon
+   out of the build entirely is worth more than the flag costs, not because the
+   old crash is still waiting.
 2. **Reka dialogs are wrapped in `<ClientOnly>`.** `DialogRoot` crashes static
    prerender ("Cannot read `ce` of null"). Both the header's mobile menu, which
    also has a static hamburger fallback, and the lightbox in
@@ -423,9 +427,9 @@ failure is total rather than a warning.
 `nuxt generate`, so the build needs a SQLite driver. There are two:
 
 - **`better-sqlite3`**, a native C++ addon that has to be compiled against the
-  exact Node ABI it will run under. The `Module did not self-register` failure
-  above is that ABI going wrong: a mismatch between the Node that compiled the
-  addon and the Node that loaded it.
+  exact Node ABI it will run under. The historical `Module did not self-register`
+  failure above was that ABI going wrong: a mismatch between the Node that
+  compiled the addon and the Node that loaded it.
 - **`node:sqlite`**, built into Node itself, nothing to compile. This is what
   `sqliteConnector: 'native'` selects.
 
@@ -490,10 +494,11 @@ One consequence to know if the handoff does fail. `pnpm-workspace.yaml` declares
 its build allowlist as `allowBuilds`, which is pnpm 11 spelling; the pnpm 10
 equivalent is `onlyBuiltDependencies`, and carrying both invites the two lists to
 drift, so only `allowBuilds` is kept. A pnpm 10 fallback therefore recognises no
-allowlist at all, and since pnpm 10 blocks build scripts by default,
-`better-sqlite3` still stays uncompiled; what `allowBuilds` does permit (`sharp`,
-`esbuild`, `@parcel/watcher`, `vue-demi`) would be skipped too, which breaks the
-build visibly instead of reintroducing the ABI failure.
+allowlist at all, and since pnpm 10 blocks build scripts by default, everything
+`allowBuilds` permits (`sharp`, `esbuild`, `@parcel/watcher`, `vue-demi`) would be
+skipped, which breaks the build visibly rather than subtly. Nothing there is a
+correctness trap; the allowlist exists to keep install scripts, which are
+arbitrary code execution, down to the ones this project actually needs.
 
 DNS lives in the same Cloudflare account: `raz.wtf` and `www.raz.wtf` are CNAMEs
 to `razwtf.pages.dev`, attached to the project as custom domains.

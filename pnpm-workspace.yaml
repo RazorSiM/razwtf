@@ -2,8 +2,14 @@ shellEmulator: true
 allowBuilds:
   '@parcel/watcher': true
   # Transitive dep of @nuxt/content, never used: content.experimental.sqliteConnector
-  # is 'native' (node:sqlite), so the compiled addon is dead weight. Skipping its
-  # build also avoids the node-gyp step and the ABI mismatch it caused on NixOS.
+  # is 'native' (node:sqlite), so building this compiles an addon nothing loads.
+  # Not a workaround for breakage. Checked on 2026-07-28 with better-sqlite3
+  # 12.11.1: allowed to build it produces a binary that loads cleanly under Node
+  # 26, so the "Module did not self-register" ABI failure that first motivated the
+  # native connector no longer reproduces. This stays denied because the output is
+  # dead weight and because install scripts are arbitrary code execution; the
+  # published tarball ships no prebuilt binary, so a cold install really does
+  # fetch or compile one.
   better-sqlite3: false
   esbuild: true
   # lefthook's postinstall only runs `lefthook install -f`, and the binary ships
@@ -12,5 +18,4 @@ allowBuilds:
   # instead, where it is visible in package.json rather than implied by a dep.
   lefthook: false
   sharp: true
-  unrs-resolver: true
   vue-demi: true
