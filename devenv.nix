@@ -1,7 +1,7 @@
 { pkgs, lib, config, inputs, ... }:
 
 {
-  # Node.js toolchain for the raz.wtf Nuxt 3 site.
+  # Node.js toolchain for the raz.wtf Nuxt 4 site.
   # https://devenv.sh/languages/javascript/
   languages.javascript = {
     enable = true;
