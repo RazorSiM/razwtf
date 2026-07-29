@@ -19,3 +19,15 @@ allowBuilds:
   lefthook: false
   sharp: true
   vue-demi: true
+  # Same shape as esbuild's: the postinstall picks the platform binary out of an
+  # optionalDependency (@cloudflare/workerd-linux-64 here) and points bin/workerd at
+  # it. Allowed because wrangler is the deploy tool now, and a wrangler whose local
+  # runtime is half-installed fails in a much more confusing way than it saves.
+  workerd: true
+# pnpm 11 will not install a release younger than its default minimum age. wrangler and
+# its miniflare dep were inside that window when they were added, so pnpm recorded the
+# exemptions here. They pin exact versions, so a wrangler bump adds new lines and leaves
+# these behind as dead weight; deleting stale ones is safe.
+minimumReleaseAgeExclude:
+  - miniflare@4.20260722.1
+  - wrangler@4.115.0

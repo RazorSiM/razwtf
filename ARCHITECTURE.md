@@ -21,9 +21,9 @@ working instructions for coding agents are in [AGENTS.md](./AGENTS.md).
 
 ## Shape of the site
 
-A static site. `nuxt generate` prerenders every route to HTML in
-`.output/public`, ships the content database as WASM SQLite for client-side
-navigation and search, and needs no server at runtime.
+A static site. `nuxt generate` prerenders every route to HTML in `dist`, ships
+the content database as WASM SQLite for client-side navigation and search, and
+needs no server at runtime.
 
 Three ideas carry most of the design:
 
@@ -381,14 +381,27 @@ accordingly.
 ## Build and deploy
 
 ```bash
-devenv shell -- pnpm generate    # -> .output/public locally, 165 routes
+devenv shell -- pnpm generate    # -> dist, 154 routes
 ```
 
-The output directory is preset-dependent. Locally nitro uses the static preset
-and writes `.output/public`. On Cloudflare Pages it detects the environment,
-switches to the Pages preset, and writes `dist` plus `_headers` and
-`_redirects`. Same build command either way, so only the platform's configured
-output directory changes.
+The output directory used to be preset-dependent, and that was a trap the
+Workers migration walked into. Nitro picks a preset from the environment when
+none is given: locally it found nothing and used `static`, writing
+`.output/public`, while Cloudflare Pages set `CF_PAGES` in the build environment,
+std-env reported the provider, and nitro switched to `cloudflare_pages_static`
+and wrote `dist` plus `_headers` and `_redirects`. One build command, two
+different outputs, and nobody had to configure the difference.
+
+Workers Builds sets no `CF_PAGES`. Left implicit, the production build would
+quietly have taken the local path: output back to `.output/public` where
+`assets.directory` is not looking, no `_headers` at all (so the feed content
+types and every `immutable` cache rule gone), and the retroguardia 301 degraded
+into a meta-refresh stub. So `nitro.preset` is now pinned in `nuxt.config.ts`,
+and `pnpm build` carries `--preset node-server` to keep the Node-host build it
+advertises. The preset name still says Pages because nitro has no separate
+preset for Workers static assets; the output it produces is exactly what Workers
+wants, which is a directory of plain files plus `_headers` and `_redirects` and
+no `_worker.js`.
 
 Four things make the static build work, all of which look removable and are
 not:
@@ -410,13 +423,16 @@ not:
    and every tag page.
 4. **`nitro.prerender.autoSubfolderIndex: false`**, from Nuxt's Cloudflare
    deployment guide. It emits `about.html` instead of `about/index.html`, which
-   is what Pages' route matching expects. Without it Pages answers every
-   extension-less path with a 308 to its trailing-slash form, which both wastes
-   a hop and desyncs the canonical URL: `app.vue` derives canonical and `og:url`
-   from `route.path` (`/about`) while the served URL would be `/about/`. The
-   tradeoff is that a naive local static server (`python -m http.server`) will
-   404 on `/about`, since it only resolves directories; use a server that tries
-   `.html` when verifying a local build by hand.
+   is what Cloudflare's route matching expects. Without it every extension-less
+   path answers with a 308 to its trailing-slash form, which both wastes a hop
+   and desyncs the canonical URL: `app.vue` derives canonical and `og:url` from
+   `route.path` (`/about`) while the served URL would be `/about/`. On Workers
+   this pairs with `assets.html_handling`, which is why `wrangler.jsonc` sets
+   that to `auto-trailing-slash` explicitly even though it is the default.
+   The tradeoff is that a naive local static server (`python -m http.server`)
+   will 404 on `/about`, since it only resolves directories; use a server that
+   tries `.html` when verifying a local build by hand, or `wrangler dev`, which
+   resolves it the way production does.
 
 ### Why the Node version decides whether the build works
 
@@ -439,42 +455,80 @@ addition, currently "release candidate" in Node's own stability index, and older
 releases either lack it or hide it behind `--experimental-sqlite`. That is why
 the Node version is pinned in three places: `.node-version` in the repo,
 `languages.javascript.package = pkgs.nodejs_26` in `devenv.nix`, and
-`NODE_VERSION` on Cloudflare Pages.
+`NODE_VERSION` in Workers Builds.
 
-### Cloudflare Pages configuration
+### Cloudflare Workers configuration
 
-[raz.wtf](https://raz.wtf) is served by Cloudflare Pages from the git-connected
-project `razwtf`. Pushing to `main` builds and deploys production; any other
-branch gets a preview build and its own URL. Nothing is run by hand.
+[raz.wtf](https://raz.wtf) is served by the Worker `razwtf`, an assets-only
+Worker: `wrangler.jsonc` declares no `main`, so no Worker code runs and
+Cloudflare serves `dist` from its edge cache. Pushing to `main` builds and
+deploys production through GitHub Actions; a pull request gets its own preview
+URL. Nothing is run by hand.
 
-These settings live in the Cloudflare dashboard, not in this repo, under
-**Workers & Pages → razwtf → Settings**:
+Most of it is in `wrangler.jsonc`, where each option is commented with what
+breaks without it. The parts worth knowing away from the file:
 
-| Setting           | Value               | Where                                              |
-| ----------------- | ------------------- | -------------------------------------------------- |
-| Build command     | `pnpm run generate` | Build configuration                                |
-| Output directory  | `dist`              | Build configuration                                |
-| Production branch | `main`              | Build configuration                                |
-| `NODE_VERSION`    | `26`                | Environment variables (production **and** preview) |
+| Option                      | Value                    | Why                                                                                               |
+| --------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------- |
+| `assets.directory`          | `./dist`                 | Where the pinned nitro preset writes. This is the Workers replacement for Pages' output directory |
+| `assets.not_found_handling` | `404-page`               | Pages inferred a custom 404 from the presence of `404.html`; Workers requires saying so           |
+| `assets.html_handling`      | `auto-trailing-slash`    | The default, and the half of the pair that `autoSubfolderIndex: false` depends on                 |
+| `routes`                    | `raz.wtf`, `www.raz.wtf` | Custom Domains, so Cloudflare owns the DNS records and the certificates                           |
+| `workers_dev`               | `false`                  | There is a real domain, so `razwtf.0xraz.workers.dev` has no reason to answer                     |
+| `preview_urls`              | `true`                   | Load-bearing next to `workers_dev: false`; see below                                              |
 
-Set it per environment. A variable added only to production does not apply to
-preview builds, so branch previews would fail on their own.
+`preview_urls` is the one that bites. Since wrangler 4.44 it defaults to
+matching `workers_dev`, so turning the workers.dev route off silently takes every
+branch preview with it. Set explicitly, previews keep their own
+`<version>-razwtf.0xraz.workers.dev` hostnames, which is what replaces the
+preview deployment Pages gave each branch for free.
 
-The v3 build image defaults to **Node 22.16.0 and pnpm 10.11.1**
-([Cloudflare's build image
-reference](https://developers.cloudflare.com/pages/configuration/build-image/#supported-languages-and-tools)),
-neither of which matches what this project is developed against. Only the Node
-half needs a dashboard variable.
+### CI, and why it is a workflow rather than Workers Builds
 
-`NODE_VERSION` is set because Node 22 predates unflagged `node:sqlite`, which the
-content build depends on. It is _also_ pinned in-repo by `.node-version`, which
-Cloudflare reads as an alternative to the variable (`.nvmrc` works too), keeping
-the requirement visible to anyone reading the repo instead of living only in a
-dashboard.
+Cloudflare offers Workers Builds, which is the direct replacement for Pages' own
+git integration and would have kept the build configuration in a dashboard the
+way the Pages settings were. `.github/workflows/ci.yml` was chosen over it for
+two reasons. The configuration is in the repo, reviewable in a diff instead of
+recalled from a settings page, which was the single thing most worth fixing about
+the Pages arrangement. And the checks become real gates: `pnpm typecheck`,
+`pnpm lint:strict` and `pnpm fmt:check` run as a `check` job that both other jobs
+depend on, so a deploy cannot happen past a failing one. Workers Builds runs a
+build command and a deploy command, with no notion of a check that blocks.
 
-**pnpm needs no variable**, because `packageManager` in `package.json` is the pin
-and the build image reads it. Verified on preview deployment `fa62533e`
-(2026-07-28), the first build with no `PNPM_VERSION` set in either environment:
+Three jobs, and one of the last two runs per event:
+
+| Job       | When              | Does                                                                             |
+| --------- | ----------------- | -------------------------------------------------------------------------------- |
+| `check`   | every push and PR | the three pre-push commands, in the same order                                   |
+| `deploy`  | push to `main`    | `pnpm generate`, then `wrangler deploy` to promote and attach the Custom Domains |
+| `preview` | pull request      | `pnpm generate`, then `wrangler versions upload`, and comments the URL on the PR |
+
+`preview` is what replaces the per-branch preview deployment Pages created for
+free, and it works because `preview_urls: true` is set in `wrangler.jsonc`. It is
+skipped for pull requests from forks, since repository secrets are not available
+to those and the job would fail rather than usefully.
+
+Two repository secrets, both under **Settings → Secrets and variables →
+Actions**:
+
+| Secret                  | Why                                                                     |
+| ----------------------- | ----------------------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | an API token with the **Edit Cloudflare Workers** template              |
+| `CLOUDFLARE_ACCOUNT_ID` | not a credential, kept out of the repo anyway since this repo is public |
+
+The deploy runs `pnpm exec wrangler`, not `cloudflare/wrangler-action`, so CI
+uses the exact wrangler in `pnpm-lock.yaml` and no third-party action sits in the
+path of the API token.
+
+Nothing pins Node or pnpm in the workflow itself. `actions/setup-node` reads
+`node-version-file: .node-version`, which is the same `26` devenv pins, and
+`pnpm/action-setup` takes its version from `packageManager` in `package.json`
+with no version input. So the workflow has no version numbers to drift from the
+repo's, which is the whole point; Node 26 is load-bearing rather than a
+preference, for the `node:sqlite` reason above.
+
+`packageManager` being the only pnpm pin was verified on Pages preview deployment
+`fa62533e` (2026-07-28), the last build there with no `PNPM_VERSION` set:
 
 ```
 Detected the following tools from environment: nodejs@26.5.0, pnpm@11.9.0
@@ -482,10 +536,11 @@ Preparing pnpm@11.9.0 for immediate activation...
 Done in 16.9s using pnpm v11.9.0
 ```
 
-So Pages resolves the tools from the repo before pnpm runs at all, taking
-`pnpm@11.9.0` from `packageManager` and Node from the pinned `26` up to 26.5.0.
-It is not pnpm's own `manage-package-manager-versions` handoff doing the work
-here.
+That was Cloudflare's build image resolving tools from the repo, and it no longer
+applies to how this deploys; it is kept because it establishes that
+`packageManager` alone is enough for a CI runner to land on pnpm 11.9.0, which is
+what `pnpm/action-setup` now relies on. It is not pnpm's own
+`manage-package-manager-versions` handoff doing that work.
 
 That handoff is a second and independent net, and it does work: locally a
 `pnpm-10.34.5` binary run in this repo fetched 11.9.0 into
@@ -494,24 +549,54 @@ same binary with `manage-package-manager-versions=false` reported 10.34.5. It
 downloaded rather than reusing the pnpm 11 already on `PATH`.
 
 If either mechanism ever stops applying, the install fails loudly rather than
-silently, and setting `PNPM_VERSION` back to match `packageManager` restores the
-previous arrangement. The lockfile is not a constraint either way:
-`pnpm-lock.yaml` is `lockfileVersion: '9.0'`, which pnpm 10 also reads. Cloudflare
-does **not** read `package.json` `engines` and does not infer pnpm from the
-lockfile, so `packageManager` is the only way to keep this pin in the repo.
+silently. The lockfile is not a constraint either way: `pnpm-lock.yaml` is
+`lockfileVersion: '9.0'`, which pnpm 10 also reads. Neither Cloudflare's build
+image nor `pnpm/action-setup` reads `package.json` `engines`, and neither infers
+pnpm from the lockfile, so `packageManager` is the only way to keep this pin in
+the repo.
 
 One consequence to know if the handoff does fail. `pnpm-workspace.yaml` declares
 its build allowlist as `allowBuilds`, which is pnpm 11 spelling; the pnpm 10
 equivalent is `onlyBuiltDependencies`, and carrying both invites the two lists to
 drift, so only `allowBuilds` is kept. A pnpm 10 fallback therefore recognises no
 allowlist at all, and since pnpm 10 blocks build scripts by default, everything
-`allowBuilds` permits (`sharp`, `esbuild`, `@parcel/watcher`, `vue-demi`) would be
-skipped, which breaks the build visibly rather than subtly. Nothing there is a
-correctness trap; the allowlist exists to keep install scripts, which are
-arbitrary code execution, down to the ones this project actually needs.
+`allowBuilds` permits (`sharp`, `esbuild`, `@parcel/watcher`, `vue-demi`,
+`workerd`) would be skipped, which breaks the build visibly rather than subtly.
+Nothing there is a correctness trap; the allowlist exists to keep install
+scripts, which are arbitrary code execution, down to the ones this project
+actually needs.
 
-DNS lives in the same Cloudflare account: `raz.wtf` and `www.raz.wtf` are CNAMEs
-to `razwtf.pages.dev`, attached to the project as custom domains.
+DNS lives in the same Cloudflare account, and the Worker's Custom Domains own it.
+Both `raz.wtf` and `www.raz.wtf` are now proxied `AAAA 100::` placeholder records
+that Cloudflare manages, the same shape as `vue-starter.raz.wtf`, so there is
+nothing to maintain in the DNS dashboard.
+
+Getting there took three steps per hostname rather than two, and the middle one
+is the one to know about:
+
+1. Remove the custom domain from the Pages project.
+2. **Delete the CNAME to `razwtf.pages.dev` by hand.** Pages leaves it behind.
+3. Attach the hostname to the Worker, which creates the placeholder record.
+
+Skipping step 2 does not produce a warning, it produces a refusal:
+
+```
+100117: Hostname 'raz.wtf' already has externally managed DNS records
+(A, CNAME, etc). Delete them first or try a different hostname.
+```
+
+Worth knowing because the obvious mental model is wrong twice over. A hostname
+cannot belong to a Pages project and a Worker at once, so it reads like a
+handover; in fact Cloudflare refuses on the DNS record rather than on the
+ownership, and detaching from Pages does not clear that record. Verified by doing
+`www.raz.wtf` first as a canary: after a successful detach the CNAME was still
+present and had to be deleted before the attach would go through.
+
+No certificate gap, in the end. Both hostnames answered 200 with a valid chain on
+the first request after attaching, because the zone's Universal SSL already
+covered them. A Custom Domain does provision its own certificate, so that is a
+property of these two names already being in this zone rather than a general
+guarantee.
 
 ### No D1, despite what the Content docs say
 
@@ -526,25 +611,90 @@ copy: `__nuxt_content/<collection>/sql_dump.txt` per collection plus
 `_nuxt/sqlite3.*.wasm`. The static build emits no `_worker.js` and no
 `functions/`, so there is nothing at runtime that could hold a binding, and the
 two server routes are prerendered into plain files rather than staying as
-handlers. Verified on a real Pages deployment: the dumps and the WASM are served
-(the latter as `application/wasm`, which matters for `instantiateStreaming`), and
-client-side navigation instantiates and queries the database with no console
-errors.
+handlers. Verified on a real Pages deployment and again under `wrangler dev`
+after the move: the dumps and the WASM are served (the latter as
+`application/wasm`, which matters for `instantiateStreaming`), and client-side
+navigation instantiates and queries the database with no console errors.
 
 Moving this site to SSR would make D1 mandatory and that guide's quick setup
 would apply verbatim.
 
+Every build and every `pnpm dev` now prints this, and it can be ignored:
+
+```
+[@nuxt/content] WARN Deploying to Cloudflare requires using D1 database,
+switching to D1 database with binding DB.
+```
+
+It appeared the moment `nitro.preset` was pinned, because @nuxt/content chooses
+its own internal preset from `nuxt.options.nitro.preset` and anything matching
+`cloudflare` takes the Cloudflare branch. All that branch does here is rewrite
+`runtimeConfig.content.database` to `{ type: 'd1', bindingName: 'DB' }`, and
+runtime config is read by a running server, of which this deploy has none. The
+build-time queries still go through `node:sqlite` and the browser still gets the
+dumps. Pages builds printed the same line for the same reason; pinning the preset
+only made it visible locally too. Checked against a dev server on the pinned
+preset: content pages render and `/projects` still lists every case study.
+
 `routeRules` declare the feed content types and the
 `gmk-retroguardia → swg-retroguardia` 301, and they need a host-aware preset to
-become anything real. A local static build degrades the redirect to a
+become anything real. Under the plain `static` preset the redirect degrades to a
 meta-refresh stub (`projects/gmk-retroguardia/index.html` with an
-`http-equiv="refresh"`) and emits no `_headers` at all. The Pages build emits
-both files, so the redirect is a genuine 301 and the feed content types are
-served as declared.
+`http-equiv="refresh"`) and no `_headers` is emitted at all. The pinned preset
+emits both files, so the redirect is a genuine 301 and the feed content types are
+served as declared. Both stubs still ship, and the `_redirects` rule wins because
+Cloudflare evaluates redirects before it looks for a matching asset.
 
 Content types are set through `routeRules` rather than `setResponseHeader`
 because `h3` auto-imports a version in this dependency tree that mismatches the
 one nitro uses, and throws at runtime.
+
+#### The `_redirects` line that blocks the deploy
+
+Nitro ends every `_redirects` it writes with a catch-all that only Pages
+understands:
+
+```
+/projects/gmk-retroguardia	/projects/swg-retroguardia	301
+/* /404.html 404
+```
+
+That second line is how Pages was told to serve a custom 404. Workers accepts
+only 200, 301, 302, 303, 307 and 308 in a `_redirects` rule, and it does not
+shrug the line off. The upload is refused:
+
+```
+✘ [ERROR] A request to the Cloudflare API (/accounts/.../workers/scripts/razwtf) failed.
+  Invalid _redirects configuration:
+  Line 2: Valid status codes are 200, 301, 302 (default), 303, 307, or 308.
+  Got 404. [code: 100324]
+```
+
+So the line has to go before the file is uploaded, which is what the
+`nitro:init` hook in `nuxt.config.ts` and `scripts/cf-redirects.ts` do.
+`assets.not_found_handling: "404-page"` serves `404.html` in its place, and the
+resulting `_redirects` carries the retroguardia 301 alone.
+
+**`wrangler dev` will not catch this, and believing it cost a deploy here.** The
+local runtime parses the same file and is more lenient than the API: it logs the
+rule as invalid, skips it, and serves the whole site correctly, 404 page
+included.
+
+```
+[wrangler:warn] Found 1 invalid redirect rule:
+▶︎ Valid status codes are 200, 301, 302 (default), 303, 307, or 308. Got 404.
+    at dist/_redirects:2 | /* /404.html 404
+```
+
+Read as a warning that could be left alone, which is how it reads, that is a
+green local test and a deploy that fails on the real thing. Treat a `_redirects`
+warning from `wrangler dev` as an error.
+
+The reason to strip rather than translate is worth keeping in view, because the
+failure mode this _could_ have had is the worst available. Redirects are followed
+whether or not an asset matches, so a `/*` rule that survived as the default 302
+would send every request on the site to `/404.html`. Rejecting the upload is the
+safe end of that spectrum.
 
 ## Linting and formatting
 
@@ -673,3 +823,16 @@ Failures that already cost a session each.
     it and falls back to the default preset - the same settings yielded 22
     diagnostics via `.ts` and 77 via `.json`. Silently, so the only symptom is
     a suspiciously short report.
+12. **Do not unpin `nitro.preset`.** It reads like a redundant line that nitro
+    would work out on its own, and on Pages it genuinely did. Nothing in the
+    Workers build environment tells nitro which preset to use, so removing it
+    downgrades the build to plain `static`: the output moves to `.output/public`
+    where `assets.directory` is not looking, `_headers` stops being written, and
+    the retroguardia 301 becomes a meta-refresh stub. The build stays green
+    throughout. See [Build and deploy](#build-and-deploy).
+13. **A `_redirects` warning from `wrangler dev` is an error.** The local runtime
+    skips rules it cannot parse and serves the site correctly anyway. The deploy
+    API refuses the upload for the same file. A green `wrangler dev` therefore
+    says nothing about whether `_redirects` will deploy, which is what
+    `scripts/cf-redirects.ts` exists to handle. See
+    [the `_redirects` line that blocks the deploy](#the-_redirects-line-that-blocks-the-deploy).

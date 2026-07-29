@@ -25,7 +25,7 @@ works at all. Never use corepack; devenv provides pnpm directly.
 | Command            | Does                                                      |
 | ------------------ | --------------------------------------------------------- |
 | `pnpm dev`         | dev server on http://localhost:3000                       |
-| `pnpm generate`    | static build to `.output/public`, 165 routes              |
+| `pnpm generate`    | static build to `dist`, 154 routes                        |
 | `pnpm typecheck`   | `vue-tsc`; the only thing here that checks types          |
 | `pnpm lint`        | `oxlint`, then `vize lint app`                            |
 | `pnpm lint:fix`    | same with `--fix`; do not trust it, most vize rules no-op |
@@ -37,8 +37,9 @@ The full table, including the build variants, is in
 
 ## Before you finish
 
-Run these three and get them green. `pre-push` runs exactly this set, so a
-failure here is a push that cannot happen:
+Run these three and get them green. `pre-push` runs exactly this set, and so does
+the `check` job in `.github/workflows/ci.yml`, which both other jobs depend on. A
+failure here is a push that cannot happen and a deploy that cannot happen:
 
 ```bash
 devenv shell -- pnpm typecheck
@@ -91,7 +92,7 @@ to stay hidden until a real post exists.
 
 ## Gotchas
 
-The ones that have already cost a session each. All eleven are in
+The ones that have already cost a session each. All thirteen are in
 [ARCHITECTURE.md#gotchas](./ARCHITECTURE.md#gotchas).
 
 1. **Restart the dev server** after adding a component under
@@ -111,6 +112,16 @@ The ones that have already cost a session each. All eleven are in
 6. **In `server/routes/`, import `queryCollection` from `@nuxt/content/server`**
    rather than relying on the auto-import, which resolves to the client's
    one-argument form and produces twenty phantom type errors.
+7. **`nitro.preset` is pinned and must stay pinned.** Nothing in the Workers
+   build environment tells nitro which preset to use, so dropping the line
+   downgrades the build to plain `static`, moves the output away from where
+   `assets.directory` looks, and stops `_headers` being written. The build stays
+   green while the deploy silently loses the feed content types, every immutable
+   cache rule and the retroguardia 301.
+8. **A `_redirects` warning from `wrangler dev` is an error.** The local runtime
+   skips rules it cannot parse and serves the site anyway; the deploy API refuses
+   the upload instead. That gap is why `scripts/cf-redirects.ts` exists, and it
+   means a green `wrangler dev` says nothing about whether the file will deploy.
 
 ## Git hooks
 

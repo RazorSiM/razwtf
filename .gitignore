@@ -6,6 +6,9 @@
 .cache
 dist
 
+# wrangler's local state (miniflare caches, deploy metadata)
+.wrangler
+
 # Node dependencies
 node_modules
 
