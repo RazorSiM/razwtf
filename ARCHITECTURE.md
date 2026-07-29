@@ -462,8 +462,8 @@ the Node version is pinned in three places: `.node-version` in the repo,
 [raz.wtf](https://raz.wtf) is served by the Worker `razwtf`, an assets-only
 Worker: `wrangler.jsonc` declares no `main`, so no Worker code runs and
 Cloudflare serves `dist` from its edge cache. Pushing to `main` builds and
-deploys production through Workers Builds; any other branch gets a build and its
-own preview URL. Nothing is run by hand.
+deploys production through GitHub Actions; a pull request gets its own preview
+URL. Nothing is run by hand.
 
 Most of it is in `wrangler.jsonc`, where each option is commented with what
 breaks without it. The parts worth knowing away from the file:
@@ -483,42 +483,52 @@ branch preview with it. Set explicitly, previews keep their own
 `<version>-razwtf.0xraz.workers.dev` hostnames, which is what replaces the
 preview deployment Pages gave each branch for free.
 
-What is still in the dashboard, under **Workers → razwtf → Settings**:
+### CI, and why it is a workflow rather than Workers Builds
 
-| Setting        | Value                                   | Where                   |
-| -------------- | --------------------------------------- | ----------------------- |
-| Build command  | `pnpm run generate`                     | Builds                  |
-| Deploy command | `npx wrangler deploy`                   | Builds                  |
-| Build branch   | `main`, non-production branches enabled | Builds                  |
-| `NODE_VERSION` | `26`                                    | Builds, build variables |
+Cloudflare offers Workers Builds, which is the direct replacement for Pages' own
+git integration and would have kept the build configuration in a dashboard the
+way the Pages settings were. `.github/workflows/ci.yml` was chosen over it for
+two reasons. The configuration is in the repo, reviewable in a diff instead of
+recalled from a settings page, which was the single thing most worth fixing about
+the Pages arrangement. And the checks become real gates: `pnpm typecheck`,
+`pnpm lint:strict` and `pnpm fmt:check` run as a `check` job that both other jobs
+depend on, so a deploy cannot happen past a failing one. Workers Builds runs a
+build command and a deploy command, with no notion of a check that blocks.
 
-`NODE_VERSION` had to be set again from scratch. Workers does not inherit the
-Pages project's environment variables, and it keeps build-time and runtime
-variables in separate places, so a value that only exists as a runtime variable
-never reaches the build.
+Three jobs, and one of the last two runs per event:
 
-The v3 build image defaults to **Node 22.16.0 and pnpm 10.11.1**
-([Cloudflare's build image
-reference](https://developers.cloudflare.com/pages/configuration/build-image/#supported-languages-and-tools)),
-neither of which matches what this project is developed against. Only the Node
-half needs a dashboard variable.
+| Job       | When              | Does                                                                             |
+| --------- | ----------------- | -------------------------------------------------------------------------------- |
+| `check`   | every push and PR | the three pre-push commands, in the same order                                   |
+| `deploy`  | push to `main`    | `pnpm generate`, then `wrangler deploy` to promote and attach the Custom Domains |
+| `preview` | pull request      | `pnpm generate`, then `wrangler versions upload`, and comments the URL on the PR |
 
-The Workers Builds image defaults to **Node 22.16.0 and pnpm 10.11.1**
-([build image
-reference](https://developers.cloudflare.com/workers/ci-cd/builds/build-image/#supported-tooling)),
-which is the same pair Pages' v3 image defaulted to and matches neither of the
-versions this project is developed against. Only the Node half gets a dashboard
-variable.
+`preview` is what replaces the per-branch preview deployment Pages created for
+free, and it works because `preview_urls: true` is set in `wrangler.jsonc`. It is
+skipped for pull requests from forks, since repository secrets are not available
+to those and the job would fail rather than usefully.
 
-`NODE_VERSION` is set because Node 22 predates unflagged `node:sqlite`, which the
-content build depends on. It is _also_ pinned in-repo by `.node-version`, which
-Workers Builds reads as an alternative to the variable (`.nvmrc` works too),
-keeping the requirement visible to anyone reading the repo instead of living only
-in a dashboard.
+Two repository secrets, both under **Settings → Secrets and variables →
+Actions**:
 
-**pnpm needs no variable**, because `packageManager` in `package.json` is the pin
-and the build image reads it. Verified on Pages preview deployment `fa62533e`
-(2026-07-28), the last build with no `PNPM_VERSION` set in either environment:
+| Secret                  | Why                                                                     |
+| ----------------------- | ----------------------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | an API token with the **Edit Cloudflare Workers** template              |
+| `CLOUDFLARE_ACCOUNT_ID` | not a credential, kept out of the repo anyway since this repo is public |
+
+The deploy runs `pnpm exec wrangler`, not `cloudflare/wrangler-action`, so CI
+uses the exact wrangler in `pnpm-lock.yaml` and no third-party action sits in the
+path of the API token.
+
+Nothing pins Node or pnpm in the workflow itself. `actions/setup-node` reads
+`node-version-file: .node-version`, which is the same `26` devenv pins, and
+`pnpm/action-setup` takes its version from `packageManager` in `package.json`
+with no version input. So the workflow has no version numbers to drift from the
+repo's, which is the whole point; Node 26 is load-bearing rather than a
+preference, for the `node:sqlite` reason above.
+
+`packageManager` being the only pnpm pin was verified on Pages preview deployment
+`fa62533e` (2026-07-28), the last build there with no `PNPM_VERSION` set:
 
 ```
 Detected the following tools from environment: nodejs@26.5.0, pnpm@11.9.0
@@ -526,13 +536,11 @@ Preparing pnpm@11.9.0 for immediate activation...
 Done in 16.9s using pnpm v11.9.0
 ```
 
-So the build image resolves the tools from the repo before pnpm runs at all,
-taking `pnpm@11.9.0` from `packageManager` and Node from the pinned `26` up to
-26.5.0. It is not pnpm's own `manage-package-manager-versions` handoff doing the
-work here. That log line is from Pages rather than Workers Builds, and the two
-document the same defaults and the same override mechanisms, so the expectation
-is that it carries over unchanged; confirm it against the first Workers Builds
-log rather than trusting the symmetry.
+That was Cloudflare's build image resolving tools from the repo, and it no longer
+applies to how this deploys; it is kept because it establishes that
+`packageManager` alone is enough for a CI runner to land on pnpm 11.9.0, which is
+what `pnpm/action-setup` now relies on. It is not pnpm's own
+`manage-package-manager-versions` handoff doing that work.
 
 That handoff is a second and independent net, and it does work: locally a
 `pnpm-10.34.5` binary run in this repo fetched 11.9.0 into
@@ -541,11 +549,11 @@ same binary with `manage-package-manager-versions=false` reported 10.34.5. It
 downloaded rather than reusing the pnpm 11 already on `PATH`.
 
 If either mechanism ever stops applying, the install fails loudly rather than
-silently, and setting `PNPM_VERSION` back to match `packageManager` restores the
-previous arrangement. The lockfile is not a constraint either way:
-`pnpm-lock.yaml` is `lockfileVersion: '9.0'`, which pnpm 10 also reads. Cloudflare
-does **not** read `package.json` `engines` and does not infer pnpm from the
-lockfile, so `packageManager` is the only way to keep this pin in the repo.
+silently. The lockfile is not a constraint either way: `pnpm-lock.yaml` is
+`lockfileVersion: '9.0'`, which pnpm 10 also reads. Neither Cloudflare's build
+image nor `pnpm/action-setup` reads `package.json` `engines`, and neither infers
+pnpm from the lockfile, so `packageManager` is the only way to keep this pin in
+the repo.
 
 One consequence to know if the handoff does fail. `pnpm-workspace.yaml` declares
 its build allowlist as `allowBuilds`, which is pnpm 11 spelling; the pnpm 10

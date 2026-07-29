@@ -37,8 +37,9 @@ The full table, including the build variants, is in
 
 ## Before you finish
 
-Run these three and get them green. `pre-push` runs exactly this set, so a
-failure here is a push that cannot happen:
+Run these three and get them green. `pre-push` runs exactly this set, and so does
+the `check` job in `.github/workflows/ci.yml`, which both other jobs depend on. A
+failure here is a push that cannot happen and a deploy that cannot happen:
 
 ```bash
 devenv shell -- pnpm typecheck

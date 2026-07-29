@@ -1,0 +1,140 @@
+# Checks every push and pull request, then deploys main to Cloudflare Workers.
+#
+# The deploy step runs the repo's own pinned wrangler through `pnpm exec` rather
+# than cloudflare/wrangler-action, so CI deploys with exactly the version in
+# pnpm-lock.yaml and there is no third-party action in the credential path.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A second push to the same branch makes the first one's result irrelevant, so
+# cancel it. Deploys to main are the exception: cancelling one halfway through
+# would leave the Worker on an unknown version.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+        # No version input: pnpm reads `packageManager` from package.json, which
+        # is the single pin (see ARCHITECTURE.md).
+
+      - uses: actions/setup-node@v7
+        with:
+          # Node 26 is not a preference. @nuxt/content builds its SQLite
+          # database through node:sqlite, which older releases lack or hide
+          # behind a flag, so the version decides whether the build works.
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # The same three commands pre-push runs, in the same order.
+      - run: pnpm typecheck
+      - run: pnpm lint:strict
+      - run: pnpm fmt:check
+
+  deploy:
+    name: Deploy
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://raz.wtf
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # Writes dist plus _headers and _redirects. The preset is pinned in
+      # nuxt.config.ts; nothing here selects it, and nothing here should.
+      - run: pnpm generate
+
+      # Uploads the assets, promotes the version and applies the Custom Domains
+      # in one step.
+      - run: pnpm exec wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  preview:
+    name: Preview
+    needs: check
+    # Secrets are not available to pull requests from forks, so a fork PR would
+    # fail here rather than usefully. Skip instead.
+    if: >-
+      github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm generate
+
+      # `versions upload` publishes a version without giving it any production
+      # traffic, and each one gets its own <version-id>-razwtf.0xraz.workers.dev
+      # hostname. This is what replaces the per-branch preview deployment that
+      # Cloudflare Pages created for free. It depends on `preview_urls: true` in
+      # wrangler.jsonc, which is load-bearing next to `workers_dev: false`.
+      - id: upload
+        shell: bash
+        run: |
+          # pipefail matters: the default shell is `bash -e`, so without it the
+          # pipeline reports tee's status and a failed upload passes as green.
+          set -euo pipefail
+          pnpm exec wrangler versions upload 2>&1 | tee upload.log
+          # `|| true` because a missing URL is a cosmetic problem, not a reason
+          # to fail a job whose upload already succeeded.
+          url=$(grep -oE 'https://[a-z0-9-]+\.workers\.dev' upload.log | head -1 || true)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Report the preview URL
+        if: steps.upload.outputs.url != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          URL: ${{ steps.upload.outputs.url }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          echo "Preview: $URL" >> "$GITHUB_STEP_SUMMARY"
+          body="Preview build for \`${SHA:0:7}\`: $URL"
+          # One comment per PR, edited in place, so a busy branch does not bury
+          # the discussion under a wall of bot comments.
+          id=$(gh api "repos/$REPO/issues/$PR/comments" \
+                 --jq 'map(select(.user.login == "github-actions[bot]" and (.body | startswith("Preview build")))) | .[0].id // empty')
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$REPO/issues/comments/$id" -f body="$body"
+          else
+            gh api -X POST "repos/$REPO/issues/$PR/comments" -f body="$body"
+          fi

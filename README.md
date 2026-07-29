@@ -1,7 +1,7 @@
 # raz.wtf
 
 [![raz.wtf](https://img.shields.io/website?url=https%3A%2F%2Fraz.wtf&up_message=live&down_message=down&label=raz.wtf&labelColor=1e1e2e&color=a6e3a1)](https://raz.wtf)
-[![build](https://img.shields.io/github/checks-status/RazorSiM/razwtf/main?label=build&labelColor=1e1e2e&color=a6e3a1)](https://github.com/RazorSiM/razwtf/commits/main)
+[![build](https://img.shields.io/github/actions/workflow/status/RazorSiM/razwtf/ci.yml?branch=main&label=build&labelColor=1e1e2e&color=a6e3a1)](https://github.com/RazorSiM/razwtf/actions/workflows/ci.yml)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare_Workers-assets--only-F38020?logo=cloudflare&logoColor=white&labelColor=1e1e2e)](https://developers.cloudflare.com/workers/static-assets/)
 [![last commit](https://img.shields.io/github/last-commit/RazorSiM/razwtf?labelColor=1e1e2e&color=89b4fa)](https://github.com/RazorSiM/razwtf/commits/main)
 [![commit activity](https://img.shields.io/github/commit-activity/m/RazorSiM/razwtf?labelColor=1e1e2e&color=f9e2af)](https://github.com/RazorSiM/razwtf/graphs/commit-activity)
@@ -82,16 +82,18 @@ Served by **Cloudflare Workers** as the Worker `razwtf`, which carries the built
 site as
 [static assets](https://developers.cloudflare.com/workers/static-assets/) and no
 Worker code of its own. Pushing to `main` builds and deploys production through
-[Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/); any
-other branch gets a build and its own preview URL. There is nothing to run by
-hand.
+[`.github/workflows/ci.yml`](./.github/workflows/ci.yml); a pull request gets its
+own preview URL, commented on the PR. There is nothing to run by hand.
 
-Unlike the Pages project this replaced, most of the configuration is in the repo
-and reviewable, in [`wrangler.jsonc`](./wrangler.jsonc). Every option there is
-commented with what breaks without it. `pnpm cf:deploy` and `pnpm cf:preview`
-reach Cloudflare from a laptop when CI is not an option, and both need a
-`wrangler login` first. What is left in the dashboard, and why the migration off
-Pages needed a change to `nuxt.config.ts` at all, is in
+Unlike the Pages project this replaced, the configuration is all in the repo and
+reviewable: [`wrangler.jsonc`](./wrangler.jsonc) for what Cloudflare serves and
+the workflow for when. Every option in both is commented with what breaks without
+it. The only things outside are two repository secrets,
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+
+`pnpm cf:deploy` and `pnpm cf:preview` reach Cloudflare from a laptop when CI is
+not an option, and both need a `wrangler login` first. Why the migration off Pages
+needed a change to `nuxt.config.ts` at all is in
 [ARCHITECTURE.md#build-and-deploy](./ARCHITECTURE.md#build-and-deploy).
 
 ## Docs
