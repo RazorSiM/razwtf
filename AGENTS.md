@@ -25,7 +25,7 @@ works at all. Never use corepack; devenv provides pnpm directly.
 | Command            | Does                                                      |
 | ------------------ | --------------------------------------------------------- |
 | `pnpm dev`         | dev server on http://localhost:3000                       |
-| `pnpm generate`    | static build to `.output/public`, 165 routes              |
+| `pnpm generate`    | static build to `dist`, 154 routes                        |
 | `pnpm typecheck`   | `vue-tsc`; the only thing here that checks types          |
 | `pnpm lint`        | `oxlint`, then `vize lint app`                            |
 | `pnpm lint:fix`    | same with `--fix`; do not trust it, most vize rules no-op |
@@ -91,7 +91,7 @@ to stay hidden until a real post exists.
 
 ## Gotchas
 
-The ones that have already cost a session each. All eleven are in
+The ones that have already cost a session each. All twelve are in
 [ARCHITECTURE.md#gotchas](./ARCHITECTURE.md#gotchas).
 
 1. **Restart the dev server** after adding a component under
@@ -111,6 +111,12 @@ The ones that have already cost a session each. All eleven are in
 6. **In `server/routes/`, import `queryCollection` from `@nuxt/content/server`**
    rather than relying on the auto-import, which resolves to the client's
    one-argument form and produces twenty phantom type errors.
+7. **`nitro.preset` is pinned and must stay pinned.** Nothing in the Workers
+   build environment tells nitro which preset to use, so dropping the line
+   downgrades the build to plain `static`, moves the output away from where
+   `assets.directory` looks, and stops `_headers` being written. The build stays
+   green while the deploy silently loses the feed content types, every immutable
+   cache rule and the retroguardia 301.
 
 ## Git hooks
 

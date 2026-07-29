@@ -58,6 +58,20 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
+    // Pinned rather than detected. On Cloudflare Pages this preset was chosen for
+    // us: Pages set CF_PAGES in the build environment, std-env reported the
+    // provider, and nitro switched from `static` to this by itself. Workers Builds
+    // sets no CF_PAGES, so leaving it implicit means a silent downgrade to plain
+    // `static`: output moves to .output/public, `_headers` is never written at all
+    // (so the feed content types and every immutable cache-control rule vanish),
+    // and the retroguardia 301 degrades into a meta-refresh stub.
+    //
+    // The name is a leftover, not a mistake. nitro has no separate preset for
+    // Workers static assets, and this one emits exactly what Workers wants: a
+    // directory of plain files plus `_headers` and `_redirects`, and no
+    // `_worker.js`. wrangler.jsonc points `assets.directory` at its output.
+    preset: 'cloudflare_pages_static',
+
     // Content-type for the feed set declaratively (works in dev, node-server
     // and the static _headers output) - avoids h3's setResponseHeader, which
     // resolves to a mismatched h3 version in this dep tree and throws.

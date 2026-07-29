@@ -3,10 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
+    "build": "nuxt build --preset node-server",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "cf:deploy": "nuxt generate && wrangler deploy",
+    "cf:preview": "nuxt generate && wrangler versions upload",
     "postinstall": "nuxt prepare",
     "prepare": "lefthook install || true",
     "typecheck": "nuxt typecheck",
@@ -41,7 +43,8 @@
     "typescript": "^5.9.3",
     "unocss-preset-scrollbar": "^4.0.0",
     "vize": "0.291.0",
-    "vue-tsc": "^3.3.8"
+    "vue-tsc": "^3.3.8",
+    "wrangler": "^4.115.0"
   },
   "packageManager": "pnpm@11.9.0"
 }

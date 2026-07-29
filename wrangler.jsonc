@@ -1,0 +1,49 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "razwtf",
+  "compatibility_date": "2026-07-29",
+
+  // An assets-only Worker: there is no "main", so no Worker code runs and Cloudflare
+  // serves ./dist straight from its edge cache. This is the whole reason the site is a
+  // Worker rather than a Pages project now: a Pages project cannot grow a server-side
+  // route later, and an assets-only Worker can, by adding "main" here.
+  "assets": {
+    // Written by nitro's cloudflare_pages_static preset, which nuxt.config.ts pins
+    // explicitly. `pnpm generate` also drops _headers and _redirects in here; both are
+    // parsed by Workers and neither is served as an asset.
+    "directory": "./dist",
+
+    // Pages inferred this from the presence of 404.html. Workers makes it explicit, and
+    // without it an unmatched path gets Cloudflare's own 404 instead of the site's
+    // error page. nitro's `/* /404.html 404` line in _redirects does NOT cover this:
+    // Workers rejects _redirects rules with a non-redirect status code.
+    "not_found_handling": "404-page",
+
+    // The default, set explicitly because it is half of a pair. nuxt.config.ts sets
+    // `prerender.autoSubfolderIndex: false` so the build emits about.html rather than
+    // about/index.html, and auto-trailing-slash is what serves that file at /about with
+    // no redirect hop. Forcing or dropping trailing slashes here would desync the
+    // canonical URL, which app.vue derives from route.path.
+    "html_handling": "auto-trailing-slash",
+  },
+
+  // Custom Domains, not routes: Cloudflare creates the DNS records and manages the
+  // certificates itself, so there is nothing to add in the DNS dashboard. Both
+  // hostnames were on the Pages project before, and a hostname can only belong to one
+  // of the two, so these only apply once Pages has let go of them.
+  "routes": [
+    { "pattern": "raz.wtf", "custom_domain": true },
+    { "pattern": "www.raz.wtf", "custom_domain": true },
+  ],
+
+  // Explicit, though `routes` alone would infer it: with a real domain there is no
+  // reason to also answer on razwtf.0xraz.workers.dev.
+  "workers_dev": false,
+
+  // Load-bearing, and easy to lose. Since wrangler 4.44 preview URLs default to
+  // matching `workers_dev`, so turning the workers.dev route off would silently take
+  // every branch preview with it. This is the Workers replacement for the preview
+  // deployment Pages gave each branch for free; previews get their own
+  // <version>-razwtf.0xraz.workers.dev hostname.
+  "preview_urls": true,
+}
