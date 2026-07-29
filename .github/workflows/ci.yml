@@ -101,7 +101,10 @@ jobs:
       # hostname. This is what replaces the per-branch preview deployment that
       # Cloudflare Pages created for free. It depends on `preview_urls: true` in
       # wrangler.jsonc, which is load-bearing next to `workers_dev: false`.
-      - id: upload
+      # Named explicitly: an unnamed multi-line step takes its label in the UI
+      # from the first line of the script, comment and all.
+      - name: Upload a preview version
+        id: upload
         shell: bash
         run: |
           # pipefail matters: the default shell is `bash -e`, so without it the
