@@ -566,12 +566,37 @@ Nothing there is a correctness trap; the allowlist exists to keep install
 scripts, which are arbitrary code execution, down to the ones this project
 actually needs.
 
-DNS lives in the same Cloudflare account, and the Worker's Custom Domains own it:
-attaching `raz.wtf` and `www.raz.wtf` to the Worker replaced the CNAMEs to
-`razwtf.pages.dev` with the proxied placeholder records Cloudflare manages for
-Custom Domains, so there is nothing to maintain in the DNS dashboard. A hostname
-can only belong to one Pages project or Worker at a time, which is what made the
-cutover an ordered operation rather than a flag flip.
+DNS lives in the same Cloudflare account, and the Worker's Custom Domains own it.
+Both `raz.wtf` and `www.raz.wtf` are now proxied `AAAA 100::` placeholder records
+that Cloudflare manages, the same shape as `vue-starter.raz.wtf`, so there is
+nothing to maintain in the DNS dashboard.
+
+Getting there took three steps per hostname rather than two, and the middle one
+is the one to know about:
+
+1. Remove the custom domain from the Pages project.
+2. **Delete the CNAME to `razwtf.pages.dev` by hand.** Pages leaves it behind.
+3. Attach the hostname to the Worker, which creates the placeholder record.
+
+Skipping step 2 does not produce a warning, it produces a refusal:
+
+```
+100117: Hostname 'raz.wtf' already has externally managed DNS records
+(A, CNAME, etc). Delete them first or try a different hostname.
+```
+
+Worth knowing because the obvious mental model is wrong twice over. A hostname
+cannot belong to a Pages project and a Worker at once, so it reads like a
+handover; in fact Cloudflare refuses on the DNS record rather than on the
+ownership, and detaching from Pages does not clear that record. Verified by doing
+`www.raz.wtf` first as a canary: after a successful detach the CNAME was still
+present and had to be deleted before the attach would go through.
+
+No certificate gap, in the end. Both hostnames answered 200 with a valid chain on
+the first request after attaching, because the zone's Universal SSL already
+covered them. A Custom Domain does provision its own certificate, so that is a
+property of these two names already being in this zone rather than a general
+guarantee.
 
 ### No D1, despite what the Content docs say
 
