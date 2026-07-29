@@ -616,7 +616,7 @@ Content types are set through `routeRules` rather than `setResponseHeader`
 because `h3` auto-imports a version in this dependency tree that mismatches the
 one nitro uses, and throws at runtime.
 
-#### The `_redirects` line Workers throws away
+#### The `_redirects` line that blocks the deploy
 
 Nitro ends every `_redirects` it writes with a catch-all that only Pages
 understands:
@@ -626,24 +626,42 @@ understands:
 /* /404.html 404
 ```
 
-That second line is how Pages was told to serve a custom 404. Workers only
-accepts 200, 301, 302, 303, 307 and 308 in a `_redirects` rule, so it rejects the
-line and logs it:
+That second line is how Pages was told to serve a custom 404. Workers accepts
+only 200, 301, 302, 303, 307 and 308 in a `_redirects` rule, and it does not
+shrug the line off. The upload is refused:
 
 ```
-Found 1 invalid redirect rule:
+✘ [ERROR] A request to the Cloudflare API (/accounts/.../workers/scripts/razwtf) failed.
+  Invalid _redirects configuration:
+  Line 2: Valid status codes are 200, 301, 302 (default), 303, 307, or 308.
+  Got 404. [code: 100324]
+```
+
+So the line has to go before the file is uploaded, which is what the
+`nitro:init` hook in `nuxt.config.ts` and `scripts/cf-redirects.ts` do.
+`assets.not_found_handling: "404-page"` serves `404.html` in its place, and the
+resulting `_redirects` carries the retroguardia 301 alone.
+
+**`wrangler dev` will not catch this, and believing it cost a deploy here.** The
+local runtime parses the same file and is more lenient than the API: it logs the
+rule as invalid, skips it, and serves the whole site correctly, 404 page
+included.
+
+```
+[wrangler:warn] Found 1 invalid redirect rule:
 ▶︎ Valid status codes are 200, 301, 302 (default), 303, 307, or 308. Got 404.
     at dist/_redirects:2 | /* /404.html 404
 ```
 
-Worth being precise about, because the failure mode this _could_ have had is the
-worst available. Redirects are followed whether or not an asset matches, so a
-`/*` rule that fell back to the default 302 instead of being rejected would send
-every request on the site to `/404.html`. It does not: the rule is dropped whole,
-and `assets.not_found_handling: "404-page"` in `wrangler.jsonc` is what actually
-serves `404.html`. Checked under `wrangler dev`, which parses the file exactly as
-production does, so the warning is noise in the build log and nothing needs
-stripping from the output.
+Read as a warning that could be left alone, which is how it reads, that is a
+green local test and a deploy that fails on the real thing. Treat a `_redirects`
+warning from `wrangler dev` as an error.
+
+The reason to strip rather than translate is worth keeping in view, because the
+failure mode this _could_ have had is the worst available. Redirects are followed
+whether or not an asset matches, so a `/*` rule that survived as the default 302
+would send every request on the site to `/404.html`. Rejecting the upload is the
+safe end of that spectrum.
 
 ## Linting and formatting
 
@@ -779,3 +797,9 @@ Failures that already cost a session each.
     where `assets.directory` is not looking, `_headers` stops being written, and
     the retroguardia 301 becomes a meta-refresh stub. The build stays green
     throughout. See [Build and deploy](#build-and-deploy).
+13. **A `_redirects` warning from `wrangler dev` is an error.** The local runtime
+    skips rules it cannot parse and serves the site correctly anyway. The deploy
+    API refuses the upload for the same file. A green `wrangler dev` therefore
+    says nothing about whether `_redirects` will deploy, which is what
+    `scripts/cf-redirects.ts` exists to handle. See
+    [the `_redirects` line that blocks the deploy](#the-_redirects-line-that-blocks-the-deploy).

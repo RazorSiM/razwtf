@@ -91,7 +91,7 @@ to stay hidden until a real post exists.
 
 ## Gotchas
 
-The ones that have already cost a session each. All twelve are in
+The ones that have already cost a session each. All thirteen are in
 [ARCHITECTURE.md#gotchas](./ARCHITECTURE.md#gotchas).
 
 1. **Restart the dev server** after adding a component under
@@ -117,6 +117,10 @@ The ones that have already cost a session each. All twelve are in
    `assets.directory` looks, and stops `_headers` being written. The build stays
    green while the deploy silently loses the feed content types, every immutable
    cache rule and the retroguardia 301.
+8. **A `_redirects` warning from `wrangler dev` is an error.** The local runtime
+   skips rules it cannot parse and serves the site anyway; the deploy API refuses
+   the upload instead. That gap is why `scripts/cf-redirects.ts` exists, and it
+   means a green `wrangler dev` says nothing about whether the file will deploy.
 
 ## Git hooks
 

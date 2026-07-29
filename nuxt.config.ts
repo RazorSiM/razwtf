@@ -1,8 +1,23 @@
+import { stripUnsupportedRedirects } from './scripts/cf-redirects'
 import { getBlogTagRoutes } from './scripts/content-tags'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
+
+  hooks: {
+    // The preset writes `_redirects` from its own nitro `compiled` hook, and one
+    // of the rules it writes is Pages-only syntax that makes a Workers deploy
+    // fail outright (see scripts/cf-redirects.ts). Registering here rather than
+    // in `nitro.hooks` is deliberate: `nitro:init` fires after the preset's
+    // hooks are already registered, so appending to `compiled` now is guaranteed
+    // to run last and see the finished file. Declaring `compiled` in
+    // `nitro.hooks` instead would leave the order down to how the two configs
+    // merge.
+    'nitro:init': (nitro) => {
+      nitro.hooks.hook('compiled', () => stripUnsupportedRedirects(nitro.options.output.dir))
+    },
+  },
 
   modules: ['@unocss/nuxt', '@nuxt/content', '@nuxt/image', '@nuxt/fonts', '@vueuse/nuxt'],
 
