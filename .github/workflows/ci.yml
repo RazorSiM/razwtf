@@ -111,9 +111,16 @@ jobs:
           # pipeline reports tee's status and a failed upload passes as green.
           set -euo pipefail
           pnpm exec wrangler versions upload 2>&1 | tee upload.log
-          # `|| true` because a missing URL is a cosmetic problem, not a reason
-          # to fail a job whose upload already succeeded.
-          url=$(grep -oE 'https://[a-z0-9-]+\.workers\.dev' upload.log | head -1 || true)
+          # Anchored on wrangler's own label rather than on a bare hostname
+          # pattern. A preview host is <version>-<worker>.<subdomain>.workers.dev,
+          # so matching it by shape needs the dots that a first attempt at this
+          # left out, and it went unnoticed because the job still passed.
+          url=$(sed -n 's/^.*Version Preview URL: \(https:\/\/[^[:space:]]*\).*$/\1/p' upload.log | tail -1)
+          if [ -z "$url" ]; then
+            # Not fatal: the upload itself succeeded. Annotated rather than
+            # swallowed, so a parse that stops matching is visible.
+            echo "::warning::Uploaded, but could not parse a preview URL from wrangler's output"
+          fi
           echo "url=$url" >> "$GITHUB_OUTPUT"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
