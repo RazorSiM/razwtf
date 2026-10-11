@@ -17,13 +17,23 @@ const props = withDefaults(
 
 const { openLightbox } = injectLightbox()
 
+// A portrait figure at full column width runs taller than the viewport, so it
+// is capped and centred instead.
+const portrait = computed(() => props.height > props.width)
+
 function open() {
   openLightbox([{ src: props.src, alt: props.alt, caption: props.alt }], 0)
 }
 </script>
 
 <template>
-  <button type="button" class="figbox" :aria-label="`Open ${alt} full size`" @click="open">
+  <button
+    type="button"
+    class="figbox"
+    :class="{ 'figbox--portrait': portrait }"
+    :aria-label="`Open ${alt} full size`"
+    @click="open"
+  >
     <NuxtImg :src :alt :width :height :quality format="webp" />
     <span class="zoom" aria-hidden="true">⤢</span>
   </button>
@@ -48,6 +58,12 @@ function open() {
   overflow: hidden;
   background: rgb(var(--base));
   transition: border-color 0.35s var(--ease);
+}
+/* Scoped rather than utilities: `.figbox` sets margin: 0 above, which beats a
+   bare mx-auto. */
+.figbox--portrait {
+  max-width: 28rem;
+  margin-inline: auto;
 }
 .figbox:hover,
 .figbox:focus-visible {

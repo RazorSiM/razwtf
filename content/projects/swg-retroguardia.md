@@ -114,6 +114,11 @@ gallery:
         src: /retroguardia/lifestyle/patch-bay.webp
         width: 2560
         height: 1440
+      - name: Patch bay corner
+        alt: The Lissajous Esc novelty, close on the corner of a 60%
+        src: /retroguardia/lifestyle/patch-bay-corner.webp
+        width: 2560
+        height: 1440
       - name: Flatlay
         alt: 'A 98% seen from straight above'
         src: /retroguardia/lifestyle/flatlay.webp
@@ -170,3 +175,47 @@ Think early digital aesthetics, print grids, and sharp contrasting geometry, lik
 - **Primary color**: same deep blurpleish grey as GMK Avanguardia
 - **Accent color**: bright green
 - **Extras**: the same indigo GMK Avanguardia highlights just because.
+
+## Novelties
+
+Two novelties this time, both in the base kit and both doubleshot, green on purple.
+
+::img-lightbox
+---
+
+alt: The Lissajous Esc novelty on a 60%
+src: /retroguardia/lifestyle/patch-bay-corner.webp
+width: 1200
+height: 675
+---
+
+::
+
+The Esc gets a Lissajous figure, the shape an oscilloscope draws in X-Y mode.
+
+::img-lightbox
+---
+
+alt: The scope Enter novelty on an Alice
+src: /retroguardia/lifestyle/macro.webp
+width: 1024
+height: 1280
+---
+
+::
+
+The Enter gets the scope screen itself, with a sine and a square wave over the graticule.
+
+## Group buy
+
+::info{title="GB from the 9th to the 25th of November 2026"}
+The kitting is final and the vendors are confirmed. Nothing on mousepads yet, but I already picked an artwork.
+::
+
+| Region | Vendor                                  |
+| ------ | --------------------------------------- |
+| EU     | [Delta Key Co.](https://deltakeyco.com) |
+| US     | [Divinikey](https://divinikey.com)      |
+| SEA    | [Qwertyqop](https://qwertyqop.com)      |
+| UK     | [Prototypist](https://prototypist.net)  |
+| CA     | [KeyBay.tech](https://keybay.tech)      |
