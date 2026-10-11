@@ -1,12 +1,12 @@
 ---
 title: SWG Retroguardia
-tags: [GMK, Keycaps, Keyboards, 3D, Design]
+tags: [SWG, Keycaps, Keyboards, 3D, Design]
 date: 2026-10-01
-hero: /retroguardia/boards/m60.webp
-heroCaption: 'Hero render · SWG Retroguardia on a Rama M60 · Blender'
+hero: /retroguardia/studio/hero.webp
+heroCaption: 'Hero render · SWG Retroguardia on a 60% · Blender'
 type: 'SWG keycap set'
-description: SWG Retroguardia is a keycap set inspired to the minimalistic art of Kandinsky with a futuristic twist.
-excerpt: SWG Retroguardia is a keycap set inspired to the minimalistic art of Kandinsky with a futuristic twist.
+description: SWG Retroguardia is a keycap set inspired to old-school synths and analogue oscilloscopes, with a Lissajous figure on the Esc and a scope screen on the Enter.
+excerpt: SWG Retroguardia is a keycap set inspired to old-school synths and analogue oscilloscopes, with a Lissajous figure on the Esc and a scope screen on the Enter.
 # Drives homepage section 02 while this project carries `spotlight: true`.
 spotlightCopy:
   heading: The rearguard to the avant-garde.
@@ -24,9 +24,9 @@ spotlightCopy:
     - label: Reference
       value: early digital / synth interfaces
     - label: Boards
-      value: Rama U80-A · M60 · Melody65 · Paragon
+      value: 60% · HHKB · Alice · TKL · 98%
     - label: Group buy
-      value: ended
+      value: 9 to 25 November 2026
 head:
   meta:
     - name: 'twitter:title'
@@ -34,7 +34,7 @@ head:
     - name: 'twitter:description'
       content: 'SWG Retroguardia keeps the geometric vibe and minimalist layout spirit of Avanguardia, but swaps the muted palette for something with more bite, a vivid green accent that feels both retro and electric. It’s still clean, but this time it’s louder and a little more fun.'
     - name: 'twitter:image'
-      content: '/retroguardia/boards/m60.webp'
+      content: '/retroguardia/studio/hero.webp'
     - name: 'twitter:image:alt'
       content: 'SWG Retroguardia Hero'
     - property: 'og:title'
@@ -42,7 +42,7 @@ head:
     - property: 'og:description'
       content: 'SWG Retroguardia keeps the geometric vibe and minimalist layout spirit of Avanguardia, but swaps the muted palette for something with more bite, a vivid green accent that feels both retro and electric. It’s still clean, but this time it’s louder and a little more fun.'
     - property: 'og:image'
-      content: '/retroguardia/boards/m60.webp'
+      content: '/retroguardia/studio/hero.webp'
     - property: 'og:image:alt'
       content: 'SWG Retroguardia Hero'
     - property: 'og:url'
@@ -50,32 +50,92 @@ head:
 gallery:
   - description: Kits
     images:
-      - name: Base
-        alt: SWG Retroguardia Base Kit
-        src: /retroguardia/kits/kitting_infographic.webp
-  - description: Rama U80A
+      - name: Base kit
+        alt: SWG Retroguardia base kit, keys labelled by row and size
+        src: /retroguardia/kits/base.webp
+        width: 2560
+        height: 1920
+      - name: Numpad kit
+        alt: SWG Retroguardia numpad kit, keys labelled by row and size
+        src: /retroguardia/kits/numpad.webp
+        width: 2560
+        height: 1920
+      - name: Overview
+        alt: SWG Retroguardia base and numpad kits together
+        src: /retroguardia/kits/overview.webp
+        width: 2560
+        height: 1920
+  - description: Studio
     images:
-      - name: Rama U80A
-        alt: Rama U80A
-        src: /retroguardia/boards/u80A1.webp
-  - description: Rama M60
+      - name: '60%'
+        alt: 'SWG Retroguardia on a 60% in studio light'
+        src: /retroguardia/studio/hero.webp
+        width: 2560
+        height: 1440
+      - name: '98%'
+        alt: 'SWG Retroguardia on a 98% in studio light'
+        src: /retroguardia/studio/full.webp
+        width: 2560
+        height: 1440
+      - name: Signature
+        alt: 'A 60% floating over a glowing, out-of-focus pattern'
+        src: /retroguardia/studio/signature.webp
+        width: 2048
+        height: 2560
+      - name: TKL
+        alt: SWG Retroguardia on a TKL seen from above
+        src: /retroguardia/studio/top-down.webp
+        width: 2560
+        height: 1440
+      - name: Alice
+        alt: SWG Retroguardia on an Alice in studio light
+        src: /retroguardia/studio/alice.webp
+        width: 2560
+        height: 1440
+  - description: Lifestyle
     images:
-      - name: Rama M60
-        alt: Rama M60
-        src: /retroguardia/boards/m60.webp
-  - description: Melody65
+      - name: Desk
+        alt: An Alice in a room corner in late sun
+        src: /retroguardia/lifestyle/desk.webp
+        width: 2048
+        height: 2560
+      - name: Macro
+        alt: Close on the novelties
+        src: /retroguardia/lifestyle/macro.webp
+        width: 2048
+        height: 2560
+      - name: Satin
+        alt: A white HHKB on a satin drape
+        src: /retroguardia/lifestyle/satin.webp
+        width: 2048
+        height: 2560
+      - name: Patch bay
+        alt: 'A 60% in front of a rack of synth modules'
+        src: /retroguardia/lifestyle/patch-bay.webp
+        width: 2560
+        height: 1440
+      - name: Flatlay
+        alt: 'A 98% seen from straight above'
+        src: /retroguardia/lifestyle/flatlay.webp
+        width: 2560
+        height: 1440
+      - name: Night
+        alt: 'An Alice and a 60% WKL in coloured light'
+        src: /retroguardia/lifestyle/night.webp
+        width: 2560
+        height: 1440
+  - description: Packaging
     images:
-      - name: Melody65
-        alt: Melody65
-        src: /retroguardia/boards/melody.webp
-      - name: Melody65
-        alt: Melody65
-        src: /retroguardia/boards/melody2.webp
-  - description: Paragon
-    images:
-      - name: Paragon
-        alt: Paragon
-        src: /retroguardia/boards/paragon.webp
+      - name: Packshot
+        alt: Both kit boxes and the designer card on the deskpad
+        src: /retroguardia/packaging/packshot.webp
+        width: 2560
+        height: 1440
+      - name: Designer card
+        alt: The metal designer card, front and back
+        src: /retroguardia/packaging/card.webp
+        width: 2560
+        height: 1440
 featured: true
 spotlight: true
 accent: green
