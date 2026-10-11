@@ -3,6 +3,8 @@ interface GalleryImage {
   src: string
   alt?: string
   name?: string
+  width?: number
+  height?: number
 }
 interface GalleryGroup {
   description?: string
@@ -38,6 +40,23 @@ const groupOffsets = computed(() => {
   }
   return offsets
 })
+
+// A group whose images all carry their pixel size lays out as justified rows
+// (see .gallery--justified); one missing size keeps the whole group on the
+// cropped 4:3 grid, so a half-annotated group can't mix the two.
+const isJustified = (g: GalleryGroup) => g.images.length > 0 && g.images.every((img) => !!img.width && !!img.height)
+
+// Grow and basis both proportional to the aspect ratio keep every tile in a
+// row at the same height whatever the row's mix of landscape and portrait.
+function justifiedStyle(img: GalleryImage) {
+  const r = (img.width ?? 4) / (img.height ?? 3)
+  return { flex: `${r} 1 calc(${r} * var(--row-h))`, aspectRatio: `${img.width} / ${img.height}` }
+}
+
+// Fetched at a fixed height so a row's tiles share one pixel density; 600px
+// covers the tallest row at 2x.
+const TILE_H = 600
+const tileWidth = (img: GalleryImage) => Math.round((TILE_H * (img.width ?? 4)) / (img.height ?? 3))
 </script>
 
 <template>
@@ -57,20 +76,28 @@ const groupOffsets = computed(() => {
         />
       </div>
 
-      <div class="nav:grid-cols-3 grid grid-cols-2 gap-[clamp(.7rem,1.6vw,1.1rem)]">
+      <div
+        :class="
+          isJustified(group)
+            ? 'gallery--justified flex flex-wrap gap-[clamp(.7rem,1.6vw,1.1rem)]'
+            : 'nav:grid-cols-3 grid grid-cols-2 gap-[clamp(.7rem,1.6vw,1.1rem)]'
+        "
+      >
         <button
           v-for="(image, ii) in group.images"
           :key="image.src"
           type="button"
-          class="gallery__item bg-mantle relative m-0 block aspect-[4/3] w-full cursor-zoom-in overflow-hidden rounded-md border border-[color:var(--hair)] p-0 text-left text-inherit"
+          class="gallery__item bg-mantle relative m-0 block cursor-zoom-in overflow-hidden rounded-md border border-[color:var(--hair)] p-0 text-left text-inherit"
+          :class="isJustified(group) ? '' : 'aspect-[4/3] w-full'"
+          :style="isJustified(group) ? justifiedStyle(image) : undefined"
           :aria-label="`Open ${image.name || image.alt || 'image'} full size`"
           @click="openLightbox(flatItems, (groupOffsets[gi] ?? 0) + ii)"
         >
           <NuxtImg
             :src="image.src"
             :alt="image.alt ?? ''"
-            :width="640"
-            :height="480"
+            :width="isJustified(group) ? tileWidth(image) : 640"
+            :height="isJustified(group) ? TILE_H : 480"
             loading="lazy"
             decoding="async"
             format="webp"
@@ -98,6 +125,22 @@ const groupOffsets = computed(() => {
 
 .ggroup + .ggroup {
   margin-top: clamp(1.6rem, 4vw, 2.6rem);
+}
+
+/* Justified rows: --row-h is the height a row aims for before its tiles grow
+   to fill the width. The filler soaks up a short last row's slack so it keeps
+   that height instead of stretching to full width. 820px is the `nav:` step. */
+.gallery--justified {
+  --row-h: 150px;
+}
+.gallery--justified::after {
+  content: '';
+  flex: 999 1 0;
+}
+@media (min-width: 820px) {
+  .gallery--justified {
+    --row-h: 240px;
+  }
 }
 
 .gallery__item {

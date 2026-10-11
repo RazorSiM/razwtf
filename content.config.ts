@@ -12,6 +12,11 @@ const gallerySchema = z
           name: z.string().optional(),
           alt: z.string().optional(),
           src: z.string(),
+          // Intrinsic pixel size. When every image in a group has both, the
+          // group lays out as justified rows at each image's own aspect ratio
+          // instead of cropping to the default 4:3 tiles.
+          width: z.number().int().positive().optional(),
+          height: z.number().int().positive().optional(),
         }),
       ),
     }),
