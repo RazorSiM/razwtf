@@ -219,3 +219,5 @@ The kitting is final and the vendors are confirmed. Nothing on mousepads yet, bu
 | SEA    | [Qwertyqop](https://qwertyqop.com)      |
 | UK     | [Prototypist](https://prototypist.net)  |
 | CA     | [KeyBay.tech](https://keybay.tech)      |
+| CN     | [Swagkeys](https://swagkeys.com)        |
+| KR     | [Swagkeys](https://swagkeys.com)        |
