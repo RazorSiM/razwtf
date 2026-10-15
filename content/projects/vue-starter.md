@@ -279,15 +279,11 @@ on each push rather than appended, so a long-lived branch has one comment pointi
 head. Forks are skipped, since their runs have no access to secrets and the alternative,
 `pull_request_target`, means running fork code with a writable token.
 
-The part I went back and forth on is why none of this is Cloudflare's own git integration. Workers
-Builds would remove both secrets, since Cloudflare mints its own token, and it posts preview URLs
-for free. But it **can't wait for a check**: a build triggers on push and runs in parallel with the
-test workflow, so a commit that fails e2e still reaches production, and there's no equivalent of the
-`needs: ci` gate. Moving the whole gate into the build command doesn't substitute either, because
-e2e wants `apt` inside the build container. On top of that the build image defaults to pnpm 10 while
-`engines.pnpm` here is `>=11`, which pnpm enforces as a hard install failure, so the version pin
-would have to move into a dashboard variable. For a template whose point is that you can read how it
-works from the files, that's the wrong trade.
+I didn't use Workers Builds, Cloudflare's own git integration, even though it would save the two
+secrets. It deploys on every push without waiting for the tests, so a commit that fails them still
+goes live. Its build image also ships pnpm 10, which this repo refuses to install with, and fixing
+that takes a setting in the Cloudflare dashboard; I'd rather everything about this template be
+readable from its files.
 
 ## Project setup
 
