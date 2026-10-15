@@ -144,6 +144,10 @@ behind it.
 - **Markdown Vue components** via
   [unplugin-vue-markdown](https://github.com/unplugin/unplugin-vue-markdown), which is why the
   README renders as the homepage, with [Shiki](https://shiki.style) doing dual-theme highlighting.
+  Three pages come from markdown this way: the homepage from `README.md`,
+  [/changelog](https://vue-starter.raz.wtf/changelog) from `CHANGELOG.md`, and
+  [/docs](https://vue-starter.raz.wtf/docs) from `docs/reference.md`, the only one of the three that
+  doesn't live at the repo root.
 
 ### Development experience
 
@@ -260,25 +264,55 @@ carry weight:
   adding a `main` entry to `wrangler.jsonc` turns this into a full Worker with the same assets in
   front of it. An API route later is then a config change instead of a migration.
 
+It costs nothing, too. Requests to static assets are free and unlimited on both plans, and an
+assets-only Worker serves nothing else, so the free plan's 100,000 requests a day applies to Worker
+invocations that don't exist here.
+
 CI deploys on every push to `main`, gated behind the job that runs lint, types, unit tests and e2e,
 so only a commit that passed everything ever ships. With no Cloudflare token set the deploy job logs
 a notice and exits green, so forks don't get a red `main`.
 
+A pull request from a branch of the repo gets its own preview instead. `wrangler versions upload`
+uploads a version without promoting it, so production keeps serving whatever the last deploy
+shipped, and the resulting URL is commented onto the pull request; the comment is rewritten in place
+on each push rather than appended, so a long-lived branch has one comment pointing at its current
+head. Forks are skipped, since their runs have no access to secrets and the alternative,
+`pull_request_target`, means running fork code with a writable token.
+
+The part I went back and forth on is why none of this is Cloudflare's own git integration. Workers
+Builds would remove both secrets, since Cloudflare mints its own token, and it posts preview URLs
+for free. But it **can't wait for a check**: a build triggers on push and runs in parallel with the
+test workflow, so a commit that fails e2e still reaches production, and there's no equivalent of the
+`needs: ci` gate. Moving the whole gate into the build command doesn't substitute either, because
+e2e wants `apt` inside the build container. On top of that the build image defaults to pnpm 10 while
+`engines.pnpm` here is `>=11`, which pnpm enforces as a hard install failure, so the version pin
+would have to move into a dashboard variable. For a template whose point is that you can read how it
+works from the files, that's the wrong trade.
+
 ## Project setup
 
 ```bash
-pnpm install       # deps and git hooks (prepare -> lefthook install)
-pnpm dev           # dev server on :5173
-pnpm build         # vue-tsc --build && vite build
-pnpm preview       # preview the production build on :4173
-pnpm test          # unit tests (vitest run)
-pnpm test:e2e      # playwright
-pnpm lint          # oxlint-vize, type-aware
-pnpm format        # oxfmt
-pnpm check         # lint + format:check + type-check
-pnpm changelog     # preview the unreleased changelog, writes nothing
-pnpm release       # bump + changelog + tag + GitHub release
+pnpm install        # deps and git hooks (prepare -> lefthook install)
+pnpm dev            # dev server on :5173
+pnpm build          # vue-tsc --build && vite build
+pnpm preview        # preview the production build on :4173
+pnpm test           # unit tests (vitest run)
+pnpm test:e2e       # playwright
+pnpm lint           # oxlint-vize, type-aware
+pnpm format         # oxfmt
+pnpm check          # lint + format:check + type-check
+pnpm changelog      # preview the unreleased changelog, writes nothing
+pnpm release        # bump + changelog + tag + GitHub release
+pnpm run cf:deploy  # build + wrangler deploy
+pnpm run cf:preview # build + wrangler versions upload, production untouched
 ```
 
-The [README](https://github.com/RazorSiM/vue-starter#readme) goes further on the release flow, the
-Nix shell and the two Cloudflare secrets CI needs.
+Note the `pnpm run` on those last two. `pnpm deploy` is a built-in pnpm command for workspace
+pruning and will quietly not run the script you meant.
+
+The docs got split in half after I wrote this page. The
+[README](https://github.com/RazorSiM/vue-starter#readme) is now the tour, and
+[/docs](https://vue-starter.raz.wtf/docs) is the long form, with the reasoning behind each choice
+and the sharp edges I hit along the way, rendered from `docs/reference.md` by the template itself.
+There's also an [AGENTS.md](https://github.com/RazorSiM/vue-starter/blob/main/AGENTS.md)
+covering the same ground as instructions, for when a coding agent is the one reading.
