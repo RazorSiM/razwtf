@@ -212,12 +212,13 @@ The Enter gets the scope screen itself, with a sine and a square wave over the g
 The kitting is final and the vendors are confirmed. Nothing on mousepads yet, but I already picked an artwork.
 ::
 
-| Region | Vendor                                  |
-| ------ | --------------------------------------- |
-| EU     | [Delta Key Co.](https://deltakeyco.com) |
-| US     | [Divinikey](https://divinikey.com)      |
-| SEA    | [Qwertyqop](https://qwertyqop.com)      |
-| UK     | [Prototypist](https://prototypist.net)  |
-| CA     | [KeyBay.tech](https://keybay.tech)      |
-| CN     | [Swagkeys](https://swagkeys.com)        |
-| KR     | [Swagkeys](https://swagkeys.com)        |
+| Region | Vendor                                       |
+| ------ | -------------------------------------------- |
+| EU     | [Delta Key Co.](https://deltakeyco.com)      |
+| US     | [Divinikey](https://divinikey.com)           |
+| SEA    | [Qwertyqop](https://qwertyqop.com)           |
+| UK     | [Prototypist](https://prototypist.net)       |
+| CA     | [KeyBay.tech](https://keybay.tech)           |
+| CN     | [Swagkeys](https://swagkeys.com)             |
+| KR     | [Swagkeys](https://swagkeys.com)             |
+| AU     | [Switchkeys](https://www.switchkeys.com.au/) |
