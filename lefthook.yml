@@ -3,6 +3,13 @@
 #
 # Set LEFTHOOK=0 to disable for one command, or pass --no-verify to git.
 
+# lefthook runs the Git LFS hooks before any job when `git-lfs` is on PATH, on the
+# assumption that it overwrote them during `lefthook install`. The repo tracks no
+# LFS objects (no .gitattributes), so on every push that is an
+# `ssh git@github.com git-lfs-authenticate` round trip for nothing, and it hangs
+# when that connection does not answer.
+skip_lfs: true
+
 # Formatting is the only thing here that rewrites files, so pre-commit runs
 # sequentially: oxfmt must finish before the linters read the same paths.
 pre-commit:
