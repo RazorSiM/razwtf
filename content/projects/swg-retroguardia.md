@@ -92,6 +92,16 @@ gallery:
         src: /retroguardia/studio/alice.webp
         width: 2560
         height: 1440
+      - name: Frosted HHKB Esc
+        alt: The Lissajous Esc novelty on a frosted HHKB with a green number row
+        src: /retroguardia/studio/frosted-hhkb-esc.webp
+        width: 2560
+        height: 1440
+      - name: Frosted HHKB Enter
+        alt: The scope Enter novelty on a frosted HHKB with a dark number row
+        src: /retroguardia/studio/frosted-hhkb-enter.webp
+        width: 2560
+        height: 1440
   - description: Lifestyle
     images:
       - name: Desk
